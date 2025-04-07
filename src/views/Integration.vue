@@ -221,6 +221,45 @@ onMounted(async () => {
     <!-- Error/Success Messages -->
     <div v-if="error" class="mb-4 p-4 bg-red-50 text-red-700 rounded-md">{{ error }}</div>
     <div v-if="success" class="mb-4 p-4 bg-green-50 text-green-700 rounded-md whitespace-pre-line">{{ success }}</div>
+    <div v-if="integrationStore.syncStats && (integrationStore.syncStats.skippedExistingOrders > 0 || integrationStore.syncStats.skippedSkus?.length > 0 || integrationStore.syncStats.invalidData?.length > 0)" class="mb-4 p-4 bg-yellow-50 text-yellow-700 rounded-md">
+      <h3 class="font-semibold mb-2">Übersprungene Leads:</h3>
+      <ul class="list-disc pl-5">
+        <li v-if="integrationStore.syncStats.skippedExistingOrders > 0">
+          {{ integrationStore.syncStats.skippedExistingOrders }} Leads wurden übersprungen, da sie bereits existieren
+        </li>
+        <li v-if="integrationStore.syncStats.skippedSkus?.length > 0">
+          {{ integrationStore.syncStats.skippedSkus.length }} Leads wurden übersprungen, da die Produkte nicht gefunden wurden:
+          <ul class="list-disc pl-5 mt-1">
+            <li v-for="sku in [...new Set(integrationStore.syncStats.skippedSkus)]" :key="sku">
+              SKU: {{ sku }}
+            </li>
+          </ul>
+        </li>
+        <li v-if="integrationStore.syncStats.invalidData?.length > 0">
+          {{ integrationStore.syncStats.invalidData.length }} Leads wurden übersprungen aufgrund fehlerhafter Daten:
+          <table class="mt-2 min-w-full border border-yellow-300 text-xs">
+            <thead class="bg-yellow-100">
+              <tr>
+                <th class="border border-yellow-300 px-2 py-1 text-left">Zeile</th>
+                <th class="border border-yellow-300 px-2 py-1 text-left">Name</th>
+                <th class="border border-yellow-300 px-2 py-1 text-left">Telefon</th>
+                <th class="border border-yellow-300 px-2 py-1 text-left">SKU</th>
+                <th class="border border-yellow-300 px-2 py-1 text-left">Grund</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in integrationStore.syncStats.invalidData" :key="index">
+                <td class="border border-yellow-300 px-2 py-1">{{ item.row }}</td>
+                <td class="border border-yellow-300 px-2 py-1">{{ item.data.name }}</td>
+                <td class="border border-yellow-300 px-2 py-1">{{ item.data.phone }}</td>
+                <td class="border border-yellow-300 px-2 py-1">{{ item.data.sku }}</td>
+                <td class="border border-yellow-300 px-2 py-1">{{ item.reason }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </li>
+      </ul>
+    </div>
 
     <!-- Search -->
     <div class="mb-6">

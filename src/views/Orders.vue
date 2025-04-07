@@ -374,17 +374,21 @@ const editingTotalPrice = computed(() => {
 })
 
 const handleExportExcel = () => {
-  const data = filteredOrders.value.map(order => ({
-    'Order ID': order.id,
-    'Customer Name': order.customer_name,
-    'Phone': order.phone,
-    'Product': order.product_name,
-    'Quantity': order.quantity,
-    'Total Amount': order.total_amount,
-    'Status': ORDER_STATUS_LABELS[order.status],
-    'Created At': formatDate(order.created_at),
-    ...(isAdmin.value ? { 'Seller Name': order.seller_name } : {})
-  }))
+  const data = filteredOrders.value.map(order => {
+    // Finde das Produkt für die SKU
+    const product = productStore.products.find(p => p.id === order.product_id)
+    return {
+      'CUSTOMER': order.customer_name,
+      'City': order.city || '',
+      'Adress': order.shipping_address || '',
+      'Total Price': order.total_amount,
+      'SKU': product?.sku || '',
+      'ORDER ID': order.id,
+      'Quantity': order.quantity,
+      'Product Name': order.product_name,
+      'Seller': order.seller_name || ''
+    }
+  })
   exportToExcel(data, 'orders')
 }
 

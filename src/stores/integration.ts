@@ -6,6 +6,12 @@ import { useProductStore } from './products'
 import { useOrderStore } from './orders'
 import { useAuthStore } from './auth'
 
+// Hilfsfunktion zum Konvertieren arabischer Zahlen
+const convertArabicToLatinNumbers = (str: string): string => {
+  const arabicNumbers = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
+  return str.replace(/[٠-٩]/g, match => arabicNumbers.indexOf(match).toString())
+}
+
 export interface Integration {
   id: number
   user_id: number
@@ -41,6 +47,7 @@ export interface SyncStats {
   skipped: number
   skippedSkus: string[]
   skippedExistingOrders: number
+  invalidData: Array<{ row: number, reason: string, data: any }>
 }
 
 interface ConnectOptions {
@@ -59,7 +66,8 @@ export const useIntegrationStore = defineStore('integration', () => {
     new: 0,
     skipped: 0,
     skippedSkus: [],
-    skippedExistingOrders: 0
+    skippedExistingOrders: 0,
+    invalidData: []
   })
   const success = ref<string | null>(null)
 
@@ -210,18 +218,35 @@ export const useIntegrationStore = defineStore('integration', () => {
   const fetchSheetData = async (integration: Integration): Promise<SheetData[]> => {
     try {
       const rows = await readSpreadsheet(integration.spreadsheet_id, integration.sheet_name)
-      return rows.map(row => ({
-        orderId: row['Order ID (A)']?.toString() || '',
-        customerName: row['Customer Name (B)']?.toString() || '',
-        phone: row['Phone Number (C)']?.toString().replace(/[^0-9+]/g, '') || '',
-        address: row['Address (D)']?.toString() || '',
-        city: row['City (E)']?.toString() || '',
-        productName: row['Product Name (F)']?.toString() || '',
-        sku: row['SKU (G)']?.toString() || '',
-        quantity: parseInt(row['Quantity (H)']?.toString() || '1'),
-        price: parseFloat(row['Price (I)']?.toString() || '0'),
-        totalAmount: parseFloat(row['Total Amount (J)']?.toString() || '0')
-      }))
+      return rows.map(row => {
+        // Konvertiere die Telefonnummer zuerst
+        const rawPhone = row['Phone Number (C)']?.toString() || ''
+        // Entferne zuerst alle Leerzeichen, dann konvertiere arabische Zahlen
+        const phoneWithoutSpaces = rawPhone.replace(/\s+/g, '')
+        const convertedPhone = convertArabicToLatinNumbers(phoneWithoutSpaces)
+
+        // Konvertiere Preise
+        const rawPrice = row['Price (I)']?.toString() || '0'
+        console.log('Raw price:', rawPrice)
+        const convertedPrice = Number(convertArabicToLatinNumbers(rawPrice).replace(',', '.'))
+        console.log('Converted price:', convertedPrice)
+
+        const quantity = parseInt(convertArabicToLatinNumbers(row['Quantity (H)']?.toString() || '1'))
+        const total = convertedPrice * quantity
+
+        return {
+          orderId: convertArabicToLatinNumbers(row['Order ID (A)']?.toString() || ''),
+          customerName: row['Customer Name (B)']?.toString() || '',
+          phone: convertedPhone,
+          address: row['Address (D)']?.toString() || '',
+          city: row['City (E)']?.toString() || '',
+          productName: row['Product Name (F)']?.toString() || '',
+          sku: row['SKU (G)']?.toString() || '',
+          quantity: quantity,
+          price: convertedPrice,
+          totalAmount: total
+        }
+      })
     } catch (error) {
       console.error('Error fetching sheet data:', error)
       throw error
@@ -268,20 +293,25 @@ export const useIntegrationStore = defineStore('integration', () => {
     try {
       loading.value = true
       error.value = null
+
+      // Reset sync stats
       syncStats.value = {
         total: 0,
         new: 0,
         skipped: 0,
         skippedSkus: [],
-        skippedExistingOrders: 0
+        skippedExistingOrders: 0,
+        invalidData: []
       }
 
-      // Read spreadsheet data
+      // Read data from sheet
       const sheetData = await fetchSheetData(integration)
       syncStats.value.total = sheetData.length
-      console.log('Sheet data:', sheetData)
 
-      // Get product store
+      // Debug log: Show all data for analysis
+      console.log('Sheet data total rows:', sheetData.length)
+      
+      // Get products from store
       const productStore = useProductStore()
       await productStore.fetchProducts()
 
@@ -289,89 +319,172 @@ export const useIntegrationStore = defineStore('integration', () => {
       const { data: existingOrders } = await supabase
         .from('orders')
         .select('phone')
-        .eq('user_id', integration.user_id)
-
+      
+      const existingPhones = existingOrders?.map(order => order.phone.replace(/[^0-9+]/g, '')) || []
+      console.log('Existing phone numbers in DB:', existingPhones.length)
+      
       // Process each row
-      for (const row of sheetData) {
+      const orderPromises = sheetData.map(async (row, index) => {
         try {
-          // Skip empty rows
-          if (!row.phone || !row.customerName || !row.sku) {
-            console.log('Skipping empty row:', row)
+          // Clean phone number and handle different formats
+          let cleanPhone = row.phone.trim()
+          
+          // If number starts with 961 but no +, add the +
+          if (cleanPhone.startsWith('961') && !cleanPhone.startsWith('+')) {
+            cleanPhone = '+' + cleanPhone
+          }
+          
+          // Remove any remaining spaces or special characters except + and numbers
+          cleanPhone = cleanPhone.replace(/[^0-9+]/g, '')
+
+          if (!cleanPhone || !row.customerName) {
+            const reason = !cleanPhone ? 'Fehlende Telefonnummer' : 'Fehlender Kundenname'
             syncStats.value.skipped++
-            continue
+            syncStats.value.invalidData.push({
+              row: index + 1,
+              reason,
+              data: {
+                name: row.customerName || '-',
+                phone: row.phone || '-',
+                sku: row.sku || '-'
+              }
+            })
+            return
           }
 
-          // Clean phone number
-          const cleanPhone = row.phone.replace(/[^0-9+]/g, '')
-
-          // Find matching product by SKU
-          const product = productStore.products.find(p => 
-            p.sku?.toLowerCase() === row.sku.toLowerCase()
-          )
-
-          if (!product) {
-            console.log('Product not found for SKU:', row.sku)
+          // Skip if duplicate (phone already exists)
+          if (existingPhones.includes(cleanPhone)) {
+            console.log(`Row ${index + 1} skipped: Phone already exists`, { phone: cleanPhone });
             syncStats.value.skipped++
-            if (!syncStats.value.skippedSkus.includes(row.sku)) {
-              syncStats.value.skippedSkus.push(row.sku)
-            }
-            continue
-          }
-
-          // Check for duplicate based on phone number only
-          const isDuplicate = existingOrders?.some(order => 
-            order.phone === cleanPhone
-          )
-
-          if (isDuplicate) {
-            console.log('Duplicate found for phone:', cleanPhone)
             syncStats.value.skippedExistingOrders++
-            continue
+            return
+          }
+          
+          // Skip if missing SKU
+          if (!row.sku) {
+            console.log(`Row ${index + 1} skipped: Missing SKU`);
+            syncStats.value.skipped++;
+            syncStats.value.invalidData.push({
+              row: index + 1,
+              reason: 'Fehlende SKU',
+              data: {
+                name: row.customerName || '-',
+                phone: row.phone || '-',
+                sku: '-'
+              }
+            });
+            syncStats.value.skippedSkus.push('empty')
+            return
+          }
+          
+          // Find product by SKU
+          const product = productStore.products.find(
+            p => p.sku?.toLowerCase().trim() === row.sku?.toLowerCase().trim()
+          )
+        
+        if (!product) {
+            console.log(`Row ${index + 1} skipped: Product not found for SKU`, { sku: row.sku });
+          syncStats.value.skipped++
+            syncStats.value.skippedSkus.push(row.sku || 'unknown')
+            return
+          }
+          
+          // Insert new order
+          const { data: userData } = await supabase
+            .from('users')
+            .select('id')
+            .eq('auth_id', useAuthStore().user?.id)
+            .single()
+
+          if (!userData) {
+            console.error(`Row ${index + 1} error: User not found`);
+            syncStats.value.skipped++;
+            syncStats.value.invalidData.push({
+              row: index + 1,
+              reason: 'Benutzer nicht gefunden',
+              data: {
+                name: row.customerName || '-',
+                phone: row.phone || '-',
+                sku: row.sku || '-'
+              }
+            });
+            return;
           }
 
-          // Insert new order
-          const { error: insertError } = await supabase
+          const { data, error: insertError } = await supabase
             .from('orders')
             .insert([
               {
-                user_id: integration.user_id,
-                product_id: product.id,
+                user_id: userData.id,
                 customer_name: row.customerName.trim(),
                 phone: cleanPhone,
-                shipping_address: row.city ? `${row.address.trim()}, ${row.city.trim()}` : row.address.trim(),
+                shipping_address: row.address,
+                city: row.city,
+                status: 1,
+                product_id: product.id,
                 quantity: row.quantity || 1,
-                unit_price: product.price,
-                total_amount: row.totalAmount || (product.price * (row.quantity || 1)),
-                status: 1, // NEW status
-                info: ''
+                total_amount: row.price * (row.quantity || 1),
+                unit_price: row.price
               }
             ])
-
+            .select()
+            .single()
+          
           if (insertError) {
-            console.error('Insert error:', insertError)
-            throw insertError
+            console.error(`Row ${index + 1} error inserting order:`, insertError);
+            syncStats.value.skipped++;
+            syncStats.value.invalidData.push({
+              row: index + 1,
+              reason: 'Datenbankfehler: ' + insertError.message,
+              data: {
+                name: row.customerName || '-',
+                phone: row.phone || '-',
+                sku: row.sku || '-'
+              }
+            });
+            return
           }
-          console.log('Successfully inserted order for:', row.customerName)
+          
+          console.log(`Row ${index + 1} successfully inserted for customer:`, row.customerName);
           syncStats.value.new++
-        } catch (err) {
-          console.error('Error processing row:', err)
-          syncStats.value.skipped++
+        } catch (error) {
+          console.error(`Row ${index + 1} processing error:`, error);
+          syncStats.value.skipped++;
+          syncStats.value.invalidData.push({
+            row: index + 1,
+            reason: 'Fehler bei der Verarbeitung',
+            data: {
+              name: row.customerName || '-',
+              phone: row.phone || '-',
+              sku: row.sku || '-'
+            }
+          });
         }
-      }
+      })
+      
+      // Wait for all promises to resolve
+      await Promise.all(orderPromises)
+      
+      // Update the last sync timestamp
+      await updateLastSync(integration.id)
 
-      // Update last sync timestamp
-      const { error: updateError } = await supabase
-        .from('integrations')
-        .update({ last_sync_at: new Date().toISOString() })
-        .eq('id', integration.id)
-
-      if (updateError) throw updateError
-
-      success.value = `Sync completed!\nNew Orders: ${syncStats.value.new}\nSkipped: ${syncStats.value.skipped}`
+      // Log final stats for debugging
+      console.log('Sync stats:', {
+        total: syncStats.value.total,
+        new: syncStats.value.new,
+        skipped: syncStats.value.skipped,
+        skippedExisting: syncStats.value.skippedExistingOrders,
+        skippedProducts: syncStats.value.skippedSkus.length,
+        invalidData: syncStats.value.invalidData.length,
+        unexplainedSkips: syncStats.value.skipped - syncStats.value.skippedExistingOrders - syncStats.value.skippedSkus.length
+      });
+      
+      // Return stats
       return syncStats.value
+      
     } catch (err: any) {
       error.value = err.message
-      console.error('Error during sync:', err)
+      console.error('Error syncing with Google Sheets:', err)
       throw err
     } finally {
       loading.value = false

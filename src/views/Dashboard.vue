@@ -115,9 +115,11 @@ const calculateStats = () => {
   stats.value.totalRevenue = `${totalAmount.toFixed(2)} $`
   stats.value.totalLeads = filteredOrders.value.length.toString()
 
-  // Confirmation Rate
+  // Confirmation Rate - Updated to include SHIPPED status
   const confirmedOrders = filteredOrders.value.filter(order => 
-    order.status === ORDER_STATUS.CONFIRMED || order.status === ORDER_STATUS.DELIVERED
+    order.status === ORDER_STATUS.CONFIRMED || 
+    order.status === ORDER_STATUS.SHIPPED || 
+    order.status === ORDER_STATUS.DELIVERED
   )
   const deliveredOrders = filteredOrders.value.filter(order => order.status === ORDER_STATUS.DELIVERED)
   const confirmedCount = confirmedOrders.length

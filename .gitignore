@@ -9,16 +9,15 @@ lerna-debug.log*
 
 # Dependencies
 node_modules
-.DS_Store
 dist
 dist-ssr
-coverage
 *.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
 .idea
+.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
@@ -29,6 +28,10 @@ coverage
 .env
 .env.*
 !.env.example
+
+# Build files
+dist/
+build/
 
 # Netlify
 .netlify
