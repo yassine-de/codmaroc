@@ -714,22 +714,28 @@ const formatPhoneForWhatsApp = (phone: string) => {
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatPrice(order.total_amount) }}</td>
             <td v-if="isAdmin" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.seller_name }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-              <button @click="openEditModal(order)" class="text-blue-600 hover:text-blue-800">
-                {{ isStaffOrAdmin ? '✏️' : '👁️' }}
-              </button>
-              <button 
-                v-if="isStaffOrAdmin" 
-                @click="handleDeleteOrder(order.id)" 
-                class="text-red-600 hover:text-red-800"
-              >
-                🗑️
-              </button>
-              <button 
-                v-if="isStaffOrAdmin" 
-                @click="addFees(order)" 
-                class="text-purple-600 hover:text-purple-800"
-              >
-                <i class="fas fa-plus-circle"></i>
+              <template v-if="isStaffOrAdmin">
+                <a 
+                  :href="`https://wa.me/${formatPhoneForWhatsApp(order.phone)}`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-green-600 hover:text-green-800"
+                  title="Open in WhatsApp"
+                >
+                  <i class="fab fa-whatsapp text-xl"></i>
+                </a>
+                <button @click="openEditModal(order)" class="text-blue-600 hover:text-blue-800">
+                  ✏️
+                </button>
+                <button 
+                  @click="handleDeleteOrder(order.id)" 
+                  class="text-red-600 hover:text-red-800"
+                >
+                  🗑️
+                </button>
+              </template>
+              <button v-else @click="openEditModal(order)" class="text-blue-600 hover:text-blue-800">
+                👁️
               </button>
             </td>
           </tr>
