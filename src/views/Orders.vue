@@ -378,6 +378,7 @@ const handleExportExcel = () => {
     // Finde das Produkt für die SKU
     const product = productStore.products.find(p => p.id === order.product_id)
     return {
+      'Phone': order.phone,
       'CUSTOMER': order.customer_name,
       'City': order.city || '',
       'Adress': order.shipping_address || '',
