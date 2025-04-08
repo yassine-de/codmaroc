@@ -434,6 +434,22 @@ const filteredCities = computed(() => {
     .filter(city => city.toLowerCase().includes(query))
     .slice(0, 10) // Begrenzen auf 10 Ergebnisse
 })
+
+const filteredProducts = computed(() => {
+  console.log('Current user:', authStore.user)
+  console.log('All products:', productStore.products)
+  
+  if (authStore.user?.role === 'seller') {
+    const sellerProducts = productStore.products.filter(product => {
+      console.log('Product user_id:', product.user_id, 'Auth user id:', authStore.user?.id)
+      return product.user_id === authStore.user?.id
+    })
+    console.log('Filtered products for seller:', sellerProducts)
+    return sellerProducts
+  }
+  
+  return productStore.products
+})
 </script>
 
 <template>
@@ -476,7 +492,7 @@ const filteredCities = computed(() => {
           class="rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black text-sm"
         >
           <option value="All">All Products</option>
-          <option v-for="product in productStore.products" :key="product.id" :value="product.id">
+          <option v-for="product in filteredProducts" :key="product.id" :value="product.id">
             {{ product.name }}
           </option>
         </select>
@@ -725,7 +741,7 @@ const filteredCities = computed(() => {
               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
             >
               <option value="">Select a product</option>
-              <option v-for="product in productStore.products" :key="product.id" :value="product.id">
+              <option v-for="product in filteredProducts" :key="product.id" :value="product.id">
                 {{ product.name }} - {{ formatPrice(product.price) }}
               </option>
             </select>
@@ -849,7 +865,7 @@ const filteredCities = computed(() => {
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
               >
                 <option value="">Select a product</option>
-                <option v-for="product in productStore.products" :key="product.id" :value="product.id">
+                <option v-for="product in filteredProducts" :key="product.id" :value="product.id">
                   {{ product.name }} - {{ formatPrice(product.price) }}
                 </option>
               </select>
