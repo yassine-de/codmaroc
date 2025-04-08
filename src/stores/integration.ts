@@ -219,11 +219,8 @@ export const useIntegrationStore = defineStore('integration', () => {
     try {
       const rows = await readSpreadsheet(integration.spreadsheet_id, integration.sheet_name)
       return rows.map(row => {
-        // Konvertiere die Telefonnummer zuerst
-        const rawPhone = row['Phone Number (C)']?.toString() || ''
-        // Entferne zuerst alle Leerzeichen, dann konvertiere arabische Zahlen
-        const phoneWithoutSpaces = rawPhone.replace(/\s+/g, '')
-        const convertedPhone = convertArabicToLatinNumbers(phoneWithoutSpaces)
+        // Telefonnummer direkt als String übernehmen
+        const phone = row['Phone Number (C)']?.toString() || ''
 
         // Konvertiere Preise
         const rawPrice = row['Price (I)']?.toString() || '0'
@@ -237,7 +234,7 @@ export const useIntegrationStore = defineStore('integration', () => {
         return {
           orderId: convertArabicToLatinNumbers(row['Order ID (A)']?.toString() || ''),
           customerName: row['Customer Name (B)']?.toString() || '',
-          phone: convertedPhone,
+          phone: phone,
           address: row['Address (D)']?.toString() || '',
           city: row['City (E)']?.toString() || '',
           productName: row['Product Name (F)']?.toString() || '',
@@ -320,25 +317,17 @@ export const useIntegrationStore = defineStore('integration', () => {
         .from('orders')
         .select('phone')
       
-      const existingPhones = existingOrders?.map(order => order.phone.replace(/[^0-9+]/g, '')) || []
+      const existingPhones = existingOrders?.map(order => order.phone) || []
       console.log('Existing phone numbers in DB:', existingPhones.length)
       
       // Process each row
       const orderPromises = sheetData.map(async (row, index) => {
         try {
-          // Clean phone number and handle different formats
-          let cleanPhone = row.phone.trim()
-          
-          // If number starts with 961 but no +, add the +
-          if (cleanPhone.startsWith('961') && !cleanPhone.startsWith('+')) {
-            cleanPhone = '+' + cleanPhone
-          }
-          
-          // Remove any remaining spaces or special characters except + and numbers
-          cleanPhone = cleanPhone.replace(/[^0-9+]/g, '')
+          // Telefonnummer direkt verwenden
+          const phone = row.phone.trim()
 
-          if (!cleanPhone || !row.customerName) {
-            const reason = !cleanPhone ? 'Fehlende Telefonnummer' : 'Fehlender Kundenname'
+          if (!phone || !row.customerName) {
+            const reason = !phone ? 'Fehlende Telefonnummer' : 'Fehlender Kundenname'
             syncStats.value.skipped++
             syncStats.value.invalidData.push({
               row: index + 1,
@@ -353,8 +342,8 @@ export const useIntegrationStore = defineStore('integration', () => {
           }
 
           // Skip if duplicate (phone already exists)
-          if (existingPhones.includes(cleanPhone)) {
-            console.log(`Row ${index + 1} skipped: Phone already exists`, { phone: cleanPhone });
+          if (existingPhones.includes(phone)) {
+            console.log(`Row ${index + 1} skipped: Phone already exists`, { phone });
             syncStats.value.skipped++
             syncStats.value.skippedExistingOrders++
             return
@@ -382,9 +371,9 @@ export const useIntegrationStore = defineStore('integration', () => {
             p => p.sku?.toLowerCase().trim() === row.sku?.toLowerCase().trim()
           )
         
-        if (!product) {
+          if (!product) {
             console.log(`Row ${index + 1} skipped: Product not found for SKU`, { sku: row.sku });
-          syncStats.value.skipped++
+            syncStats.value.skipped++
             syncStats.value.skippedSkus.push(row.sku || 'unknown')
             return
           }
@@ -417,7 +406,7 @@ export const useIntegrationStore = defineStore('integration', () => {
               {
                 user_id: userData.id,
                 customer_name: row.customerName.trim(),
-                phone: cleanPhone,
+                phone: phone,
                 shipping_address: row.address,
                 city: row.city,
                 status: 1,

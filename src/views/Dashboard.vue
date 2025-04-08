@@ -6,6 +6,23 @@ import { useAuthStore } from '../stores/auth'
 const orderStore = useOrderStore()
 const authStore = useAuthStore()
 
+// Hilfsfunktionen
+const formatPrice = (price: number) => {
+  return `${price.toFixed(2)} $`
+}
+
+const calculateConfirmationRate = () => {
+  const confirmedOrders = orderStore.orders.filter(order => 
+    order.status === ORDER_STATUS.CONFIRMED || 
+    order.status === ORDER_STATUS.SHIPPED || 
+    order.status === ORDER_STATUS.DELIVERED
+  )
+  const rate = orderStore.orders.length > 0 
+    ? (confirmedOrders.length / orderStore.orders.length) * 100 
+    : 0
+  return `${rate.toFixed(2)}%`
+}
+
 // Check if user is staff (role === 2)
 const isStaff = computed(() => {
   return authStore.user?.role === 2
@@ -19,6 +36,14 @@ const isAdmin = computed(() => {
 const stats = ref({
   totalRevenue: '0.00 $',
   totalLeads: '0',
+  newOrders: '0',
+  confirmedOrders: '0',
+  confirmedPercentage: '0%',
+  deliveredOrders: '0',
+  deliveredPercentage: '0%',
+  shippedOrders: '0',
+  canceledOrders: '0',
+  canceledPercentage: '0%',
   confirmationRate: {
     leads: '0',
     percentage: '0%',
@@ -29,6 +54,55 @@ const stats = ref({
     percentage: '0%',
     period: 'All of Time'
   }
+})
+
+const statsArray = computed(() => {
+  const orders = orderStore.orders
+  const user = authStore.user
+
+  // Berechne New Orders basierend auf der Benutzerrolle
+  const newOrders = user?.role === 'seller' 
+    ? orders.filter(order => order.status === ORDER_STATUS.NEW && order.user_id === user.id)
+    : orders.filter(order => order.status === ORDER_STATUS.NEW)
+
+  return [
+    {
+      name: 'New Orders',
+      value: newOrders.length,
+      icon: 'fas fa-shopping-cart',
+      color: 'text-blue-600',
+      bgColor: 'bg-blue-50'
+    },
+    {
+      name: 'Total Orders',
+      value: user?.role === 'seller' 
+        ? orders.filter(order => order.user_id === user.id).length
+        : orders.length,
+      icon: 'fas fa-shopping-bag',
+      color: 'text-green-600',
+      bgColor: 'bg-green-50'
+    },
+    {
+      name: 'Total Revenue',
+      value: formatPrice(
+        user?.role === 'seller'
+          ? orders
+              .filter(order => order.user_id === user.id)
+              .reduce((sum, order) => sum + order.total_amount, 0)
+          : orders.reduce((sum, order) => sum + order.total_amount, 0)
+      ),
+      icon: 'fas fa-dollar-sign',
+      color: 'text-purple-600',
+      bgColor: 'bg-purple-50'
+    },
+    {
+      name: 'Confirmation Rate',
+      value: calculateConfirmationRate(),
+      icon: 'fas fa-chart-line',
+      color: 'text-orange-600',
+      bgColor: 'bg-orange-50'
+    }
+  ]
 })
 
 const productFilter = ref('All')
@@ -110,18 +184,89 @@ const filteredOrders = computed(() => {
 const calculateStats = () => {
   if (!filteredOrders.value.length) return
 
-  // Total Revenue and Leads
-  const totalAmount = filteredOrders.value.reduce((sum, order) => sum + order.total_amount, 0)
-  stats.value.totalRevenue = `${totalAmount.toFixed(2)} $`
-  stats.value.totalLeads = filteredOrders.value.length.toString()
+  const user = authStore.user
+  const orders = orderStore.orders
 
-  // Confirmation Rate - Updated to include SHIPPED status
-  const confirmedOrders = filteredOrders.value.filter(order => 
-    order.status === ORDER_STATUS.CONFIRMED || 
-    order.status === ORDER_STATUS.SHIPPED || 
-    order.status === ORDER_STATUS.DELIVERED
-  )
-  const deliveredOrders = filteredOrders.value.filter(order => order.status === ORDER_STATUS.DELIVERED)
+  // Calculate New Orders
+  const newOrders = user?.role === 'seller' 
+    ? orders.filter(order => order.status === ORDER_STATUS.NEW && order.user_id === user.id)
+    : orders.filter(order => order.status === ORDER_STATUS.NEW)
+  stats.value.newOrders = newOrders.length.toString()
+
+  // Calculate Confirmed Orders
+  const confirmedOrders = user?.role === 'seller'
+    ? orders.filter(order => 
+        (order.status === ORDER_STATUS.CONFIRMED || 
+         order.status === ORDER_STATUS.DELIVERED || 
+         order.status === ORDER_STATUS.SHIPPED) && 
+        order.user_id === user.id
+      )
+    : orders.filter(order => 
+        order.status === ORDER_STATUS.CONFIRMED || 
+        order.status === ORDER_STATUS.DELIVERED || 
+        order.status === ORDER_STATUS.SHIPPED
+      )
+  stats.value.confirmedOrders = confirmedOrders.length.toString()
+  
+  // Calculate Confirmed Percentage
+  const totalOrders = user?.role === 'seller'
+    ? orders.filter(order => order.user_id === user.id).length
+    : orders.length
+  const confirmedPercentage = totalOrders > 0
+    ? (confirmedOrders.length / totalOrders) * 100
+    : 0
+  stats.value.confirmedPercentage = `${confirmedPercentage.toFixed(2)}%`
+
+  // Calculate Delivered Orders
+  const deliveredOrders = user?.role === 'seller'
+    ? orders.filter(order => order.status === ORDER_STATUS.DELIVERED && order.user_id === user.id)
+    : orders.filter(order => order.status === ORDER_STATUS.DELIVERED)
+  stats.value.deliveredOrders = deliveredOrders.length.toString()
+  
+  // Calculate Delivered Percentage
+  const deliveredPercentage = totalOrders > 0
+    ? (deliveredOrders.length / totalOrders) * 100
+    : 0
+  stats.value.deliveredPercentage = `${deliveredPercentage.toFixed(2)}%`
+
+  // Calculate Shipped Orders
+  const shippedOrders = user?.role === 'seller'
+    ? orders.filter(order => order.status === ORDER_STATUS.SHIPPED && order.user_id === user.id)
+    : orders.filter(order => order.status === ORDER_STATUS.SHIPPED)
+  stats.value.shippedOrders = shippedOrders.length.toString()
+
+  // Calculate Canceled/Wrong Number Orders
+  const canceledOrders = user?.role === 'seller'
+    ? orders.filter(order => 
+        (order.status === ORDER_STATUS.CANCELED || 
+         order.status === ORDER_STATUS.WRONG_NUMBER) && 
+        order.user_id === user.id
+      )
+    : orders.filter(order => 
+        order.status === ORDER_STATUS.CANCELED || 
+        order.status === ORDER_STATUS.WRONG_NUMBER
+      )
+  stats.value.canceledOrders = canceledOrders.length.toString()
+  
+  // Calculate Canceled Percentage
+  const canceledPercentage = totalOrders > 0
+    ? (canceledOrders.length / totalOrders) * 100
+    : 0
+  stats.value.canceledPercentage = `${canceledPercentage.toFixed(2)}%`
+
+  // Total Revenue and Leads
+  if (user?.role === 'seller') {
+    const sellerOrders = orders.filter(order => order.user_id === user.id)
+    const totalRevenue = sellerOrders.reduce((sum, order) => sum + order.total_amount, 0)
+    stats.value.totalRevenue = `${totalRevenue.toFixed(2)} $`
+    stats.value.totalLeads = sellerOrders.length.toString()
+  } else {
+    const totalRevenue = orders.reduce((sum, order) => sum + order.total_amount, 0)
+    stats.value.totalRevenue = `${totalRevenue.toFixed(2)} $`
+    stats.value.totalLeads = orders.length.toString()
+  }
+
+  // Confirmation Rate
   const confirmedCount = confirmedOrders.length
   const confirmationRate = (confirmedCount / filteredOrders.value.length) * 100
   stats.value.confirmationRate = {
@@ -228,7 +373,7 @@ onMounted(async () => {
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
       <!-- Total Revenue (Only visible for non-staff users) -->
       <div v-if="!isStaff" class="bg-white rounded-lg shadow p-6">
         <div class="flex justify-between items-start">
@@ -236,10 +381,7 @@ onMounted(async () => {
             <h3 class="text-lg font-medium text-gray-900">Welcome {{ authStore.user?.email }} 🎉</h3>
             <p class="text-sm text-gray-500">Total Revenue</p>
             <p class="text-2xl font-bold text-gray-900 mt-2">{{ stats.totalRevenue }}</p>
-            <p class="text-sm text-gray-500">{{ stats.totalLeads }} Leads 🚀</p>
-            <button class="mt-4 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
-              VIEW SALES
-            </button>
+            <p class="text-xl font-bold text-gray-900">{{ stats.totalLeads }} Leads 🚀</p>
           </div>
           <div class="w-24 h-24 flex items-center justify-center text-yellow-400">
             <i class="fas fa-trophy text-6xl"></i>
@@ -260,36 +402,70 @@ onMounted(async () => {
         </div>
       </div>
 
-      <!-- Confirmation Rate -->
+      <!-- New Orders -->
       <div class="bg-white rounded-lg shadow p-6">
         <div class="flex justify-between items-start">
           <div>
-            <div class="inline-block bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full">
-              {{ stats.confirmationRate.period }}
-            </div>
-            <h3 class="text-lg font-medium text-gray-900 mt-2">Confirmation Rate</h3>
-            <p class="text-2xl font-bold text-gray-900 mt-2">{{ stats.confirmationRate.leads }} Confirmed</p>
-            <p class="text-xl font-semibold text-red-600">{{ stats.confirmationRate.percentage }}</p>
+            <h3 class="text-lg font-medium text-gray-900">New Orders</h3>
+            <p class="text-2xl font-bold text-blue-600 mt-2">{{ stats.newOrders }}</p>
           </div>
-          <div class="w-24 h-24 flex items-center justify-center text-gray-600">
-            <i class="fas fa-user-check text-6xl"></i>
+          <div class="w-24 h-24 flex items-center justify-center text-blue-600">
+            <i class="fas fa-shopping-cart text-6xl"></i>
           </div>
         </div>
       </div>
 
-      <!-- Delivery Rate -->
+      <!-- Confirmed Orders -->
       <div class="bg-white rounded-lg shadow p-6">
         <div class="flex justify-between items-start">
           <div>
-            <div class="inline-block bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">
-              {{ stats.deliveryRate.period }}
-            </div>
-            <h3 class="text-lg font-medium text-gray-900 mt-2">Delivery Rate</h3>
-            <p class="text-2xl font-bold text-gray-900 mt-2">{{ stats.deliveryRate.orders }} Delivered</p>
-            <p class="text-xl font-semibold text-green-600">{{ stats.deliveryRate.percentage }}</p>
+            <h3 class="text-lg font-medium text-gray-900">Confirmed Orders</h3>
+            <p class="text-2xl font-bold text-green-600 mt-2">{{ stats.confirmedOrders }}</p>
+            <p class="text-lg font-bold text-gray-900 mt-1">{{ stats.confirmedPercentage }} of Total Orders</p>
           </div>
           <div class="w-24 h-24 flex items-center justify-center text-green-600">
-            <i class="fas fa-truck text-6xl"></i>
+            <i class="fas fa-check-circle text-6xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivered Orders -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-lg font-medium text-gray-900">Delivered Orders</h3>
+            <p class="text-2xl font-bold text-green-600 mt-2">{{ stats.deliveredOrders }}</p>
+            <p class="text-lg font-bold text-gray-900 mt-1">{{ stats.deliveredPercentage }} of Total Orders</p>
+          </div>
+          <div class="w-24 h-24 flex items-center justify-center text-green-600">
+            <i class="fas fa-box text-6xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canceled/Wrong Number Orders -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-lg font-medium text-gray-900">Canceled/Wrong Number</h3>
+            <p class="text-2xl font-bold text-red-600 mt-2">{{ stats.canceledOrders }}</p>
+            <p class="text-lg font-bold text-gray-900 mt-1">{{ stats.canceledPercentage }} of Total Orders</p>
+          </div>
+          <div class="w-24 h-24 flex items-center justify-center text-red-600">
+            <i class="fas fa-times-circle text-6xl"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipped Orders -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-lg font-medium text-gray-900">Shipped Orders</h3>
+            <p class="text-2xl font-bold text-purple-600 mt-2">{{ stats.shippedOrders }}</p>
+          </div>
+          <div class="w-24 h-24 flex items-center justify-center text-purple-600">
+            <i class="fas fa-truck-loading text-6xl"></i>
           </div>
         </div>
       </div>

@@ -300,11 +300,25 @@ const handleAddOrder = async () => {
   }
 }
 
+const openEditModal = (order: Order) => {
+  editingOrder.value = { ...order }
+  // Extrahiere die Stadt aus der Adresse
+  const addressParts = order.shipping_address.split(',')
+  if (addressParts.length > 1) {
+    selectedCity.value = addressParts[addressParts.length - 1].trim()
+    editingOrder.value.shipping_address = addressParts.slice(0, -1).join(',').trim()
+  } else {
+    selectedCity.value = ''
+    editingOrder.value.shipping_address = order.shipping_address
+  }
+  showEditModal.value = true
+}
+
 const handleEditOrder = async () => {
   if (!editingOrder.value) return
 
   try {
-    // Füge Stadt zur Adresse hinzu
+    // Füge Stadt zur Adresse hinzu, nur wenn eine Stadt ausgewählt wurde
     const fullAddress = selectedCity.value 
       ? `${editingOrder.value.shipping_address}, ${selectedCity.value}`
       : editingOrder.value.shipping_address
@@ -326,17 +340,6 @@ const handleEditOrder = async () => {
   } catch (error) {
     console.error('Error updating order:', error)
   }
-}
-
-const openEditModal = (order: Order) => {
-  editingOrder.value = { ...order }
-  // Extrahiere die Stadt aus der Adresse
-  const addressParts = order.shipping_address.split(',')
-  if (addressParts.length > 1) {
-    selectedCity.value = addressParts[1].trim()
-    editingOrder.value.shipping_address = addressParts[0].trim()
-  }
-  showEditModal.value = true
 }
 
 const formatDate = (dateString: string) => {
@@ -961,6 +964,7 @@ const filteredProducts = computed(() => {
                   type="text"
                   v-model="citySearchQuery"
                   @focus="showCityDropdown = true"
+                  @input="showCityDropdown = true"
                   :placeholder="selectedCity || 'Search city...'"
                   :disabled="!isStaffOrAdmin"
                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
