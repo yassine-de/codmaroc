@@ -440,20 +440,48 @@ const filteredCities = computed(() => {
 })
 
 const filteredProducts = computed(() => {
-  console.log('Current user:', authStore.user)
-  console.log('All products:', productStore.products)
+  const userRole = authStore.user?.role
   
-  if (authStore.user?.role === 'seller') {
-    const sellerProducts = productStore.products.filter(product => {
-      console.log('Product user_id:', product.user_id, 'Auth user id:', authStore.user?.id)
-      return product.user_id === authStore.user?.id
-    })
-    console.log('Filtered products for seller:', sellerProducts)
-    return sellerProducts
+  // Wenn der Benutzer ein Seller ist (role === 3)
+  if (userRole === 3) {
+    // Suche nach Produkten, die die gleiche user_id wie die Orders haben
+    const sellerOrders = orderStore.orders.filter(order => order.user_id)
+    if (sellerOrders.length > 0) {
+      const sellerId = sellerOrders[0].user_id
+      return productStore.products.filter(product => product.user_id === sellerId)
+    }
   }
   
+  // Für Admin und Staff alle Produkte anzeigen
   return productStore.products
 })
+
+const formatPhoneForWhatsApp = (phone: string) => {
+  // Entferne alle nicht-numerischen Zeichen
+  let cleanPhone = phone.replace(/[^0-9]/g, '')
+  
+  // Wenn die Nummer mit 00961 beginnt, ersetze es mit +961
+  if (cleanPhone.startsWith('00961')) {
+    return '+' + cleanPhone.substring(2) // Entferne die führenden '00'
+  }
+  
+  // Wenn die Nummer mit 0 beginnt, entferne sie
+  if (cleanPhone.startsWith('0')) {
+    cleanPhone = cleanPhone.substring(1)
+  }
+  
+  // Wenn die Nummer noch keine Vorwahl hat (kürzer als 10 Ziffern), füge 961 hinzu
+  if (cleanPhone.length < 10 && !cleanPhone.startsWith('961')) {
+    cleanPhone = '961' + cleanPhone
+  }
+  
+  // Wenn die Nummer mit 961 beginnt aber kein + hat, füge + hinzu
+  if (cleanPhone.startsWith('961')) {
+    cleanPhone = '+' + cleanPhone
+  }
+  
+  return cleanPhone
+}
 </script>
 
 <template>
@@ -917,13 +945,24 @@ const filteredProducts = computed(() => {
 
             <div>
               <label class="block text-sm font-medium text-gray-700">Phone</label>
-              <input
-                v-model="editingOrder.phone"
-                type="tel"
-                required
-                :disabled="!isStaffOrAdmin"
-                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
-              />
+              <div class="flex items-center space-x-2">
+                <input
+                  v-model="editingOrder.phone"
+                  type="tel"
+                  required
+                  :disabled="!isStaffOrAdmin"
+                  class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-black focus:ring-black"
+                />
+                <a 
+                  :href="`https://wa.me/${formatPhoneForWhatsApp(editingOrder.phone)}`"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="mt-1 text-green-600 hover:text-green-800"
+                  title="Open in WhatsApp"
+                >
+                  <i class="fab fa-whatsapp text-2xl"></i>
+                </a>
+              </div>
             </div>
           </div>
 

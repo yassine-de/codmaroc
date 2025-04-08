@@ -223,11 +223,11 @@ const calculateStats = () => {
     : orders.filter(order => order.status === ORDER_STATUS.DELIVERED)
   stats.value.deliveredOrders = deliveredOrders.length.toString()
   
-  // Calculate Delivered Percentage
-  const deliveredPercentage = totalOrders > 0
-    ? (deliveredOrders.length / totalOrders) * 100
+  // Calculate Delivered Percentage (now based on confirmed orders)
+  const deliveredPercentage = confirmedOrders.length > 0
+    ? (deliveredOrders.length / confirmedOrders.length) * 100
     : 0
-  stats.value.deliveredPercentage = `${deliveredPercentage.toFixed(2)}%`
+  stats.value.deliveredPercentage = `${deliveredPercentage.toFixed(2)}% of Confirmed Orders`
 
   // Calculate Shipped Orders
   const shippedOrders = user?.role === 'seller'
@@ -435,7 +435,7 @@ onMounted(async () => {
           <div>
             <h3 class="text-lg font-medium text-gray-900">Delivered Orders</h3>
             <p class="text-2xl font-bold text-green-600 mt-2">{{ stats.deliveredOrders }}</p>
-            <p class="text-lg font-bold text-gray-900 mt-1">{{ stats.deliveredPercentage }} of Total Orders</p>
+            <p class="text-lg font-bold text-gray-900 mt-1">{{ stats.deliveredPercentage }}</p>
           </div>
           <div class="w-24 h-24 flex items-center justify-center text-green-600">
             <i class="fas fa-box text-6xl"></i>
