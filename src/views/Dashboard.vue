@@ -17,8 +17,15 @@ const calculateConfirmationRate = () => {
     order.status === ORDER_STATUS.SHIPPED || 
     order.status === ORDER_STATUS.DELIVERED
   )
-  const rate = orderStore.orders.length > 0 
-    ? (confirmedOrders.length / orderStore.orders.length) * 100 
+  
+  const invalidOrders = orderStore.orders.filter(order =>
+    order.status === ORDER_STATUS.WRONG_NUMBER ||
+    order.status === ORDER_STATUS.DOUBLE
+  )
+  
+  const validOrdersCount = orderStore.orders.length - invalidOrders.length
+  const rate = validOrdersCount > 0 
+    ? (confirmedOrders.length / validOrdersCount) * 100 
     : 0
   return `${rate.toFixed(2)}%`
 }
@@ -208,12 +215,26 @@ const calculateStats = () => {
       )
   stats.value.confirmedOrders = confirmedOrders.length.toString()
   
-  // Calculate Confirmed Percentage
-  const totalOrders = user?.role === 'seller'
-    ? orders.filter(order => order.user_id === user.id).length
-    : orders.length
-  const confirmedPercentage = totalOrders > 0
-    ? (confirmedOrders.length / totalOrders) * 100
+  // Calculate invalid orders (Wrong Number + Double)
+  const invalidOrders = user?.role === 'seller'
+    ? orders.filter(order => 
+        (order.status === ORDER_STATUS.WRONG_NUMBER || 
+         order.status === ORDER_STATUS.DOUBLE) && 
+        order.user_id === user.id
+      )
+    : orders.filter(order => 
+        order.status === ORDER_STATUS.WRONG_NUMBER || 
+        order.status === ORDER_STATUS.DOUBLE
+      )
+  
+  // Calculate total valid orders
+  const totalValidOrders = user?.role === 'seller'
+    ? orders.filter(order => order.user_id === user.id).length - invalidOrders.length
+    : orders.length - invalidOrders.length
+  
+  // Calculate Confirmed Percentage (now based on valid orders)
+  const confirmedPercentage = totalValidOrders > 0
+    ? (confirmedOrders.length / totalValidOrders) * 100
     : 0
   stats.value.confirmedPercentage = `${confirmedPercentage.toFixed(2)}%`
 
@@ -249,8 +270,8 @@ const calculateStats = () => {
   stats.value.canceledOrders = canceledOrders.length.toString()
   
   // Calculate Canceled Percentage
-  const canceledPercentage = totalOrders > 0
-    ? (canceledOrders.length / totalOrders) * 100
+  const canceledPercentage = totalValidOrders > 0
+    ? (canceledOrders.length / totalValidOrders) * 100
     : 0
   stats.value.canceledPercentage = `${canceledPercentage.toFixed(2)}%`
 
@@ -266,14 +287,20 @@ const calculateStats = () => {
     stats.value.totalLeads = orders.length.toString()
   }
 
-  // Confirmation Rate
-  const confirmedCount = confirmedOrders.length
-  const confirmationRate = (confirmedCount / filteredOrders.value.length) * 100
+  // Confirmation Rate (updated to exclude invalid orders)
+  const confirmedCount = confirmedOrders.length;
+  const validFilteredOrders = filteredOrders.value.filter(order => 
+    order.status !== ORDER_STATUS.WRONG_NUMBER && 
+    order.status !== ORDER_STATUS.DOUBLE
+  );
+  const confirmationRate = validFilteredOrders.length > 0
+    ? (confirmedCount / validFilteredOrders.length) * 100
+    : 0;
   stats.value.confirmationRate = {
     leads: confirmedCount.toString(),
     percentage: `${confirmationRate.toFixed(2)}%`,
     period: 'All of Time'
-  }
+  };
 
   // Delivery Rate
   const deliveryRatePercentage = confirmedCount > 0
