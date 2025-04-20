@@ -65,3 +65,10 @@ VITE_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFz
 
 ## Bekannte Probleme & Lösungen
 [Hier können wir bekannte Probleme und deren Lösungen dokumentieren] 
+
+Name: NETLIFY_SITE_ID
+Value: 263e9260-c847-4ed0-878f-67166abe6bec
+
+Netlify_AUTH_Token
+Value: nfp_QLfgKk3XHU2Hx2AGd2e552mXvXHNUFkp9d7e
+

@@ -1,6 +1,22 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  functions = "netlify/functions"
+
+[context.production]
+  command = "npm run build"
+  environment = { NODE_VERSION = "18" }
+  functions = "netlify/functions"
+
+[context.deploy-preview]
+  command = "npm run build"
+  environment = { NODE_VERSION = "18" }
+  functions = "netlify/functions"
+
+[context.branch-deploy]
+  command = "npm run build"
+  environment = { NODE_VERSION = "18" }
+  functions = "netlify/functions"
 
 [[redirects]]
   from = "/*"
@@ -16,4 +32,22 @@
     X-Frame-Options = "DENY"
     X-XSS-Protection = "1; mode=block"
     X-Content-Type-Options = "nosniff"
-    Referrer-Policy = "strict-origin-when-cross-origin" 
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# PROD Cron Job
+[[cron]]
+  schedule = "*/5 * * * *"
+  command = "curl -X POST https://codservice.org/.netlify/functions/sync-integrations"
+  [cron.context]
+    include = ["production"]
+
+# DEV Cron Job
+[[cron]]
+  schedule = "*/5 * * * *"
+  command = "curl -X POST https://dev.codservice.org/.netlify/functions/sync-integrations"
+  [cron.context]
+    include = ["deploy-preview", "branch-deploy"]
+
+[functions]
+  node_bundler = "esbuild"
+  external_node_modules = ["@supabase/supabase-js"] 

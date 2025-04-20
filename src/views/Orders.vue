@@ -76,9 +76,22 @@ const sellers = computed(() => {
 const filteredOrders = computed(() => {
   let filtered = [...orderStore.orders] as Order[]
 
+  // Apply search query
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(order => 
+      order.customer_name.toLowerCase().includes(query) ||
+      order.phone.toLowerCase().includes(query) ||
+      order.shipping_address.toLowerCase().includes(query) ||
+      order.product_name.toLowerCase().includes(query) ||
+      (order.sheet_order_id && order.sheet_order_id.toLowerCase().includes(query)) ||
+      order.id.toString().includes(query)
+    )
+  }
+
   // Apply product filter
   if (productFilter.value !== 'All') {
-    filtered = filtered.filter(order => order.product_name === productFilter.value)
+    filtered = filtered.filter(order => order.product_id === productFilter.value)
   }
 
   // Apply status filter

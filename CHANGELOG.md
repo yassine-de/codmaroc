@@ -139,6 +139,70 @@ ADD COLUMN date_reference TIMESTAMP WITH TIME ZONE;
   - Backup: Tag v1.0.0-prod-db-backup-2025-04-18 erstellt für spätere Wiederherstellung
 - **Grund:** Entwicklung in sicherer Umgebung
 
+### [Datum: 2025-04-20 09:00:00]
+- **Durchgeführt von:** Claude
+- **Beschreibung:** Deployment v1.0.0 mit wichtigen Funktionsupdates
+- **Betroffene Dateien:** 
+  - `src/views/Orders.vue`
+  - `src/lib/supabase.ts`
+  - `src/stores/orders.ts`
+  - `ProjectInfo.md`
+  - `CHANGELOG.md`
+- **Änderungen:**
+  - Neue Sortierlogik für Bestellungen:
+    - Admin/Seller: Sortierung nach sheet_order_id (absteigend)
+    - Staff: NEW-Status priorisiert, dann nach created_at
+  - Status-Farben aktualisiert für bessere Sichtbarkeit
+  - 24-Stunden-Authentifizierung implementiert
+  - get_status_name Funktion korrigiert
+  - Deployment-Prozess dokumentiert
+- **Kommentar:** 
+  - Was wurde geändert? Umfangreiche Updates für bessere Benutzererfahrung und Wartbarkeit
+  - Warum wurde es geändert? Verbesserung der Sortierlogik und visuellen Darstellung
+  - Welche Auswirkungen hat die Änderung? Bessere Übersichtlichkeit und Benutzerfreundlichkeit
+- **Grund:** Verbesserung der Anwendungsfunktionalität und Wartbarkeit
+
+### [Datum: 2025-04-20 09:15:00]
+- **Durchgeführt von:** Claude
+- **Beschreibung:** Wechsel von PROD zu ENTW Datenbank nach Deployment
+- **Betroffene Dateien:** `.env`
+- **Änderungen:**
+  - Deaktivierung der PROD-Datenbank (gyrpgzizmprywzfpcwzr.supabase.co)
+  - Aktivierung der ENTW-Datenbank (sricbznbrczupdvasemq.supabase.co)
+- **Kommentar:** 
+  - Was wurde geändert? Die Datenbankverbindung wurde von PROD auf ENTW umgestellt
+  - Warum wurde es geändert? Um in der Entwicklungsumgebung zu arbeiten
+  - Welche Auswirkungen hat die Änderung? Die Anwendung verwendet nun die ENTW-Datenbank
+- **Grund:** Entwicklung in sicherer Umgebung nach erfolgreichem Deployment
+
+### [Datum: 2025-04-20 10:00:00]
+- **Durchgeführt von:** Claude
+- **Beschreibung:** Wechsel von ENTW zu PROD Datenbank und Deployment
+- **Betroffene Dateien:** `.env`
+- **Änderungen:**
+  - Deaktivierung der ENTW-Datenbank (sricbznbrczupdvasemq.supabase.co)
+  - Aktivierung der PROD-Datenbank (gyrpgzizmprywzfpcwzr.supabase.co)
+  - Build und Deployment durchgeführt
+- **Kommentar:** 
+  - Was wurde geändert? Die Datenbankverbindung wurde von ENTW auf PROD umgestellt
+  - Warum wurde es geändert? Für das Produktions-Deployment
+  - Welche Auswirkungen hat die Änderung? Die Anwendung verwendet nun die PROD-Datenbank
+- **Grund:** Produktions-Deployment nach erfolgreichem Test in der Entwicklungsumgebung
+
+### [Datum: 2025-04-20 10:15:00]
+- **Durchgeführt von:** Claude
+- **Beschreibung:** Wechsel von PROD zu ENTW Datenbank nach Deployment
+- **Betroffene Dateien:** `.env`
+- **Änderungen:**
+  - Deaktivierung der PROD-Datenbank (gyrpgzizmprywzfpcwzr.supabase.co)
+  - Aktivierung der ENTW-Datenbank (sricbznbrczupdvasemq.supabase.co)
+  - Build durchgeführt
+- **Kommentar:** 
+  - Was wurde geändert? Die Datenbankverbindung wurde von PROD auf ENTW umgestellt
+  - Warum wurde es geändert? Um in der Entwicklungsumgebung zu arbeiten
+  - Welche Auswirkungen hat die Änderung? Die Anwendung verwendet nun die ENTW-Datenbank
+- **Grund:** Entwicklung in sicherer Umgebung nach erfolgreichem Deployment
+
 ---
 
 *Hinweis: Diese Datei sollte bei jedem Commit aktualisiert werden, wenn Datenbankänderungen vorgenommen wurden.*
