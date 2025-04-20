@@ -8,12 +8,12 @@ const NETLIFY_AUTH_TOKEN = process.env.NETLIFY_AUTH_TOKEN;
 async function syncOrders() {
   const functionUrl = `https://codservice-dev.netlify.app/.netlify/functions/sync-integrations`;
   
-  // Zeitraum für die Synchronisation (letzte 7 Tage)
+  // Zeitraum für die Synchronisation (letzte 24 Stunden)
   const now = new Date();
-  const lastWeek = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+  const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000));
   
   const payload = {
-    startDate: lastWeek.toISOString(),
+    startDate: yesterday.toISOString(),
     endDate: now.toISOString()
   };
 
