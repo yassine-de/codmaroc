@@ -1,4 +1,4 @@
-const https = require('https');
+import https from 'https';
 
 // Netlify Umgebungsvariablen
 const NETLIFY_SITE_ID = process.env.NETLIFY_SITE_ID;
