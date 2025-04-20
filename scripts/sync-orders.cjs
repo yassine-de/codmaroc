@@ -8,6 +8,17 @@ const NETLIFY_AUTH_TOKEN = process.env.NETLIFY_AUTH_TOKEN;
 async function syncOrders() {
   const functionUrl = `https://codservice-dev.netlify.app/.netlify/functions/sync-integrations`;
   
+  // Zeitraum für die Synchronisation (letzte 7 Tage)
+  const now = new Date();
+  const lastWeek = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+  
+  const payload = {
+    startDate: lastWeek.toISOString(),
+    endDate: now.toISOString()
+  };
+
+  console.log('Synchronizing orders from', payload.startDate, 'to', payload.endDate);
+  
   return new Promise((resolve, reject) => {
     const req = https.request(functionUrl, {
       method: 'POST',
@@ -27,6 +38,9 @@ async function syncOrders() {
           try {
             const response = JSON.parse(data);
             console.log('Sync response:', response);
+            if (response.details && response.details.length > 0) {
+              console.log('Order details:', response.details);
+            }
             resolve(response);
           } catch (error) {
             console.log('Raw response:', data);
@@ -44,6 +58,9 @@ async function syncOrders() {
       reject(error);
     });
 
+    // Sende den Payload
+    console.log('Sending payload:', payload);
+    req.write(JSON.stringify(payload));
     req.end();
   });
 }
@@ -52,7 +69,15 @@ async function syncOrders() {
 async function main() {
   try {
     console.log('Starting orders synchronization...');
-    await syncOrders();
+    const result = await syncOrders();
+    if (result.total === 0) {
+      console.log('No orders found in the specified time range.');
+    } else {
+      console.log(`Synchronized ${result.successful} orders successfully.`);
+      if (result.failed > 0) {
+        console.log(`Failed to synchronize ${result.failed} orders.`);
+      }
+    }
     console.log('Orders synchronization completed successfully');
   } catch (error) {
     console.error('Synchronization failed:', error);
