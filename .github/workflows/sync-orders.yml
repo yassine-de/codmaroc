@@ -2,7 +2,7 @@ name: Sync Orders
 
 on:
   schedule:
-    # Führt alle 5 Minuten aus
+    # Führt alle 5 Minuten aus (GitHub erfordert aktives Repository)
     - cron: '*/5 * * * *'
   # Ermöglicht manuelle Ausführung über GitHub UI
   workflow_dispatch:
