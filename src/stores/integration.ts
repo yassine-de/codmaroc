@@ -12,6 +12,34 @@ const convertArabicToLatinNumbers = (str: string): string => {
   return str.replace(/[٠-٩]/g, match => arabicNumbers.indexOf(match).toString())
 }
 
+// Hilfsfunktion zum Formatieren der Telefonnummer
+const formatPhoneForWhatsApp = (phone: string): string => {
+  // Entferne alle nicht-numerischen Zeichen
+  let cleanPhone = phone.replace(/[^0-9]/g, '')
+  
+  // Wenn die Nummer mit 00961 beginnt, ersetze es mit +961
+  if (cleanPhone.startsWith('00961')) {
+    return '+' + cleanPhone.substring(2) // Entferne die führenden '00'
+  }
+  
+  // Wenn die Nummer mit 0 beginnt, entferne sie
+  if (cleanPhone.startsWith('0')) {
+    cleanPhone = cleanPhone.substring(1)
+  }
+  
+  // Wenn die Nummer noch keine Vorwahl hat (kürzer als 10 Ziffern), füge 961 hinzu
+  if (cleanPhone.length < 10 && !cleanPhone.startsWith('961')) {
+    cleanPhone = '961' + cleanPhone
+  }
+  
+  // Wenn die Nummer mit 961 beginnt aber kein + hat, füge + hinzu
+  if (cleanPhone.startsWith('961')) {
+    cleanPhone = '+' + cleanPhone
+  }
+  
+  return cleanPhone
+}
+
 export interface Integration {
   id: number
   user_id: number
@@ -57,9 +85,9 @@ interface ConnectOptions {
 }
 
 export const useIntegrationStore = defineStore('integration', () => {
-  const integrations = ref<Integration[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
+  const integrations = ref<Integration[]>([])
   const syncIntervals = ref<{ [key: number]: NodeJS.Timer }>({})
   const syncStats = ref<SyncStats>({
     total: 0,
@@ -75,7 +103,7 @@ export const useIntegrationStore = defineStore('integration', () => {
     try {
       loading.value = true
       error.value = null
-      
+
       const { data, error: err } = await supabase
         .from('integrations')
         .select(`
@@ -215,18 +243,158 @@ export const useIntegrationStore = defineStore('integration', () => {
     }
   }
 
+  const handleSync = async (integration: Integration) => {
+    try {
+      loading.value = true
+      error.value = null
+      success.value = null
+
+      // Reset sync stats
+      syncStats.value = {
+        total: 0,
+        new: 0,
+        skipped: 0,
+        skippedSkus: [],
+        skippedExistingOrders: 0,
+        invalidData: []
+      }
+
+      // Fetch sheet data
+      const sheetData = await fetchSheetData(integration)
+      syncStats.value.total = sheetData.length
+
+      // Get existing orders for duplicate check
+      const { data: existingOrders } = await supabase
+        .from('orders')
+        .select('phone, product_id, created_at, sheet_order_id')
+        .order('created_at', { ascending: false })
+
+      // Process each row
+      const orderPromises = sheetData.map(async (row, index) => {
+        try {
+          // Find product by SKU
+          const { data: product } = await supabase
+            .from('products')
+            .select('id')
+            .eq('sku', row.sku)
+            .single()
+
+          if (!product) {
+            console.log(`Row ${index + 1} skipped: Product not found for SKU`, { sku: row.sku });
+            syncStats.value.skipped++
+            syncStats.value.skippedSkus.push(row.sku || 'unknown')
+            return
+          }
+
+          // Prüfe zuerst, ob die Bestellung bereits existiert (gleiche sheet_order_id)
+          const existingOrder = existingOrders?.find(order => order.sheet_order_id === row.orderId)
+          if (existingOrder) {
+            console.log(`Row ${index + 1} skipped: Order already exists with sheet_order_id`, { sheet_order_id: row.orderId });
+            syncStats.value.skipped++
+            syncStats.value.skippedExistingOrders++
+            return
+          }
+
+          // Prüfe auf Duplikate basierend auf Telefon und Produkt
+          const formattedPhone = formatPhoneForWhatsApp(row.phone)
+          const isDuplicate = existingOrders?.some(order => {
+            if (order.phone === formattedPhone && order.product_id === product.id) {
+              const orderDate = new Date(order.created_at)
+              const currentDate = new Date()
+              const daysDifference = Math.abs(currentDate.getTime() - orderDate.getTime()) / (1000 * 60 * 60 * 24)
+              return daysDifference <= 7
+            }
+            return false
+          })
+
+          // Insert new order using integration's user_id
+          const { data, error: insertError } = await supabase
+            .from('orders')
+            .insert([
+              {
+                user_id: integration.user_id,
+                customer_name: row.customerName.trim(),
+                phone: row.phone,
+                shipping_address: row.address,
+                city: row.city,
+                status: isDuplicate ? 15 : 1, // 15 for Double, 1 for New
+                product_id: product.id,
+                quantity: row.quantity || 1,
+                total_amount: row.price * (row.quantity || 1),
+                unit_price: row.price,
+                sheet_order_id: row.orderId
+              }
+            ])
+            .select()
+            .single()
+
+          if (insertError) {
+            console.error(`Row ${index + 1} error:`, insertError);
+            syncStats.value.skipped++
+            syncStats.value.invalidData.push({
+              row: index + 1,
+              reason: insertError.message,
+              data: {
+                name: row.customerName || '-',
+                phone: row.phone || '-',
+                sku: row.sku || '-'
+              }
+            })
+            return
+          }
+
+          syncStats.value.new++
+        } catch (err) {
+          console.error(`Error processing row ${index + 1}:`, err)
+          syncStats.value.skipped++
+          syncStats.value.invalidData.push({
+            row: index + 1,
+            reason: err instanceof Error ? err.message : 'Unknown error',
+            data: {
+              name: row.customerName || '-',
+              phone: row.phone || '-',
+              sku: row.sku || '-'
+            }
+          })
+        }
+      })
+
+      // Wait for all orders to be processed
+      await Promise.all(orderPromises)
+
+      // Update last sync time
+      const { error: updateError } = await supabase
+        .from('integrations')
+        .update({ last_sync_at: new Date().toISOString() })
+        .eq('id', integration.id)
+
+      if (updateError) {
+        console.error('Error updating last sync time:', updateError)
+      }
+
+      return syncStats.value
+    } catch (err: any) {
+      error.value = err.message
+      console.error('Error during sync:', err)
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   const fetchSheetData = async (integration: Integration): Promise<SheetData[]> => {
     try {
       const rows = await readSpreadsheet(integration.spreadsheet_id, integration.sheet_name)
       return rows.map(row => {
-        // Telefonnummer direkt als String übernehmen
-        const phone = row['Phone Number (C)']?.toString() || ''
+        // Telefonnummer formatieren
+        const rawPhone = row['Phone Number (C)']?.toString() || ''
+        const latinPhone = convertArabicToLatinNumbers(rawPhone)
+        const cleanPhone = latinPhone.replace(/'/g, '')
+        const formattedPhone = formatPhoneForWhatsApp(cleanPhone)
 
         // Konvertiere Preise
         const rawPrice = row['Price (I)']?.toString() || '0'
-        console.log('Raw price:', rawPrice)
         const convertedPrice = Number(convertArabicToLatinNumbers(rawPrice).replace(',', '.'))
-        console.log('Converted price:', convertedPrice)
 
         const quantity = parseInt(convertArabicToLatinNumbers(row['Quantity (H)']?.toString() || '1'))
         const total = convertedPrice * quantity
@@ -234,7 +402,7 @@ export const useIntegrationStore = defineStore('integration', () => {
         return {
           orderId: convertArabicToLatinNumbers(row['Order ID (A)']?.toString() || ''),
           customerName: row['Customer Name (B)']?.toString() || '',
-          phone: phone,
+          phone: formattedPhone,
           address: row['Address (D)']?.toString() || '',
           city: row['City (E)']?.toString() || '',
           productName: row['Product Name (F)']?.toString() || '',
@@ -283,200 +451,6 @@ export const useIntegrationStore = defineStore('integration', () => {
     } catch (error) {
       console.error('Error updating last sync:', error)
       return null
-    }
-  }
-
-  const handleSync = async (integration: Integration) => {
-    try {
-      loading.value = true
-      error.value = null
-
-      // Reset sync stats
-      syncStats.value = {
-        total: 0,
-        new: 0,
-        skipped: 0,
-        skippedSkus: [],
-        skippedExistingOrders: 0,
-        invalidData: []
-      }
-
-      // Read data from sheet
-      const sheetData = await fetchSheetData(integration)
-      syncStats.value.total = sheetData.length
-
-      // Debug log: Show all data for analysis
-      console.log('Sheet data total rows:', sheetData.length)
-      
-      // Get products from store
-      const productStore = useProductStore()
-      await productStore.fetchProducts()
-
-      // Get existing orders for duplicate check
-      const { data: existingOrders } = await supabase
-        .from('orders')
-        .select('phone')
-      
-      const existingPhones = existingOrders?.map(order => order.phone) || []
-      console.log('Existing phone numbers in DB:', existingPhones.length)
-      
-      // Process each row
-      const orderPromises = sheetData.map(async (row, index) => {
-        try {
-          // Telefonnummer direkt verwenden
-          const phone = row.phone.trim()
-
-          if (!phone || !row.customerName) {
-            const reason = !phone ? 'Fehlende Telefonnummer' : 'Fehlender Kundenname'
-            syncStats.value.skipped++
-            syncStats.value.invalidData.push({
-              row: index + 1,
-              reason,
-              data: {
-                name: row.customerName || '-',
-                phone: row.phone || '-',
-                sku: row.sku || '-'
-              }
-            })
-            return
-          }
-
-          // Skip if duplicate (phone already exists)
-          if (existingPhones.includes(phone)) {
-            console.log(`Row ${index + 1} skipped: Phone already exists`, { phone });
-            syncStats.value.skipped++
-            syncStats.value.skippedExistingOrders++
-            return
-          }
-          
-          // Skip if missing SKU
-          if (!row.sku) {
-            console.log(`Row ${index + 1} skipped: Missing SKU`);
-            syncStats.value.skipped++;
-            syncStats.value.invalidData.push({
-              row: index + 1,
-              reason: 'Fehlende SKU',
-              data: {
-                name: row.customerName || '-',
-                phone: row.phone || '-',
-                sku: '-'
-              }
-            });
-            syncStats.value.skippedSkus.push('empty')
-            return
-          }
-          
-          // Find product by SKU
-          const product = productStore.products.find(
-            p => p.sku?.toLowerCase().trim() === row.sku?.toLowerCase().trim()
-          )
-        
-          if (!product) {
-            console.log(`Row ${index + 1} skipped: Product not found for SKU`, { sku: row.sku });
-            syncStats.value.skipped++
-            syncStats.value.skippedSkus.push(row.sku || 'unknown')
-            return
-          }
-          
-          // Insert new order
-          const { data: userData } = await supabase
-            .from('users')
-            .select('id')
-            .eq('auth_id', useAuthStore().user?.id)
-            .single()
-
-          if (!userData) {
-            console.error(`Row ${index + 1} error: User not found`);
-            syncStats.value.skipped++;
-            syncStats.value.invalidData.push({
-              row: index + 1,
-              reason: 'Benutzer nicht gefunden',
-              data: {
-                name: row.customerName || '-',
-                phone: row.phone || '-',
-                sku: row.sku || '-'
-              }
-            });
-            return;
-          }
-
-          const { data, error: insertError } = await supabase
-            .from('orders')
-            .insert([
-              {
-                user_id: userData.id,
-                customer_name: row.customerName.trim(),
-                phone: phone,
-                shipping_address: row.address,
-                city: row.city,
-                status: 1,
-                product_id: product.id,
-                quantity: row.quantity || 1,
-                total_amount: row.price * (row.quantity || 1),
-                unit_price: row.price
-              }
-            ])
-            .select()
-            .single()
-          
-          if (insertError) {
-            console.error(`Row ${index + 1} error inserting order:`, insertError);
-            syncStats.value.skipped++;
-            syncStats.value.invalidData.push({
-              row: index + 1,
-              reason: 'Datenbankfehler: ' + insertError.message,
-              data: {
-                name: row.customerName || '-',
-                phone: row.phone || '-',
-                sku: row.sku || '-'
-              }
-            });
-            return
-          }
-          
-          console.log(`Row ${index + 1} successfully inserted for customer:`, row.customerName);
-          syncStats.value.new++
-        } catch (error) {
-          console.error(`Row ${index + 1} processing error:`, error);
-          syncStats.value.skipped++;
-          syncStats.value.invalidData.push({
-            row: index + 1,
-            reason: 'Fehler bei der Verarbeitung',
-            data: {
-              name: row.customerName || '-',
-              phone: row.phone || '-',
-              sku: row.sku || '-'
-            }
-          });
-        }
-      })
-      
-      // Wait for all promises to resolve
-      await Promise.all(orderPromises)
-      
-      // Update the last sync timestamp
-      await updateLastSync(integration.id)
-
-      // Log final stats for debugging
-      console.log('Sync stats:', {
-        total: syncStats.value.total,
-        new: syncStats.value.new,
-        skipped: syncStats.value.skipped,
-        skippedExisting: syncStats.value.skippedExistingOrders,
-        skippedProducts: syncStats.value.skippedSkus.length,
-        invalidData: syncStats.value.invalidData.length,
-        unexplainedSkips: syncStats.value.skipped - syncStats.value.skippedExistingOrders - syncStats.value.skippedSkus.length
-      });
-      
-      // Return stats
-      return syncStats.value
-      
-    } catch (err: any) {
-      error.value = err.message
-      console.error('Error syncing with Google Sheets:', err)
-      throw err
-    } finally {
-      loading.value = false
     }
   }
 

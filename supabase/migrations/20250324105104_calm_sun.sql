@@ -48,3 +48,7 @@ CREATE POLICY "integrations_staff_admin_access"
       AND role IN (1, 2)
     )
   );
+
+-- Add sheet_order_id column
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS sheet_order_id text;
+CREATE INDEX IF NOT EXISTS idx_orders_sheet_order_id ON orders(sheet_order_id);

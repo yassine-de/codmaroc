@@ -66,10 +66,23 @@ const handleAddSheet = async () => {
       throw new Error('Please select a seller')
     }
 
+    let userId: number | undefined = undefined;
+    if (isAdmin.value) {
+      userId = parseInt(newSheet.value.sellerId);
+    } else {
+      // Hole die numerische ID für den eingeloggten User
+      const { data: userData } = await supabase
+        .from('users')
+        .select('id')
+        .eq('auth_id', authStore.user?.id)
+        .single();
+      userId = userData?.id;
+    }
+
     await integrationStore.connectGoogleSheets({
       spreadsheetId: newSheet.value.spreadsheetId,
       sheetName: newSheet.value.sheetName,
-      userId: isAdmin.value ? parseInt(newSheet.value.sellerId) : undefined
+      userId
     })
     
     success.value = 'Sheet connected successfully!'

@@ -18,12 +18,32 @@ interface UserData {
 export const useAuthStore = defineStore('auth', () => {
   const user = ref<(User & { role?: number }) | null>(null)
 
+  // Initialize user from local storage if available
+  const initUser = async () => {
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session?.user) {
+      const { data: userData } = await supabase
+        .from('users')
+        .select('role')
+        .eq('auth_id', session.user.id)
+        .single()
+
+      user.value = {
+        ...session.user,
+        role: userData?.role
+      }
+    }
+  }
+
   const login = async (email: string, password: string) => {
     try {
       // First sign in with Supabase Auth
       const { data: { user: authUser }, error: authError } = await supabase.auth.signInWithPassword({
         email,
-        password
+        password,
+        options: {
+          expiresIn: 86400 // 24 hours in seconds
+        }
       })
 
       if (authError) throw authError
@@ -137,11 +157,15 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
+  // Initialize user on store creation
+  initUser()
+
   return {
     user,
     login,
     logout,
     register,
-    checkUser
+    checkUser,
+    initUser
   }
 })

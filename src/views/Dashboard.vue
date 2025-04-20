@@ -2,32 +2,53 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useOrderStore, ORDER_STATUS } from '../stores/orders'
 import { useAuthStore } from '../stores/auth'
+import { Chart, registerables } from 'chart.js'
+Chart.register(...registerables)
+
+interface Order {
+  id: string
+  user_id: string
+  status: number
+  created_at: string
+  total_amount: number
+  product_name: string
+}
+
+interface User {
+  id: string
+  role: string
+  email: string
+}
 
 const orderStore = useOrderStore()
 const authStore = useAuthStore()
 
 // Hilfsfunktionen
 const formatPrice = (price: number) => {
-  return `${price.toFixed(2)} $`
+  return `${Math.round(price)} $`
 }
 
-const calculateConfirmationRate = () => {
-  const confirmedOrders = orderStore.orders.filter(order => 
+const calculateConfirmationRate = (orders: Order[]) => {
+  const filteredOrders = authStore.user?.role === 'seller'
+    ? orders.filter(order => order.user_id === authStore.user?.id)
+    : orders
+
+  const confirmedOrders = filteredOrders.filter(order => 
     order.status === ORDER_STATUS.CONFIRMED || 
     order.status === ORDER_STATUS.SHIPPED || 
     order.status === ORDER_STATUS.DELIVERED
   )
   
-  const invalidOrders = orderStore.orders.filter(order =>
+  const invalidOrders = filteredOrders.filter(order =>
     order.status === ORDER_STATUS.WRONG_NUMBER ||
     order.status === ORDER_STATUS.DOUBLE
   )
   
-  const validOrdersCount = orderStore.orders.length - invalidOrders.length
+  const validOrdersCount = filteredOrders.length - invalidOrders.length
   const rate = validOrdersCount > 0 
     ? (confirmedOrders.length / validOrdersCount) * 100 
     : 0
-  return `${rate.toFixed(2)}%`
+  return `${Math.round(rate)}%`
 }
 
 // Check if user is staff (role === 2)
@@ -64,7 +85,7 @@ const stats = ref({
 })
 
 const statsArray = computed(() => {
-  const orders = orderStore.orders
+  const orders = filteredOrders.value
   const user = authStore.user
 
   // Berechne New Orders basierend auf der Benutzerrolle
@@ -104,7 +125,7 @@ const statsArray = computed(() => {
     },
     {
       name: 'Confirmation Rate',
-      value: calculateConfirmationRate(),
+      value: calculateConfirmationRate(orders),
       icon: 'fas fa-chart-line',
       color: 'text-orange-600',
       bgColor: 'bg-orange-50'
@@ -115,6 +136,17 @@ const statsArray = computed(() => {
 const productFilter = ref('All')
 const dateRange = ref('')
 const statusFilter = ref('All')
+
+// Neue computed property für alle verfügbaren Produkte
+const availableProducts = computed(() => {
+  const productSet = new Set()
+  orderStore.orders.forEach(order => {
+    if (order.product_name) {
+      productSet.add(order.product_name)
+    }
+  })
+  return Array.from(productSet)
+})
 
 const correctLeads = ref({
   count: 0,
@@ -141,36 +173,7 @@ const filteredOrders = computed(() => {
 
   // Apply status filter
   if (statusFilter.value !== 'All') {
-    filtered = filtered.filter(order => {
-      switch (statusFilter.value) {
-        case 'Confirmed':
-          return order.status === ORDER_STATUS.CONFIRMED
-        case 'Delivered':
-          return order.status === ORDER_STATUS.DELIVERED
-        case 'Pending':
-          return [
-            ORDER_STATUS.NEW,
-            ORDER_STATUS.NO_REPLY1,
-            ORDER_STATUS.NO_REPLY2,
-            ORDER_STATUS.NO_REPLY3,
-            ORDER_STATUS.NO_REPLY4,
-            ORDER_STATUS.NO_REPLY5,
-            ORDER_STATUS.NO_REPLY6,
-            ORDER_STATUS.NO_REPLY7,
-            ORDER_STATUS.NO_REPLY8,
-            ORDER_STATUS.NO_REPLY9
-          ].includes(order.status)
-        case 'Canceled':
-          return [
-            ORDER_STATUS.CANCELED,
-            ORDER_STATUS.WRONG_NUMBER,
-            ORDER_STATUS.REPORTED,
-            ORDER_STATUS.DOUBLE
-          ].includes(order.status)
-        default:
-          return true
-      }
-    })
+    filtered = filtered.filter(order => order.status === statusFilter.value)
   }
 
   // Apply date filter
@@ -192,7 +195,7 @@ const calculateStats = () => {
   if (!filteredOrders.value.length) return
 
   const user = authStore.user
-  const orders = orderStore.orders
+  const orders = filteredOrders.value
 
   // Calculate New Orders
   const newOrders = user?.role === 'seller' 
@@ -236,7 +239,7 @@ const calculateStats = () => {
   const confirmedPercentage = totalValidOrders > 0
     ? (confirmedOrders.length / totalValidOrders) * 100
     : 0
-  stats.value.confirmedPercentage = `${confirmedPercentage.toFixed(2)}%`
+  stats.value.confirmedPercentage = `${Math.round(confirmedPercentage)}%`
 
   // Calculate Delivered Orders
   const deliveredOrders = user?.role === 'seller'
@@ -248,7 +251,7 @@ const calculateStats = () => {
   const deliveredPercentage = confirmedOrders.length > 0
     ? (deliveredOrders.length / confirmedOrders.length) * 100
     : 0
-  stats.value.deliveredPercentage = `${deliveredPercentage.toFixed(2)}% of Confirmed Orders`
+  stats.value.deliveredPercentage = `${Math.round(deliveredPercentage)}% of Confirmed Orders`
 
   // Calculate Shipped Orders
   const shippedOrders = user?.role === 'seller'
@@ -273,34 +276,35 @@ const calculateStats = () => {
   const canceledPercentage = totalValidOrders > 0
     ? (canceledOrders.length / totalValidOrders) * 100
     : 0
-  stats.value.canceledPercentage = `${canceledPercentage.toFixed(2)}%`
+  stats.value.canceledPercentage = `${Math.round(canceledPercentage)}%`
 
   // Total Revenue and Leads
   if (user?.role === 'seller') {
     const sellerOrders = orders.filter(order => order.user_id === user.id)
     const totalRevenue = sellerOrders.reduce((sum, order) => sum + order.total_amount, 0)
-    stats.value.totalRevenue = `${totalRevenue.toFixed(2)} $`
+    stats.value.totalRevenue = formatPrice(totalRevenue)
     stats.value.totalLeads = sellerOrders.length.toString()
   } else {
     const totalRevenue = orders.reduce((sum, order) => sum + order.total_amount, 0)
-    stats.value.totalRevenue = `${totalRevenue.toFixed(2)} $`
+    stats.value.totalRevenue = formatPrice(totalRevenue)
     stats.value.totalLeads = orders.length.toString()
   }
 
-  // Confirmation Rate (updated to exclude invalid orders)
-  const confirmedCount = confirmedOrders.length;
-  const validFilteredOrders = filteredOrders.value.filter(order => 
-    order.status !== ORDER_STATUS.WRONG_NUMBER && 
-    order.status !== ORDER_STATUS.DOUBLE
-  );
-  const confirmationRate = validFilteredOrders.length > 0
-    ? (confirmedCount / validFilteredOrders.length) * 100
-    : 0;
+  // Confirmation Rate
+  const validOrders = user?.role === 'seller'
+    ? orders.filter(order => order.user_id === user.id)
+    : orders
+
+  const confirmedCount = confirmedOrders.length
+  const validOrdersCount = validOrders.length - invalidOrders.length
+  const confirmationRate = validOrdersCount > 0
+    ? (confirmedCount / validOrdersCount) * 100
+    : 0
   stats.value.confirmationRate = {
     leads: confirmedCount.toString(),
-    percentage: `${confirmationRate.toFixed(2)}%`,
+    percentage: `${Math.round(confirmationRate)}%`,
     period: 'All of Time'
-  };
+  }
 
   // Delivery Rate
   const deliveryRatePercentage = confirmedCount > 0
@@ -308,31 +312,31 @@ const calculateStats = () => {
     : 0
   stats.value.deliveryRate = {
     orders: deliveredOrders.length.toString(),
-    percentage: `${deliveryRatePercentage.toFixed(2)}%`,
+    percentage: `${Math.round(deliveryRatePercentage)}%`,
     period: 'All of Time'
   }
 
   // Correct vs Wrong Leads
-  const wrongStatusOrders = filteredOrders.value.filter(order => 
+  const wrongStatusOrders = orders.filter(order => 
     [ORDER_STATUS.CANCELED, ORDER_STATUS.WRONG_NUMBER, ORDER_STATUS.REPORTED, ORDER_STATUS.DOUBLE].includes(order.status)
   )
-  const correctStatusOrders = filteredOrders.value.filter(order => !wrongStatusOrders.includes(order))
+  const correctStatusOrders = orders.filter(order => !wrongStatusOrders.includes(order))
 
   correctLeads.value = {
     count: correctStatusOrders.length,
-    percentage: `${((correctStatusOrders.length / filteredOrders.value.length) * 100).toFixed(2)}%`,
+    percentage: `${Math.round((correctStatusOrders.length / orders.length) * 100)}%`,
     label: 'Correct Leads'
   }
 
   wrongLeads.value = {
     count: wrongStatusOrders.length,
-    percentage: `${((wrongStatusOrders.length / filteredOrders.value.length) * 100).toFixed(2)}%`,
+    percentage: `${Math.round((wrongStatusOrders.length / orders.length) * 100)}%`,
     label: 'Wrong & Duplicated Leads'
   }
 
   // Product Leads
   const productStats = new Map()
-  filteredOrders.value.forEach(order => {
+  orders.forEach(order => {
     const productName = order.product_name
     if (!productStats.has(productName)) {
       productStats.set(productName, { count: 0, total: 0 })
@@ -346,7 +350,7 @@ const calculateStats = () => {
     name,
     count: stats.count,
     total: stats.total,
-    percentage: `${((stats.count / filteredOrders.value.length) * 100).toFixed(2)}%`
+    percentage: `${Math.round((stats.count / orders.length) * 100)}%`
   }))
 }
 
@@ -359,6 +363,124 @@ onMounted(async () => {
   await orderStore.fetchOrders()
   calculateStats()
 })
+
+// Add the computed property for confirmed orders total
+const confirmedOrdersTotal = computed(() => {
+  let orders = authStore.user?.role === 'seller'
+    ? orderStore.orders.filter(order => order.user_id === authStore.user?.id)
+    : orderStore.orders
+
+  // Apply product filter
+  if (productFilter.value !== 'All') {
+    orders = orders.filter(order => order.product_name === productFilter.value)
+  }
+
+  return orders
+    .filter(order => 
+      order.status === ORDER_STATUS.CONFIRMED || 
+      order.status === ORDER_STATUS.SHIPPED || 
+      order.status === ORDER_STATUS.DELIVERED
+    )
+    .reduce((sum, order) => sum + order.total_amount, 0)
+})
+
+// Add new computed properties
+const deliveredOrdersTotal = computed(() => {
+  let orders = authStore.user?.role === 'seller'
+    ? orderStore.orders.filter(order => order.user_id === authStore.user?.id)
+    : orderStore.orders
+
+  // Apply product filter
+  if (productFilter.value !== 'All') {
+    orders = orders.filter(order => order.product_name === productFilter.value)
+  }
+
+  return orders
+    .filter(order => order.status === ORDER_STATUS.DELIVERED)
+    .reduce((sum, order) => sum + order.total_amount, 0)
+})
+
+const shippedOrdersTotal = computed(() => {
+  let orders = authStore.user?.role === 'seller'
+    ? orderStore.orders.filter(order => order.user_id === authStore.user?.id)
+    : orderStore.orders
+
+  // Apply product filter
+  if (productFilter.value !== 'All') {
+    orders = orders.filter(order => order.product_name === productFilter.value)
+  }
+
+  return orders
+    .filter(order => order.status === ORDER_STATUS.SHIPPED)
+    .reduce((sum, order) => sum + order.total_amount, 0)
+})
+
+// Neue Funktionen für die Diagramme
+const getLast7Days = () => {
+  const days = []
+  for (let i = 6; i >= 0; i--) {
+    const date = new Date()
+    date.setDate(date.getDate() - i)
+    days.push(date.toISOString().split('T')[0])
+  }
+  return days
+}
+
+const getOrdersByDate = (orders: Order[], status: number | null = null) => {
+  const days = getLast7Days()
+  const ordersByDate = new Array(7).fill(0)
+  
+  orders.forEach(order => {
+    const orderDate = new Date(order.created_at).toISOString().split('T')[0]
+    const dayIndex = days.indexOf(orderDate)
+    if (dayIndex !== -1 && (!status || order.status === status)) {
+      ordersByDate[dayIndex]++
+    }
+  })
+  
+  return ordersByDate
+}
+
+const createChart = (canvasId: string, data: number[], label: string) => {
+  const ctx = document.getElementById(canvasId) as HTMLCanvasElement
+  if (!ctx) return
+
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: getLast7Days().map(date => new Date(date).toLocaleDateString('en-US', { weekday: 'short' })),
+      datasets: [{
+        label: label,
+        data: data,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1,
+        fill: false
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: {
+          beginAtZero: true,
+          ticks: {
+            stepSize: 1
+          }
+        }
+      }
+    }
+  })
+}
+
+// Watch für die Diagramme
+watch(() => orderStore.orders, () => {
+  const allOrders = getOrdersByDate(orderStore.orders)
+  const confirmedOrders = getOrdersByDate(orderStore.orders, ORDER_STATUS.CONFIRMED)
+  const deliveredOrders = getOrdersByDate(orderStore.orders, ORDER_STATUS.DELIVERED)
+
+  createChart('allOrdersChart', allOrders, 'All Orders')
+  createChart('confirmedOrdersChart', confirmedOrders, 'Confirmed Orders')
+  createChart('deliveredOrdersChart', deliveredOrders, 'Delivered Orders')
+}, { immediate: true })
 </script>
 
 <template>
@@ -371,31 +493,8 @@ onMounted(async () => {
           class="rounded-md border-gray-300 shadow-sm focus:border-red-600 focus:ring-red-600"
         >
           <option>All</option>
-          <option v-for="product in productLeads" :key="product.name">{{ product.name }}</option>
+          <option v-for="product in availableProducts" :key="product">{{ product }}</option>
         </select>
-
-        <select
-          v-model="statusFilter"
-          class="rounded-md border-gray-300 shadow-sm focus:border-red-600 focus:ring-red-600"
-        >
-          <option>All</option>
-          <option>Confirmed</option>
-          <option>Delivered</option>
-          <option>Pending</option>
-          <option>Canceled</option>
-        </select>
-      </div>
-
-      <div class="flex items-center space-x-4">
-        <input
-          type="text"
-          v-model="dateRange"
-          placeholder="Between Date"
-          class="rounded-md border-gray-300 shadow-sm focus:border-red-600 focus:ring-red-600"
-        />
-        <button class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">
-          <i class="fas fa-search"></i>
-        </button>
       </div>
     </div>
 
@@ -449,23 +548,10 @@ onMounted(async () => {
             <h3 class="text-lg font-medium text-gray-900">Confirmed Orders</h3>
             <p class="text-2xl font-bold text-green-600 mt-2">{{ stats.confirmedOrders }}</p>
             <p class="text-lg font-bold text-gray-900 mt-1">{{ stats.confirmedPercentage }} of Total Orders</p>
+            <p class="text-lg font-bold text-green-600 mt-1">{{ formatPrice(confirmedOrdersTotal) }}</p>
           </div>
           <div class="w-24 h-24 flex items-center justify-center text-green-600">
             <i class="fas fa-check-circle text-6xl"></i>
-          </div>
-        </div>
-      </div>
-
-      <!-- Delivered Orders -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex justify-between items-start">
-          <div>
-            <h3 class="text-lg font-medium text-gray-900">Delivered Orders</h3>
-            <p class="text-2xl font-bold text-green-600 mt-2">{{ stats.deliveredOrders }}</p>
-            <p class="text-lg font-bold text-gray-900 mt-1">{{ stats.deliveredPercentage }}</p>
-          </div>
-          <div class="w-24 h-24 flex items-center justify-center text-green-600">
-            <i class="fas fa-box text-6xl"></i>
           </div>
         </div>
       </div>
@@ -490,86 +576,37 @@ onMounted(async () => {
           <div>
             <h3 class="text-lg font-medium text-gray-900">Shipped Orders</h3>
             <p class="text-2xl font-bold text-purple-600 mt-2">{{ stats.shippedOrders }}</p>
+            <p class="text-lg font-bold text-purple-600 mt-1">{{ formatPrice(shippedOrdersTotal) }}</p>
           </div>
           <div class="w-24 h-24 flex items-center justify-center text-purple-600">
             <i class="fas fa-truck-loading text-6xl"></i>
-          </div>
+        </div>
+      </div>
+    </div>
+
+      <!-- Delivered Orders -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex justify-between items-start">
+          <div>
+            <h3 class="text-lg font-medium text-gray-900">Delivered Orders</h3>
+            <p class="text-2xl font-bold text-green-600 mt-2">{{ stats.deliveredOrders }}</p>
+            <p class="text-lg font-bold text-gray-900 mt-1">{{ stats.deliveredPercentage }}</p>
+            <p class="text-lg font-bold text-green-600 mt-1">{{ formatPrice(deliveredOrdersTotal) }}</p>
+        </div>
+          <div class="w-24 h-24 flex items-center justify-center text-green-600">
+            <i class="fas fa-box text-6xl"></i>
+        </div>
         </div>
       </div>
     </div>
 
     <!-- Staff Stats -->
     <div v-if="isStaff" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Correct Leads -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="text-lg font-medium text-gray-900">Correct Leads</h3>
-          <span class="text-green-600 text-xl font-bold">{{ correctLeads.percentage }}</span>
-        </div>
-        <p class="text-3xl font-bold text-gray-900">{{ correctLeads.count }}</p>
-        <div class="w-full bg-gray-200 rounded-full h-2 mt-4">
-          <div class="bg-green-600 h-2 rounded-full" :style="{ width: correctLeads.percentage }"></div>
-        </div>
-      </div>
-
-      <!-- Wrong & Duplicated Leads -->
-      <div class="bg-white rounded-lg shadow p-6">
-        <div class="flex items-center justify-between mb-2">
-          <h3 class="text-lg font-medium text-gray-900">Wrong & Duplicated Leads</h3>
-          <span class="text-red-600 text-xl font-bold">{{ wrongLeads.percentage }}</span>
-        </div>
-        <p class="text-3xl font-bold text-gray-900">{{ wrongLeads.count }}</p>
-        <div class="w-full bg-gray-200 rounded-full h-2 mt-4">
-          <div class="bg-red-600 h-2 rounded-full" :style="{ width: wrongLeads.percentage }"></div>
-        </div>
-      </div>
+      <!-- Entferne die Statistik-Karten hier -->
     </div>
 
     <!-- Additional Stats (Only for non-staff users) -->
     <div v-if="!isStaff">
-      <!-- Live Sells Section -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-        <!-- Left Column -->
-        <div class="col-span-2">
-          <div class="bg-white rounded-lg shadow p-6">
-            <div class="flex justify-between items-center mb-6">
-              <h3 class="text-lg font-medium text-gray-900">Live Sells</h3>
-              <p class="text-sm text-gray-500">Today : 0</p>
-            </div>
-            <p class="text-sm text-gray-500">Total {{ stats.totalLeads }} Leads for all time</p>
-          </div>
-        </div>
-
-        <!-- Right Column -->
-        <div>
-          <div class="bg-white rounded-lg shadow p-6">
-            <!-- Correct Leads -->
-            <div class="mb-6">
-              <div class="flex items-center justify-between">
-                <span class="text-lg font-medium">{{ correctLeads.count }}</span>
-                <span class="text-green-600">{{ correctLeads.percentage }}</span>
-              </div>
-              <p class="text-sm text-gray-500">{{ correctLeads.label }}</p>
-              <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                <div class="bg-green-600 h-2 rounded-full" :style="{ width: correctLeads.percentage }"></div>
-              </div>
-            </div>
-
-            <!-- Wrong Leads -->
-            <div>
-              <div class="flex items-center justify-between">
-                <span class="text-lg font-medium">{{ wrongLeads.count }}</span>
-                <span class="text-red-600">{{ wrongLeads.percentage }}</span>
-              </div>
-              <p class="text-sm text-gray-500">{{ wrongLeads.label }}</p>
-              <div class="w-full bg-gray-200 rounded-full h-2 mt-2">
-                <div class="bg-red-600 h-2 rounded-full" :style="{ width: wrongLeads.percentage }"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- Product Statistics -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
         <!-- Product Leads Statistics -->
@@ -593,6 +630,27 @@ onMounted(async () => {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+      <!-- All Orders Chart -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Orders (Last 7 Days)</h3>
+        <canvas id="allOrdersChart"></canvas>
+      </div>
+
+      <!-- Confirmed Orders Chart -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Confirmed Orders (Last 7 Days)</h3>
+        <canvas id="confirmedOrdersChart"></canvas>
+      </div>
+
+      <!-- Delivered Orders Chart -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-medium text-gray-900 mb-4">Delivered Orders (Last 7 Days)</h3>
+        <canvas id="deliveredOrdersChart"></canvas>
       </div>
     </div>
   </div>

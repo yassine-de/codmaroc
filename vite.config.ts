@@ -1,34 +1,29 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import path from 'path'
+import { fileURLToPath, URL } from 'node:url'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, './src'),
-    },
+      '@': fileURLToPath(new URL('./src', import.meta.url))
+    }
   },
   build: {
     outDir: 'dist',
-    assetsDir: 'assets',
-    sourcemap: true,
-    chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
         manualChunks: {
-          'vendor': [
-            'vue',
-            'vue-router',
-            'pinia',
-            '@supabase/supabase-js',
-          ],
-        },
-      },
+          'vendor': ['vue', 'vue-router', 'pinia'],
+          'supabase': ['@supabase/supabase-js'],
+          'utils': ['date-fns', 'axios', 'xlsx', 'jspdf', 'jspdf-autotable']
+        }
+      }
     },
+    chunkSizeWarningLimit: 1000
   },
   server: {
-    port: 5173,
-  },
+    port: 5173
+  }
 })

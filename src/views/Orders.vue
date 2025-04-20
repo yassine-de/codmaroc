@@ -7,6 +7,14 @@ import { useProductStore } from '../stores/products'
 import { exportToExcel, exportToCSV } from '../lib/export'
 import { supabase } from '../lib/supabase'
 import cityList from '../assets/city.txt?raw'
+import { format } from 'date-fns'
+import { de } from 'date-fns/locale'
+import OrderHistory from '../components/OrderHistory.vue'
+
+// Erweitere die Order-Schnittstelle
+interface ExtendedOrder extends Order {
+  sheet_order_id?: string
+}
 
 const orderStore = useOrderStore()
 const authStore = useAuthStore()
@@ -22,6 +30,8 @@ const syncing = ref(false)
 const success = ref('')
 const error = ref('')
 const selectedOrders = ref<number[]>([])
+const showHistory = ref(false)
+const selectedOrderId = ref<number | null>(null)
 
 // Filters
 const statusFilter = ref('All')
@@ -44,14 +54,9 @@ const citySearchQuery = ref('')
 const showCityDropdown = ref(false)
 const selectedCity = ref('')
 
-const isAdmin = computed(() => {
-  return authStore.user?.role === 1
-})
-
-const isStaffOrAdmin = computed(() => {
-  const userRole = authStore.user?.role
-  return userRole === 1 || userRole === 2 // 1 for admin, 2 for staff
-})
+const isAdmin = computed(() => authStore.user?.role === 1)
+const isStaff = computed(() => authStore.user?.role === 2)
+const isStaffOrAdmin = computed(() => [1, 2].includes(authStore.user?.role || 0))
 
 // Get unique sellers for filter
 const sellers = computed(() => {
@@ -69,35 +74,19 @@ const sellers = computed(() => {
 
 // Filter orders based on selected filters
 const filteredOrders = computed(() => {
-  let filtered = [...orderStore.orders]
+  let filtered = [...orderStore.orders] as Order[]
 
-  // Apply search filter
-  if (searchQuery.value) {
-    const query = searchQuery.value.toLowerCase()
-    filtered = filtered.filter(order => 
-      order.customer_name.toLowerCase().includes(query) ||
-      order.phone.toLowerCase().includes(query) ||
-      order.shipping_address.toLowerCase().includes(query)
-    )
+  // Apply product filter
+  if (productFilter.value !== 'All') {
+    filtered = filtered.filter(order => order.product_name === productFilter.value)
   }
 
   // Apply status filter
   if (statusFilter.value !== 'All') {
-    const status = parseInt(statusFilter.value)
-    filtered = filtered.filter(order => order.status === status)
+    filtered = filtered.filter(order => order.status === Number(statusFilter.value))
   }
 
-  // Apply product filter
-  if (productFilter.value !== 'All') {
-    filtered = filtered.filter(order => order.product_id === productFilter.value)
-  }
-
-  // Apply seller filter (admin only)
-  if (isAdmin.value && sellerFilter.value !== 'All') {
-    filtered = filtered.filter(order => order.user_id === parseInt(sellerFilter.value))
-  }
-
-  // Apply date range filter
+  // Apply date filter
   if (startDate.value && endDate.value) {
     const start = new Date(startDate.value)
     const end = new Date(endDate.value)
@@ -111,6 +100,23 @@ const filteredOrders = computed(() => {
     }
   }
 
+  // Sortierung basierend auf der Benutzerrolle
+  if (isStaff.value) {
+    // Für Staff: Erst NEW Status, dann nach created_at
+    filtered.sort((a, b) => {
+      if (a.status === Number(ORDER_STATUS.NEW) && b.status !== Number(ORDER_STATUS.NEW)) return -1;
+      if (a.status !== Number(ORDER_STATUS.NEW) && b.status === Number(ORDER_STATUS.NEW)) return 1;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+  } else {
+    // Für Admin und Seller: Nach sheet_order_id absteigend sortieren
+    filtered.sort((a, b) => {
+      const aId = (a as any).sheet_order_id || '';
+      const bId = (b as any).sheet_order_id || '';
+      return bId.localeCompare(aId); // Absteigende Sortierung
+    });
+  }
+
   return filtered
 })
 
@@ -118,12 +124,12 @@ const filteredOrders = computed(() => {
 const currentPage = ref(1)
 
 const totalPages = computed(() => {
-  return Math.ceil(filteredOrders.value.length / parseInt(itemsPerPage.value))
+  return Math.ceil(filteredOrders.value.length / Number(itemsPerPage.value))
 })
 
 const paginatedOrders = computed(() => {
-  const start = (currentPage.value - 1) * parseInt(itemsPerPage.value)
-  const end = start + parseInt(itemsPerPage.value)
+  const start = (currentPage.value - 1) * Number(itemsPerPage.value)
+  const end = start + Number(itemsPerPage.value)
   return filteredOrders.value.slice(start, end)
 })
 
@@ -188,8 +194,8 @@ const handleSyncAll = async () => {
           totalNewOrders += result.new || 0
           totalSkippedOrders += result.skipped || 0
         }
-      } catch (error) {
-        console.error(`Error syncing integration ${integration.id}:`, error)
+      } catch (err) {
+        console.error(`Error syncing integration ${integration.id}:`, err)
         errorCount++
       }
     }
@@ -199,8 +205,8 @@ const handleSyncAll = async () => {
     
     // Show success message with details
     success.value = `Sync completed!\nTotal new Orders: ${totalNewOrders}`
-  } catch (error) {
-    console.error('Error during sync all:', error)
+  } catch (err) {
+    console.error('Error during sync all:', err)
     error.value = 'Error during sync. Please check the console for details.'
   } finally {
     syncing.value = false
@@ -218,7 +224,7 @@ const handleStatusChange = async (orderId: number, newStatus: number) => {
 const getStatusColor = (status: number) => {
   switch (status) {
     case ORDER_STATUS.NEW:
-      return 'text-blue-600'
+      return 'text-gray-600'
     case ORDER_STATUS.NO_REPLY1:
     case ORDER_STATUS.NO_REPLY2:
     case ORDER_STATUS.NO_REPLY3:
@@ -239,6 +245,8 @@ const getStatusColor = (status: number) => {
       return 'text-red-600'
     case ORDER_STATUS.SHIPPED:
       return 'text-blue-600'
+    case ORDER_STATUS.PAID:
+      return 'text-white'
     default:
       return 'text-gray-700'
   }
@@ -247,7 +255,7 @@ const getStatusColor = (status: number) => {
 const getStatusBgColor = (status: number) => {
   switch (status) {
     case ORDER_STATUS.NEW:
-      return 'bg-blue-50'
+      return 'bg-gray-100'
     case ORDER_STATUS.NO_REPLY1:
     case ORDER_STATUS.NO_REPLY2:
     case ORDER_STATUS.NO_REPLY3:
@@ -268,6 +276,8 @@ const getStatusBgColor = (status: number) => {
       return 'bg-red-50'
     case ORDER_STATUS.SHIPPED:
       return 'bg-blue-50'
+    case ORDER_STATUS.PAID:
+      return 'bg-purple-600'
     default:
       return 'bg-gray-50'
   }
@@ -327,6 +337,7 @@ const handleEditOrder = async () => {
       customer_name: editingOrder.value.customer_name,
       phone: editingOrder.value.phone,
       shipping_address: fullAddress,
+      city: selectedCity.value,
       quantity: editingOrder.value.quantity,
       total_amount: editingOrder.value.total_amount,
       info: editingOrder.value.info,
@@ -342,14 +353,8 @@ const handleEditOrder = async () => {
   }
 }
 
-const formatDate = (dateString: string) => {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
+const formatDate = (date: string | Date) => {
+  return format(new Date(date), 'dd.MM.yyyy HH:mm', { locale: de })
 }
 
 const formatPrice = (price: number) => {
@@ -424,8 +429,8 @@ const handleDeleteSelected = async () => {
     }
     selectedOrders.value = []
     success.value = 'Ausgewählte Leads wurden erfolgreich gelöscht'
-  } catch (error) {
-    console.error('Error deleting orders:', error)
+  } catch (err) {
+    console.error('Error deleting orders:', err)
     error.value = 'Fehler beim Löschen der Leads'
   }
 }
@@ -482,6 +487,48 @@ const formatPhoneForWhatsApp = (phone: string) => {
   
   return cleanPhone
 }
+
+const openHistory = (orderId: number) => {
+  selectedOrderId.value = orderId
+  showHistory.value = true
+}
+
+const closeHistory = () => {
+  showHistory.value = false
+  selectedOrderId.value = null
+}
+
+const getStatusName = (status: number) => {
+  const statusMap: Record<number, string> = {
+    1: 'NEW',
+    2: 'CONFIRMED',
+    3: 'DELIVERED',
+    4: 'CANCELLED',
+    15: 'DOUBLE'
+  }
+  return statusMap[status] || 'Unknown'
+}
+
+const handleError = (err: unknown) => {
+  if (err instanceof Error) {
+    error.value = err.message
+  } else {
+    error.value = 'Ein unbekannter Fehler ist aufgetreten'
+  }
+  console.error('Error:', err)
+}
+
+const handleCheckboxChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  if (target) {
+    const orderId = parseInt(target.value)
+    if (target.checked) {
+      selectedOrders.value.push(orderId)
+    } else {
+      selectedOrders.value = selectedOrders.value.filter(id => id !== orderId)
+    }
+  }
+}
 </script>
 
 <template>
@@ -496,8 +543,8 @@ const formatPhoneForWhatsApp = (phone: string) => {
     </div>
 
     <!-- Table Controls -->
-    <div class="flex justify-between items-center mb-6">
-      <div class="flex items-center space-x-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
+      <div class="flex flex-wrap items-center gap-4">
         <label class="text-sm text-gray-600">Show</label>
         <select
           v-model="itemsPerPage"
@@ -540,7 +587,7 @@ const formatPhoneForWhatsApp = (phone: string) => {
           </option>
         </select>
 
-        <div class="flex items-center space-x-2">
+        <div class="flex flex-wrap items-center gap-2">
           <input
             type="date"
             v-model="startDate"
@@ -555,7 +602,7 @@ const formatPhoneForWhatsApp = (phone: string) => {
         </div>
       </div>
 
-      <div class="flex items-center space-x-4">
+      <div class="flex flex-wrap items-center gap-4">
         <!-- Delete Selected Button -->
         <button
           v-if="selectedOrders.length > 0"
@@ -577,7 +624,7 @@ const formatPhoneForWhatsApp = (phone: string) => {
         <div class="relative" v-if="isAdmin">
           <button
             @click="showExportDropdown = !showExportDropdown"
-            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center"
+            class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 flex items-center whitespace-nowrap"
           >
             <i class="fas fa-download mr-2"></i>
             EXPORT
@@ -604,12 +651,12 @@ const formatPhoneForWhatsApp = (phone: string) => {
           </div>
         </div>
 
-        <!-- Sync All Button (visible for staff and admin) -->
+        <!-- Sync All Button -->
         <button
-          v-if="isStaffOrAdmin"
+          v-if="isAdmin"
           @click="handleSyncAll"
           :disabled="syncing"
-          class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 flex items-center"
+          class="bg-purple-600 text-white px-4 py-2 rounded-md hover:bg-purple-700 flex items-center whitespace-nowrap"
         >
           <i class="fas fa-sync-alt mr-2" :class="{ 'animate-spin': syncing }"></i>
           SYNC ALL
@@ -617,7 +664,7 @@ const formatPhoneForWhatsApp = (phone: string) => {
 
         <button
           @click="showAddModal = true"
-          class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 flex items-center"
+          class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 flex items-center whitespace-nowrap"
         >
           <i class="fas fa-plus mr-2"></i>
           ADD ORDER
@@ -637,110 +684,136 @@ const formatPhoneForWhatsApp = (phone: string) => {
 
     <!-- Orders Table -->
     <div v-else class="bg-white rounded-lg shadow overflow-hidden">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <input
-                type="checkbox"
-                :checked="selectedOrders.length === filteredOrders.length && filteredOrders.length > 0"
-                :indeterminate="selectedOrders.length > 0 && selectedOrders.length < filteredOrders.length"
-                @change="e => {
-                  const checked = e.target.checked
-                  selectedOrders = checked ? filteredOrders.map(o => o.id) : []
-                }"
-                class="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-              >
-            </th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Date</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">QTY</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
-            <th v-if="isAdmin" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Seller</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="order in paginatedOrders" :key="order.id">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <input
-                type="checkbox"
-                v-model="selectedOrders"
-                :value="order.id"
-                class="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-              >
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">#{{ order.id }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(order.created_at) }}</td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <select
-                v-if="isStaffOrAdmin"
-                v-model="order.status"
-                @change="handleStatusChange(order.id, order.status)"
-                :class="[
-                  'rounded-md border-0 shadow-sm text-sm',
-                  getStatusColor(order.status),
-                  getStatusBgColor(order.status)
-                ]"
-              >
-                <option 
-                  v-for="(label, value) in ORDER_STATUS_LABELS" 
-                  :key="value" 
-                  :value="Number(value)"
-                  :class="getStatusColor(Number(value))"
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <input
+                  v-if="isAdmin"
+                  type="checkbox"
+                  :checked="selectedOrders.length === filteredOrders.length && filteredOrders.length > 0"
+                  :indeterminate="selectedOrders.length > 0 && selectedOrders.length < filteredOrders.length"
+                  @change="handleCheckboxChange"
+                  class="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                 >
-                  {{ label }}
-                </option>
-              </select>
-              <span 
-                v-else 
-                :class="[
-                  'px-2 py-1 text-sm rounded-full',
-                  getStatusColor(order.status),
-                  getStatusBgColor(order.status)
-                ]"
-              >
-                {{ ORDER_STATUS_LABELS[order.status] }}
-              </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.product_name }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.customer_name }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ order.phone }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.quantity }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatPrice(order.total_amount) }}</td>
-            <td v-if="isAdmin" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.seller_name }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-              <template v-if="isStaffOrAdmin">
-                <a 
-                  :href="`https://wa.me/${formatPhoneForWhatsApp(order.phone)}`"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="text-green-600 hover:text-green-800"
-                  title="Open in WhatsApp"
+              </th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sheet ID</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order Date</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">QTY</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Price</th>
+              <th v-if="isAdmin" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Seller</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="order in paginatedOrders" :key="order.id">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <input
+                  v-if="isAdmin"
+                  type="checkbox"
+                  v-model="selectedOrders"
+                  :value="order.id"
+                  class="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
                 >
-                  <i class="fab fa-whatsapp text-xl"></i>
-                </a>
-                <button @click="openEditModal(order)" class="text-blue-600 hover:text-blue-800">
-                  ✏️
-                </button>
-                <button 
-                  @click="handleDeleteOrder(order.id)" 
-                  class="text-red-600 hover:text-red-800"
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">#{{ order.id }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ order.sheet_order_id || '-' }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(order.created_at) }}</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <select
+                  v-if="isAdmin"
+                  v-model="order.status"
+                  @change="handleStatusChange(order.id, order.status)"
+                  :class="[
+                    'rounded-md border-0 shadow-sm text-sm',
+                    getStatusColor(order.status),
+                    getStatusBgColor(order.status)
+                  ]"
                 >
-                  🗑️
-                </button>
-              </template>
-              <button v-else @click="openEditModal(order)" class="text-blue-600 hover:text-blue-800">
-                👁️
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+                  <option 
+                    v-for="(label, value) in ORDER_STATUS_LABELS" 
+                    :key="value" 
+                    :value="Number(value)"
+                    :class="getStatusColor(Number(value))"
+                  >
+                    {{ label }}
+                  </option>
+                </select>
+                <span 
+                  v-else 
+                  :class="[
+                    'px-2 py-1 text-sm rounded-full',
+                    getStatusColor(order.status),
+                    getStatusBgColor(order.status)
+                  ]"
+                >
+                  {{ ORDER_STATUS_LABELS[order.status] }}
+                </span>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.product_name }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.customer_name }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ order.phone }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.quantity }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatPrice(order.total_amount) }}</td>
+              <td v-if="isAdmin" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ order.seller_name }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                <template v-if="isAdmin">
+                  <a 
+                    :href="`https://wa.me/${formatPhoneForWhatsApp(order.phone)}`"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-green-600 hover:text-green-800"
+                    title="Open in WhatsApp"
+                  >
+                    <i class="fab fa-whatsapp text-xl"></i>
+                  </a>
+                  <button @click="openEditModal(order)" class="text-blue-600 hover:text-blue-800">
+                    ✏️
+                  </button>
+                  <button 
+                    @click="handleDeleteOrder(order.id)" 
+                    class="text-red-600 hover:text-red-800"
+                  >
+                    🗑️
+                  </button>
+                  <button 
+                    @click="openHistory(order.id)" 
+                    class="text-purple-600 hover:text-purple-800"
+                    title="Bestellhistorie anzeigen"
+                  >
+                    <i class="fas fa-history"></i>
+                  </button>
+                </template>
+                <template v-else-if="isStaff">
+                  <a 
+                    :href="`https://wa.me/${formatPhoneForWhatsApp(order.phone)}`"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-green-600 hover:text-green-800"
+                    title="Open in WhatsApp"
+                  >
+                    <i class="fab fa-whatsapp text-xl"></i>
+                  </a>
+                  <button @click="openEditModal(order)" class="text-blue-600 hover:text-blue-800">
+                    ✏️
+                  </button>
+                </template>
+                <template v-else>
+                  <button @click="openEditModal(order)" class="text-blue-600 hover:text-blue-800">
+                    👁️
+                  </button>
+                </template>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Pagination -->
       <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200">
@@ -761,7 +834,7 @@ const formatPhoneForWhatsApp = (phone: string) => {
           </button>
         </div>
         <div class="text-sm text-gray-700">
-          Showing {{ ((currentPage - 1) * parseInt(itemsPerPage)) + 1 }} to {{ Math.min(currentPage * parseInt(itemsPerPage), filteredOrders.length) }} of {{ filteredOrders.length }} entries
+          Showing {{ ((currentPage - 1) * Number(itemsPerPage)) + 1 }} to {{ Math.min(currentPage * Number(itemsPerPage), filteredOrders.length) }} of {{ filteredOrders.length }} entries
         </div>
       </div>
     </div>
@@ -1090,6 +1163,17 @@ const formatPhoneForWhatsApp = (phone: string) => {
         </form>
       </div>
     </div>
+
+    <!-- Order History Modal -->
+    <div v-if="showHistory" class="modal">
+      <div class="modal-content">
+        <OrderHistory 
+          v-if="selectedOrderId"
+          :orderId="selectedOrderId"
+          @close="closeHistory"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -1105,5 +1189,41 @@ const formatPhoneForWhatsApp = (phone: string) => {
   to {
     transform: rotate(360deg);
   }
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.action-btn {
+  background: none;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: color 0.2s;
+}
+
+.action-btn:hover {
+  color: #1976d2;
 }
 </style>

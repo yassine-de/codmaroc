@@ -70,6 +70,17 @@ const isAdmin = computed(() => {
             <span>Products</span>
           </RouterLink>
 
+          <!-- Statistics link for admin -->
+          <RouterLink 
+            v-if="isAdmin"
+            to="/statistics" 
+            class="px-3 py-2 rounded-md text-sm flex items-center space-x-2"
+            :class="isActive('/statistics') ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100'"
+          >
+            <i class="fas fa-chart-bar"></i>
+            <span>Statistiken</span>
+          </RouterLink>
+
           <!-- Only show these links for non-staff users -->
           <template v-if="!isStaff">
             <RouterLink 

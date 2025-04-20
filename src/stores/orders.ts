@@ -10,6 +10,7 @@ export interface Order {
   unit_price: number
   status: number
   shipping_address: string
+  city: string
   phone: string
   notes: string | null
   info: string | null
@@ -19,6 +20,7 @@ export interface Order {
   customer_name: string
   quantity: number
   product_id: string
+  sheet_order_id?: string
 }
 
 export interface NewOrder {
@@ -49,7 +51,8 @@ export const ORDER_STATUS = {
   REPORTED: 14,
   DOUBLE: 15,
   SHIPPED: 16,
-  DELIVERED: 17
+  DELIVERED: 17,
+  PAID: 18
 }
 
 export const ORDER_STATUS_LABELS: Record<number, string> = {
@@ -69,7 +72,8 @@ export const ORDER_STATUS_LABELS: Record<number, string> = {
   [ORDER_STATUS.REPORTED]: 'Reported',
   [ORDER_STATUS.DOUBLE]: 'Double',
   [ORDER_STATUS.SHIPPED]: 'Shipped',
-  [ORDER_STATUS.DELIVERED]: 'Delivered'
+  [ORDER_STATUS.DELIVERED]: 'Delivered',
+  [ORDER_STATUS.PAID]: 'Paid'
 }
 
 export const useOrderStore = defineStore('orders', () => {
@@ -102,7 +106,9 @@ export const useOrderStore = defineStore('orders', () => {
           *,
           products:product_id (name),
           users:user_id (name, email)
-        `)
+        `, { count: 'exact' })
+        .order('sheet_order_id', { ascending: false, nullsFirst: false })
+        .order('created_at', { ascending: false })
 
       // If user is not admin or staff, only fetch their own orders
       if (userData.role === 3) { // Seller role
@@ -117,11 +123,29 @@ export const useOrderStore = defineStore('orders', () => {
         }
       }
 
-      const { data, error: err } = await query.order('created_at', { ascending: false })
+      // First get the count
+      const { count } = await query
+      
+      if (!count) {
+        orders.value = []
+        return
+      }
 
-      if (err) throw err
+      // Now fetch all records in batches
+      const batchSize = 1000
+      const batches = Math.ceil(count / batchSize)
+      const allOrders = []
 
-      orders.value = data.map(order => ({
+      for (let i = 0; i < batches; i++) {
+        const start = i * batchSize
+        const { data, error: err } = await query
+          .range(start, start + batchSize - 1)
+
+        if (err) throw err
+        if (data) allOrders.push(...data)
+      }
+
+      orders.value = allOrders.map(order => ({
         ...order,
         product_name: order.products?.name || 'Unknown Product',
         seller_name: order.users?.name || order.users?.email || `Seller ${order.user_id}`

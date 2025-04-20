@@ -10,6 +10,7 @@ import Sourcing from '../views/Sourcing.vue'
 import Integration from '../views/Integration.vue'
 import Wallet from '../views/Wallet.vue'
 import Settings from '../views/Settings.vue'
+import Statistics from '../views/Statistics.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -70,6 +71,15 @@ const router = createRouter({
       name: 'settings',
       component: Settings,
       meta: { requiresAuth: true, adminOnly: true }
+    },
+    {
+      path: '/statistics',
+      name: 'statistics',
+      component: Statistics,
+      meta: {
+        requiresAuth: true,
+        adminOnly: true
+      }
     }
   ]
 })

@@ -7,7 +7,7 @@
         Streamline your delivery operations with our comprehensive cash on delivery management system.
       </p>
       <div class="space-x-4">
-        <button class="btn-primary">Get Started</button>
+        <RouterLink to="/login" class="btn-primary">Login</RouterLink>
         <button class="btn-secondary">View Demo</button>
       </div>
     </section>
