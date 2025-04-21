@@ -1,5 +1,5 @@
-import https from 'https';
-import { createClient } from '@supabase/supabase-js';
+const https = require('https');
+const { createClient } = require('@supabase/supabase-js');
 
 // Umgebungsvariablen
 const NETLIFY_SITE_ID = process.env.NETLIFY_SITE_ID;
