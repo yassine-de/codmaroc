@@ -7,7 +7,14 @@ require('dotenv').config();
 function loadEnvVariables() {
   console.log('Loading environment variables...');
   
-  // Versuche .env Datei zu laden
+  // Prüfe ob wir in GitHub Actions sind
+  if (process.env.GITHUB_ACTIONS) {
+    console.log('Running in GitHub Actions environment');
+    // In GitHub Actions werden die Variablen direkt aus den Secrets geladen
+    return;
+  }
+  
+  // Lokale Entwicklung: Versuche .env Datei zu laden
   const envPath = path.resolve(process.cwd(), '.env');
   if (fs.existsSync(envPath)) {
     console.log('Found .env file, loading variables...');
@@ -26,6 +33,14 @@ function loadEnvVariables() {
 
 // Umgebungsvariablen laden
 loadEnvVariables();
+
+// Prüfe ob die erforderlichen Umgebungsvariablen vorhanden sind
+if (!process.env.VITE_SUPABASE_URL || !process.env.VITE_SUPABASE_ANON_KEY) {
+  console.error('Required environment variables are missing:');
+  if (!process.env.VITE_SUPABASE_URL) console.error('- VITE_SUPABASE_URL');
+  if (!process.env.VITE_SUPABASE_ANON_KEY) console.error('- VITE_SUPABASE_ANON_KEY');
+  process.exit(1);
+}
 
 // Supabase Client initialisieren
 const supabase = createClient(

@@ -25,12 +25,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Setup environment variables
-        run: |
-          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
-          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
-
       - name: Run sync-orders script
+        env:
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+          GITHUB_ACTIONS: true
         run: |
           echo "Starting orders synchronization..."
           node scripts/sync-orders.cjs
