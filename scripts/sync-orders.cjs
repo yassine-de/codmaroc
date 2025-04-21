@@ -1,4 +1,31 @@
 const { handler } = require('../netlify/functions/sync-orders.js');
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config();
+
+// Funktion zum Laden der Umgebungsvariablen
+function loadEnvVariables() {
+  console.log('Loading environment variables...');
+  
+  // Versuche .env Datei zu laden
+  const envPath = path.resolve(process.cwd(), '.env');
+  if (fs.existsSync(envPath)) {
+    console.log('Found .env file, loading variables...');
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    envContent.split('\n').forEach(line => {
+      const [key, value] = line.split('=');
+      if (key && value) {
+        process.env[key.trim()] = value.trim();
+      }
+    });
+    console.log('Environment variables loaded from .env file');
+  } else {
+    console.log('No .env file found, using process environment variables');
+  }
+}
+
+// Umgebungsvariablen laden
+loadEnvVariables();
 
 // Funktion zum Synchronisieren der Bestellungen
 async function syncOrders() {
