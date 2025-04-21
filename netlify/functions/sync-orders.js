@@ -1,6 +1,10 @@
 const { google } = require('googleapis');
 const { createClient } = require('@supabase/supabase-js');
 
+// Supabase Umgebungsvariablen setzen
+process.env.VITE_SUPABASE_URL = 'https://sricbznbrczupdvasemq.supabase.co';
+process.env.VITE_SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNyaWNiem5icmN6dXBkdmFzZW1xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ5Nzc2NjQsImV4cCI6MjA2MDU1MzY2NH0.cu-p-mOcmWFXfencvNBwH88UeULnJGDODVWTNTFCr38';
+
 // Supabase Client initialisieren
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
@@ -9,13 +13,14 @@ const supabase = createClient(
 
 // Google Sheets API konfigurieren
 const auth = new google.auth.GoogleAuth({
-  credentials: JSON.parse(process.env.GOOGLE_SHEETS_CREDENTIALS),
+  credentials: JSON.parse(process.env.GOOGLE_SHEETS_CREDENTIALS || '{}'),
   scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
 });
 
 const sheets = google.sheets({ version: 'v4', auth });
 
-exports.handler = async (event, context) => {
+// Netlify Function Handler
+module.exports.handler = async (event, context) => {
   try {
     // Request-Body parsen
     const { startDate, endDate } = JSON.parse(event.body);
