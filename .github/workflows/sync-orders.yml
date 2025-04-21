@@ -8,6 +8,9 @@ on:
 jobs:
   sync:
     runs-on: ubuntu-latest
+    env:
+      VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+      VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
     
     steps:
       - name: Checkout repository
@@ -26,11 +29,9 @@ jobs:
         run: npm ci
 
       - name: Run sync-orders script
-        env:
-          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
-          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
-          GITHUB_ACTIONS: true
         run: |
           echo "Starting orders synchronization..."
+          echo "VITE_SUPABASE_URL is set: ${{ env.VITE_SUPABASE_URL != '' }}"
+          echo "VITE_SUPABASE_ANON_KEY is set: ${{ env.VITE_SUPABASE_ANON_KEY != '' }}"
           node scripts/sync-orders.cjs
           echo "Orders synchronization completed" 
