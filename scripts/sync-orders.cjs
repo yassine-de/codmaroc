@@ -1,31 +1,62 @@
-const https = require('https');
+import https from 'https';
+import { createClient } from '@supabase/supabase-js';
 
-// Netlify Umgebungsvariablen
+// Umgebungsvariablen
 const NETLIFY_SITE_ID = process.env.NETLIFY_SITE_ID;
 const NETLIFY_AUTH_TOKEN = process.env.NETLIFY_AUTH_TOKEN;
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY;
 
-// Funktion zum Aufrufen der Netlify Function
-async function syncOrders() {
-  const functionUrl = `https://codservice-dev.netlify.app/.netlify/functions/sync-integrations`;
+// Supabase Client initialisieren
+console.log('Initializing Supabase client...');
+console.log('Supabase URL:', SUPABASE_URL);
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// Funktion zum Überprüfen der Datenbankverbindung
+async function checkDatabaseConnection() {
+  console.log('Checking database connection...');
+  try {
+    const { data, error } = await supabase
+      .from('sheet_data')
+      .select('count')
+      .limit(1);
+    
+    if (error) {
+      console.error('Database connection error:', error);
+      console.error('Error details:', {
+        code: error.code,
+        message: error.message,
+        details: error.details,
+        hint: error.hint
+      });
+      return false;
+    }
+    
+    console.log('Database connection successful');
+    return true;
+  } catch (err) {
+    console.error('Unexpected error during database check:', err);
+    return false;
+  }
+}
+
+// Funktion zum Auslösen des Netlify Builds
+async function triggerNetlifyBuild() {
+  console.log('Preparing Netlify build trigger...');
+  console.log('Using Site ID:', NETLIFY_SITE_ID);
   
-  // Zeitraum für die Synchronisation (letzte 24 Stunden)
-  const now = new Date();
-  const yesterday = new Date(now.getTime() - (24 * 60 * 60 * 1000));
-  
-  const payload = {
-    startDate: yesterday.toISOString(),
-    endDate: now.toISOString()
+  const options = {
+    hostname: 'api.netlify.com',
+    path: `/api/v1/sites/${NETLIFY_SITE_ID}/builds`,
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${NETLIFY_AUTH_TOKEN}`,
+      'Content-Type': 'application/json'
+    }
   };
 
-  console.log('Synchronizing orders from', payload.startDate, 'to', payload.endDate);
-  
   return new Promise((resolve, reject) => {
-    const req = https.request(functionUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }, (res) => {
+    const req = https.request(options, (res) => {
       let data = '';
 
       res.on('data', (chunk) => {
@@ -34,33 +65,22 @@ async function syncOrders() {
 
       res.on('end', () => {
         if (res.statusCode >= 200 && res.statusCode < 300) {
-          console.log('Orders sync triggered successfully');
-          try {
-            const response = JSON.parse(data);
-            console.log('Sync response:', response);
-            if (response.details && response.details.length > 0) {
-              console.log('Order details:', response.details);
-            }
-            resolve(response);
-          } catch (error) {
-            console.log('Raw response:', data);
-            resolve(data);
-          }
+          console.log('Netlify build triggered successfully');
+          console.log('Response:', data);
+          resolve(data);
         } else {
-          console.error(`Error syncing orders: ${res.statusCode} ${data}`);
+          console.error(`Error triggering build: ${res.statusCode}`);
+          console.error('Response data:', data);
           reject(new Error(`HTTP Error: ${res.statusCode}`));
         }
       });
     });
 
     req.on('error', (error) => {
-      console.error('Error:', error);
+      console.error('Network error during Netlify trigger:', error);
       reject(error);
     });
 
-    // Sende den Payload
-    console.log('Sending payload:', payload);
-    req.write(JSON.stringify(payload));
     req.end();
   });
 }
@@ -68,19 +88,25 @@ async function syncOrders() {
 // Hauptfunktion
 async function main() {
   try {
-    console.log('Starting orders synchronization...');
-    const result = await syncOrders();
-    if (result.total === 0) {
-      console.log('No orders found in the specified time range.');
-    } else {
-      console.log(`Synchronized ${result.successful} orders successfully.`);
-      if (result.failed > 0) {
-        console.log(`Failed to synchronize ${result.failed} orders.`);
-      }
+    console.log('Starting process...');
+    console.log('Environment check:');
+    console.log('- NETLIFY_SITE_ID:', NETLIFY_SITE_ID ? 'Set' : 'Not set');
+    console.log('- NETLIFY_AUTH_TOKEN:', NETLIFY_AUTH_TOKEN ? 'Set' : 'Not set');
+    console.log('- SUPABASE_URL:', SUPABASE_URL ? 'Set' : 'Not set');
+    console.log('- SUPABASE_ANON_KEY:', SUPABASE_ANON_KEY ? 'Set' : 'Not set');
+
+    // Datenbankverbindung überprüfen
+    const dbConnected = await checkDatabaseConnection();
+    if (!dbConnected) {
+      throw new Error('Database connection failed');
     }
-    console.log('Orders synchronization completed successfully');
+
+    console.log('Starting Netlify build trigger...');
+    await triggerNetlifyBuild();
+    console.log('Process completed successfully');
   } catch (error) {
-    console.error('Synchronization failed:', error);
+    console.error('Process failed:', error);
+    console.error('Error stack:', error.stack);
     process.exit(1);
   }
 }
