@@ -12,14 +12,26 @@ if (!NETLIFY_SITE_ID || !NETLIFY_AUTH_TOKEN) {
   process.exit(1);
 }
 
-// Funktion zum Auslösen des Netlify Builds
-async function triggerNetlifyBuild() {
-  console.log('Preparing Netlify build trigger...');
-  console.log('Using Site ID:', NETLIFY_SITE_ID);
+// Funktion zum Synchronisieren der Bestellungen
+async function syncOrders() {
+  console.log('Starting orders synchronization...');
+  
+  // Zeitbereich für die Synchronisation (letzte 24 Stunden)
+  const endDate = new Date();
+  const startDate = new Date(endDate - 24 * 60 * 60 * 1000);
+  
+  console.log(`Synchronizing orders from ${startDate.toISOString()} to ${endDate.toISOString()}`);
+  
+  const payload = {
+    startDate: startDate.toISOString(),
+    endDate: endDate.toISOString()
+  };
+  
+  console.log('Sending payload:', payload);
   
   const options = {
     hostname: 'api.netlify.com',
-    path: `/api/v1/sites/${NETLIFY_SITE_ID}/builds`,
+    path: `/api/v1/sites/${NETLIFY_SITE_ID}/functions/sync-orders`,
     method: 'POST',
     headers: {
       'Authorization': `Bearer ${NETLIFY_AUTH_TOKEN}`,
@@ -37,11 +49,17 @@ async function triggerNetlifyBuild() {
 
       res.on('end', () => {
         if (res.statusCode >= 200 && res.statusCode < 300) {
-          console.log('Netlify build triggered successfully');
-          console.log('Response:', data);
-          resolve(data);
+          console.log('Orders sync triggered successfully');
+          try {
+            const response = JSON.parse(data);
+            console.log('Sync response:', response);
+            resolve(response);
+          } catch (err) {
+            console.error('Error parsing response:', err);
+            reject(err);
+          }
         } else {
-          console.error(`Error triggering build: ${res.statusCode}`);
+          console.error(`Error triggering sync: ${res.statusCode}`);
           console.error('Response data:', data);
           reject(new Error(`HTTP Error: ${res.statusCode}`));
         }
@@ -49,10 +67,11 @@ async function triggerNetlifyBuild() {
     });
 
     req.on('error', (error) => {
-      console.error('Network error during Netlify trigger:', error);
+      console.error('Network error during sync:', error);
       reject(error);
     });
 
+    req.write(JSON.stringify(payload));
     req.end();
   });
 }
@@ -65,9 +84,16 @@ async function main() {
     console.log('- NETLIFY_SITE_ID:', NETLIFY_SITE_ID ? 'Set' : 'Not set');
     console.log('- NETLIFY_AUTH_TOKEN:', NETLIFY_AUTH_TOKEN ? 'Set' : 'Not set');
 
-    console.log('Starting Netlify build trigger...');
-    await triggerNetlifyBuild();
-    console.log('Process completed successfully');
+    const result = await syncOrders();
+    console.log('Order details:', result.details || []);
+    
+    if (result.total === 0) {
+      console.log('No orders found in the specified time range.');
+    } else {
+      console.log(`Processed ${result.total} orders (${result.successful} successful, ${result.failed} failed)`);
+    }
+    
+    console.log('Orders synchronization completed successfully');
   } catch (error) {
     console.error('Process failed:', error);
     console.error('Error stack:', error.stack);
