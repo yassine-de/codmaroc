@@ -26,18 +26,18 @@ module.exports.handler = async (event, context) => {
     const { startDate, endDate } = JSON.parse(event.body);
     console.log(`Syncing orders from ${startDate} to ${endDate}`);
 
-    // Aktive Benutzer mit Google Sheet IDs abrufen
-    const { data: users, error: usersError } = await supabase
-      .from('users')
-      .select('id, google_sheet_id')
+    // Aktive Integrationen abrufen
+    const { data: integrations, error: integrationsError } = await supabase
+      .from('integration')
+      .select('id, user_id, sheet_id')
       .eq('is_active', true)
-      .not('google_sheet_id', 'is', null);
+      .not('sheet_id', 'is', null);
 
-    if (usersError) {
-      throw new Error(`Error fetching users: ${usersError.message}`);
+    if (integrationsError) {
+      throw new Error(`Error fetching integrations: ${integrationsError.message}`);
     }
 
-    console.log(`Found ${users.length} active users with Google Sheet IDs`);
+    console.log(`Found ${integrations.length} active integrations`);
 
     // Bestellungen verarbeiten
     const results = {
@@ -47,19 +47,19 @@ module.exports.handler = async (event, context) => {
       details: []
     };
 
-    // Für jeden Benutzer die Bestellungen synchronisieren
-    for (const user of users) {
+    // Für jede Integration die Bestellungen synchronisieren
+    for (const integration of integrations) {
       try {
-        console.log(`Processing sheet for user ${user.id} (Sheet ID: ${user.google_sheet_id})`);
+        console.log(`Processing sheet for integration ${integration.id} (Sheet ID: ${integration.sheet_id})`);
 
         // Google Sheet Daten abrufen
         const response = await sheets.spreadsheets.values.get({
-          spreadsheetId: user.google_sheet_id,
+          spreadsheetId: integration.sheet_id,
           range: 'Orders!A2:Z', // Anpassen an Ihr Sheet-Format
         });
 
         const rows = response.data.values || [];
-        console.log(`Found ${rows.length} rows in Google Sheet for user ${user.id}`);
+        console.log(`Found ${rows.length} rows in Google Sheet for integration ${integration.id}`);
 
         results.total += rows.length;
 
@@ -68,7 +68,8 @@ module.exports.handler = async (event, context) => {
             // Hier Ihre Logik zur Verarbeitung der Bestellungsdaten
             // Beispiel:
             const orderData = {
-              user_id: user.id,
+              user_id: integration.user_id,
+              integration_id: integration.id,
               sheet_order_id: row[0],
               customer_name: row[1],
               // ... weitere Felder
@@ -78,7 +79,7 @@ module.exports.handler = async (event, context) => {
             const { error } = await supabase
               .from('orders')
               .upsert(orderData, {
-                onConflict: 'sheet_order_id,user_id'
+                onConflict: 'sheet_order_id,integration_id'
               });
 
             if (error) throw error;
@@ -86,23 +87,23 @@ module.exports.handler = async (event, context) => {
             results.successful++;
             results.details.push({
               status: 'success',
-              user_id: user.id,
+              integration_id: integration.id,
               order_id: orderData.sheet_order_id
             });
           } catch (err) {
             results.failed++;
             results.details.push({
               status: 'error',
-              user_id: user.id,
+              integration_id: integration.id,
               error: err.message
             });
           }
         }
       } catch (err) {
-        console.error(`Error processing sheet for user ${user.id}:`, err);
+        console.error(`Error processing sheet for integration ${integration.id}:`, err);
         results.details.push({
           status: 'error',
-          user_id: user.id,
+          integration_id: integration.id,
           error: `Sheet processing error: ${err.message}`
         });
       }
