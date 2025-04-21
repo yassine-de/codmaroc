@@ -1,0 +1,85 @@
+name: Deploy to Netlify
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Log repository info
+        run: |
+          echo "Repository checked out successfully"
+          echo "Current branch: $(git branch --show-current)"
+          echo "Latest commit: $(git log -1 --pretty=format:'%h - %s')"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Log Node.js info
+        run: |
+          echo "Node.js setup completed"
+          echo "Node version: $(node --version)"
+          echo "NPM version: $(npm --version)"
+
+      - name: Install dependencies
+        run: |
+          echo "Starting dependency installation..."
+          npm ci
+          echo "Dependencies installed successfully"
+          echo "Node modules size: $(du -sh node_modules | cut -f1)"
+
+      - name: Setup environment variables
+        run: |
+          echo "Setting up environment variables..."
+          echo "VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }}" >> .env
+          echo "VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }}" >> .env
+          echo "Environment variables set up completed"
+          echo "Checking .env file (without sensitive data):"
+          cat .env | grep -v "KEY"
+
+      - name: Build project
+        run: |
+          echo "Starting build process..."
+          npm run build
+          echo "Build completed"
+          echo "Build output size: $(du -sh dist | cut -f1)"
+          echo "Contents of dist directory:"
+          ls -la dist/
+
+      - name: Install Netlify CLI
+        run: |
+          echo "Installing Netlify CLI..."
+          npm install -g netlify-cli
+          echo "Netlify CLI version: $(netlify --version)"
+
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          echo "Starting Netlify deployment..."
+          echo "Using site ID: $NETLIFY_SITE_ID"
+          netlify deploy --prod --site=$NETLIFY_SITE_ID --dir=dist
+          echo "Deployment completed"
+          echo "Deployment URL: $(netlify deploy --prod --site=$NETLIFY_SITE_ID --dir=dist --json | jq -r '.deploy_url')"
+
+      - name: Verify deployment
+        run: |
+          echo "Verifying deployment..."
+          DEPLOY_URL=$(netlify deploy --prod --site=$NETLIFY_SITE_ID --dir=dist --json | jq -r '.deploy_url')
+          echo "Checking deployment status..."
+          curl -I $DEPLOY_URL
+          echo "Deployment verification completed" 
