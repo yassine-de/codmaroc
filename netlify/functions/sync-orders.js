@@ -11,13 +11,8 @@ const supabase = createClient(
   process.env.VITE_SUPABASE_ANON_KEY
 );
 
-// Google Sheets API konfigurieren
-const auth = new google.auth.GoogleAuth({
-  credentials: JSON.parse(process.env.GOOGLE_SHEETS_CREDENTIALS || '{}'),
-  scopes: ['https://www.googleapis.com/auth/spreadsheets.readonly']
-});
-
-const sheets = google.sheets({ version: 'v4', auth });
+// Google Sheets API ohne Auth konfigurieren
+const sheets = google.sheets({ version: 'v4' });
 
 // Netlify Function Handler
 module.exports.handler = async (event, context) => {
@@ -28,10 +23,10 @@ module.exports.handler = async (event, context) => {
 
     // Aktive Integrationen abrufen
     const { data: integrations, error: integrationsError } = await supabase
-      .from('integration')
-      .select('id, user_id, sheet_id')
+      .from('integrations')
+      .select('id, user_id, spreadsheet_id')
       .eq('is_active', true)
-      .not('sheet_id', 'is', null);
+      .not('spreadsheet_id', 'is', null);
 
     if (integrationsError) {
       throw new Error(`Error fetching integrations: ${integrationsError.message}`);
@@ -50,11 +45,11 @@ module.exports.handler = async (event, context) => {
     // Für jede Integration die Bestellungen synchronisieren
     for (const integration of integrations) {
       try {
-        console.log(`Processing sheet for integration ${integration.id} (Sheet ID: ${integration.sheet_id})`);
+        console.log(`Processing sheet for integration ${integration.id} (Sheet ID: ${integration.spreadsheet_id})`);
 
         // Google Sheet Daten abrufen
         const response = await sheets.spreadsheets.values.get({
-          spreadsheetId: integration.sheet_id,
+          spreadsheetId: integration.spreadsheet_id,
           range: 'Orders!A2:Z', // Anpassen an Ihr Sheet-Format
         });
 
