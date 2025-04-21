@@ -1,11 +1,45 @@
 const https = require('https');
 const { createClient } = require('@supabase/supabase-js');
+const fs = require('fs');
+const path = require('path');
+
+// Funktion zum Laden der Umgebungsvariablen
+function loadEnvVariables() {
+  console.log('Loading environment variables...');
+  
+  // Versuche .env Datei zu laden
+  const envPath = path.resolve(process.cwd(), '.env');
+  if (fs.existsSync(envPath)) {
+    console.log('Found .env file, loading variables...');
+    const envContent = fs.readFileSync(envPath, 'utf8');
+    envContent.split('\n').forEach(line => {
+      const [key, value] = line.split('=');
+      if (key && value) {
+        process.env[key.trim()] = value.trim();
+      }
+    });
+    console.log('Environment variables loaded from .env file');
+  } else {
+    console.log('No .env file found, using process environment variables');
+  }
+}
+
+// Umgebungsvariablen laden
+loadEnvVariables();
 
 // Umgebungsvariablen
 const NETLIFY_SITE_ID = process.env.NETLIFY_SITE_ID;
 const NETLIFY_AUTH_TOKEN = process.env.NETLIFY_AUTH_TOKEN;
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
 const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY;
+
+// Überprüfe erforderliche Umgebungsvariablen
+if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+  console.error('Required environment variables are missing:');
+  console.error('VITE_SUPABASE_URL:', SUPABASE_URL ? 'Set' : 'Not set');
+  console.error('VITE_SUPABASE_ANON_KEY:', SUPABASE_ANON_KEY ? 'Set' : 'Not set');
+  process.exit(1);
+}
 
 // Supabase Client initialisieren
 console.log('Initializing Supabase client...');
