@@ -69,6 +69,8 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
         run: |
           echo "Starting Netlify deployment..."
           echo "Using site ID: $NETLIFY_SITE_ID"
@@ -82,4 +84,15 @@ jobs:
           DEPLOY_URL=$(netlify deploy --prod --site=$NETLIFY_SITE_ID --dir=dist --json | jq -r '.deploy_url')
           echo "Checking deployment status..."
           curl -I $DEPLOY_URL
-          echo "Deployment verification completed" 
+          echo "Deployment verification completed"
+
+      - name: Run sync-orders script
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
+        run: |
+          echo "Running sync-orders script..."
+          node scripts/sync-orders.cjs
+          echo "Sync-orders script completed" 
