@@ -21,6 +21,16 @@ export interface Order {
   quantity: number
   product_id: string
   sheet_order_id?: string
+  wakilni_id?: string
+  tracking_id?: string
+  wakilni_status?: number
+  last_checked_at?: string
+  product?: {
+    id: string
+    name: string
+    sku?: string
+    price: number
+  }
 }
 
 export interface NewOrder {

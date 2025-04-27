@@ -15,7 +15,7 @@
 
 [context.branch-deploy]
   command = "npm run build"
-  environment = { NODE_VERSION = "18" }
+  environment = { NODE_VERSION = "18", VITE_WAKILNI_KEY = "fgpdVPA7pU", VITE_WAKILNI_SECRET = "N1IpMmCUn4CIqckrvTqmDznbZPlSaf3lww1" }
   functions = "netlify/functions"
 
 [[redirects]]
@@ -25,6 +25,8 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  VITE_WAKILNI_KEY = "fgpdVPA7pU"
+  VITE_WAKILNI_SECRET = "N1IpMmCUn4CIqckrvTqmDznbZPlSaf3lww1"
 
 [[headers]]
   for = "/*"

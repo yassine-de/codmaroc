@@ -98,6 +98,17 @@ onUnmounted(() => {
             <span class="ml-3">Products</span>
           </RouterLink>
 
+          <!-- Wakilni Status -->
+          <RouterLink
+            to="/wakilni-status"
+            class="flex items-center px-2 py-2 mb-1 rounded-md transition-colors"
+            :class="isActive('/wakilni-status') ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100'"
+            @click="sidebarStore.isMobile && sidebarStore.closeSidebar()"
+          >
+            <i class="fas fa-truck w-5"></i>
+            <span class="ml-3">Wakilni Status</span>
+          </RouterLink>
+
           <!-- Non-Staff Links -->
           <template v-if="!isStaff">
             <RouterLink

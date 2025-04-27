@@ -11,6 +11,7 @@ import Integration from '../views/Integration.vue'
 import Wallet from '../views/Wallet.vue'
 import Settings from '../views/Settings.vue'
 import Statistics from '../views/Statistics.vue'
+import WakilniStatus from '../views/WakilniStatus.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -79,6 +80,15 @@ const router = createRouter({
       meta: {
         requiresAuth: true,
         adminOnly: true
+      }
+    },
+    {
+      path: '/wakilni-status',
+      name: 'wakilni-status',
+      component: WakilniStatus,
+      meta: {
+        requiresAuth: true,
+        title: 'Wakilni Status'
       }
     }
   ]

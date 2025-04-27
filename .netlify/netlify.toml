@@ -1,0 +1,68 @@
+functionsDirectory = "D:\\CURSOR3\\netlify\\functions"
+functionsDirectoryOrigin = "config-v1"
+headersOrigin = "config"
+redirectsOrigin = "config"
+plugins = []
+
+[build]
+publish = "D:\\CURSOR3\\dist"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "npm run build"
+functions = "D:\\CURSOR3\\netlify\\functions"
+
+[build.environment]
+NODE_VERSION = "18"
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
+
+[[cron]]
+schedule = "*/5 * * * *"
+command = "curl -X POST https://codservice.org/.netlify/functions/sync-integrations"
+
+[cron.context]
+include = ["production"]
+
+[[cron]]
+schedule = "*/5 * * * *"
+command = "curl -X POST https://dev.codservice.org/.netlify/functions/sync-integrations"
+
+[cron.context]
+include = ["deploy-preview", "branch-deploy"]
+
+[functions]
+
+[functions."*"]
+external_node_modules = ["@supabase/supabase-js"]
+node_bundler = "esbuild"
+
+[[headers]]
+for = "/*"
+
+[headers.values]
+X-Frame-Options = "DENY"
+X-XSS-Protection = "1; mode=block"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[redirects]]
+from = "/*"
+to = "/index.html"
+status = 200.0
+force = false
+
+[redirects.query]
+
+[redirects.conditions]
+
+[redirects.headers]

@@ -1,0 +1,5 @@
+tasks:
+  - name: sync-sheets
+    schedule: '*/5 * * * *'
+    function: sync-sheets
+    verification_token: ${SUPABASE_FUNCTION_TOKEN} 
