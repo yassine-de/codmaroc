@@ -3,6 +3,7 @@ import { ref, onMounted, computed, watch } from 'vue'
 import { useOrderStore, ORDER_STATUS } from '../stores/orders'
 import { useAuthStore } from '../stores/auth'
 import { Chart, registerables } from 'chart.js'
+import { supabase } from '../lib/supabase'
 Chart.register(...registerables)
 
 interface Order {
@@ -362,6 +363,7 @@ watch([productFilter, statusFilter, dateRange], () => {
 onMounted(async () => {
   await orderStore.fetchOrders()
   calculateStats()
+  fetchStaffConfirmation()
 })
 
 // Add the computed property for confirmed orders total
@@ -481,6 +483,28 @@ watch(() => orderStore.orders, () => {
   createChart('confirmedOrdersChart', confirmedOrders, 'Confirmed Orders')
   createChart('deliveredOrdersChart', deliveredOrders, 'Delivered Orders')
 }, { immediate: true })
+
+const staffConfirmation = ref({
+  confirmed: 0,
+  handled: 0,
+  rate: 0
+})
+
+const fetchStaffConfirmation = async () => {
+  if (!isStaff.value || !authStore.user?.id) return
+  const { data: history, error } = await supabase
+    .from('order_history')
+    .select('changed_by, new_status')
+    .eq('changed_by', authStore.user.id)
+  if (error) return
+  const confirmed = history.filter((h: any) => h.new_status === 11).length
+  const handled = history.length
+  staffConfirmation.value = {
+    confirmed,
+    handled,
+    rate: handled > 0 ? Math.round((confirmed / handled) * 100) : 0
+  }
+}
 </script>
 
 <template>
@@ -651,6 +675,16 @@ watch(() => orderStore.orders, () => {
       <div class="bg-white rounded-lg shadow p-6">
         <h3 class="text-lg font-medium text-gray-900 mb-4">Delivered Orders (Last 7 Days)</h3>
         <canvas id="deliveredOrdersChart"></canvas>
+      </div>
+    </div>
+
+    <div v-if="isStaff" class="bg-white rounded-lg shadow p-6 mb-6">
+      <h3 class="text-lg font-medium text-gray-900 mb-2">Deine Confirmation Rate</h3>
+      <div class="flex items-center space-x-6">
+        <div>
+          <span class="text-2xl font-bold text-green-600">{{ staffConfirmation.rate }}%</span>
+          <span class="ml-2 text-gray-600">({{ staffConfirmation.confirmed }} von {{ staffConfirmation.handled }} Bestätigungen)</span>
+        </div>
       </div>
     </div>
   </div>

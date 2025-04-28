@@ -12,6 +12,7 @@ import Wallet from '../views/Wallet.vue'
 import Settings from '../views/Settings.vue'
 import Statistics from '../views/Statistics.vue'
 import WakilniStatus from '../views/WakilniStatus.vue'
+import StaffStatistics from '../views/StaffStatistics.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -90,6 +91,16 @@ const router = createRouter({
         requiresAuth: true,
         adminOnly: true,
         title: 'Wakilni Status'
+      }
+    },
+    {
+      path: '/staff-statistics',
+      name: 'staff-statistics',
+      component: StaffStatistics,
+      meta: {
+        requiresAuth: true,
+        adminOnly: true,
+        title: 'Staff Statistik'
       }
     }
   ]

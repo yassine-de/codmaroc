@@ -166,6 +166,16 @@ onUnmounted(() => {
             <i class="fas fa-chart-bar w-5"></i>
             <span class="ml-3">Statistiken</span>
           </RouterLink>
+          <RouterLink
+            v-if="isAdmin"
+            to="/staff-statistics"
+            class="flex items-center px-2 py-2 mb-1 rounded-md transition-colors"
+            :class="isActive('/staff-statistics') ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100'"
+            @click="sidebarStore.isMobile && sidebarStore.closeSidebar()"
+          >
+            <i class="fas fa-user-check w-5"></i>
+            <span class="ml-3">Staff Statistik</span>
+          </RouterLink>
         </template>
 
         <!-- Auth Links (when not logged in) -->
