@@ -170,10 +170,16 @@ export class WakilniService {
       floor: 1
     }
 
-    return this.request('/clients/start_bulk', {
+    const response = await this.request('/clients/start_bulk', {
       method: 'POST',
       body: JSON.stringify(bulkData)
     })
+    
+    if (!response.success) {
+      console.error('Wakilni startBulk Fehler:', response)
+      throw new Error(response.message || JSON.stringify(response))
+    }
+    return response
   }
 
   async addDelivery(bulkId: string, orderData: Partial<WakilniOrderData>): Promise<WakilniResponse> {
@@ -270,38 +276,73 @@ export class WakilniService {
     }
   }
 
+  async createOrderFromData(orderData: OrderData): Promise<WakilniResponse> {
+    try {
+      // Bulk-Start
+      const bulkResponse = await this.startBulk()
+      if (!bulkResponse.success || !bulkResponse.bulk_id) {
+        console.error('Bulk-Start fehlgeschlagen:', bulkResponse)
+        throw new Error(bulkResponse.message || 'Failed to start bulk order: ' + JSON.stringify(bulkResponse))
+      }
+
+      // Order-Daten konvertieren
+      const wakilniOrderData = this.convertOrderData(orderData)
+
+      // Order hinzufügen
+      const addResponse = await this.addDelivery(bulkResponse.bulk_id, wakilniOrderData)
+      if (!addResponse.success) {
+        console.error('addDelivery fehlgeschlagen:', addResponse)
+        throw new Error(addResponse.message || 'Failed to add delivery: ' + JSON.stringify(addResponse))
+      }
+
+      // Bulk beenden
+      const endResponse = await this.endBulk(bulkResponse.bulk_id)
+      if (!endResponse.success) {
+        console.error('endBulk fehlgeschlagen:', endResponse)
+        throw new Error(endResponse.message || 'Failed to end bulk order: ' + JSON.stringify(endResponse))
+      }
+
+      return endResponse
+    } catch (error) {
+      console.error('Error creating order:', error)
+      throw error
+    }
+  }
+
   convertOrderData(order: OrderData): WakilniOrderData {
-    // Teile den Namen in Vor- und Nachname
-    const [firstName = "", lastName = ""] = order.customer_name.split(" ", 2);
+    // Name in Vor- und Nachnamen aufteilen
+    const nameParts = order.customer_name.split(' ')
+    const firstName = nameParts[0] || 'Customer'
+    const lastName = nameParts.slice(1).join(' ') || 'Unknown'
+
+    // Adresse in Gebäude und Bereich aufteilen
+    const addressParts = order.address.split(',')
+    const building = addressParts[0] || order.address
+    const area = order.city || 'Beirut'
 
     return {
-      receiver_first_name: firstName || order.customer_name,
-      receiver_last_name: lastName || ".",
+      receiver_first_name: firstName,
+      receiver_last_name: lastName,
       receiver_phone_number: order.phone,
-      receiver_area: order.city,
-      receiver_building: order.address,
+      receiver_area: area,
+      receiver_building: building,
       receiver_floor: 1,
       receiver_location_id: 1,
       receiver_id: 1,
       waybill: 1,
       currency: 1, // USD
-      cash_collection_type_id: 54, // paid
+      cash_collection_type_id: 52, // On Delivery
       collection_amount: order.total_amount,
       note: order.notes,
       packages: order.items.map(item => ({
         quantity: item.quantity,
-        type_id: 58, // regular box
+        type_id: 58, // Regular box
         name: item.name,
-        sku: item.sku || `SKU-${order.reference_id}`
+        sku: item.sku
       })),
       location_id: 1,
       get_order_details: true
     }
-  }
-
-  async createOrderFromData(orderData: OrderData): Promise<WakilniResponse> {
-    const wakilniOrderData = this.convertOrderData(orderData);
-    return this.createOrder(wakilniOrderData);
   }
 }
 

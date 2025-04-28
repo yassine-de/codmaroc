@@ -115,11 +115,25 @@ const filteredOrders = computed(() => {
 
   // Sortierung basierend auf der Benutzerrolle
   if (isStaff.value) {
-    // Für Staff: Erst NEW Status, dann nach created_at
+    // Für Staff: 
     filtered.sort((a, b) => {
-      if (a.status === Number(ORDER_STATUS.NEW) && b.status !== Number(ORDER_STATUS.NEW)) return -1;
-      if (a.status !== Number(ORDER_STATUS.NEW) && b.status === Number(ORDER_STATUS.NEW)) return 1;
-      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      // Wenn kein Status-Filter ausgewählt ist
+      if (statusFilter.value === 'All') {
+        // NEW Status zuerst
+        if (a.status === Number(ORDER_STATUS.NEW) && b.status !== Number(ORDER_STATUS.NEW)) return -1;
+        if (a.status !== Number(ORDER_STATUS.NEW) && b.status === Number(ORDER_STATUS.NEW)) return 1;
+        
+        // Wenn beide NEW sind, älteste zuerst
+        if (a.status === Number(ORDER_STATUS.NEW) && b.status === Number(ORDER_STATUS.NEW)) {
+          return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+        }
+        
+        // Für alle anderen Status, neueste zuerst
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      } else {
+        // Wenn ein Status-Filter ausgewählt ist, älteste zuerst
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      }
     });
   } else {
     // Für Admin und Seller: Nach sheet_order_id absteigend sortieren

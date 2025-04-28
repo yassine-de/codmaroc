@@ -100,6 +100,7 @@ onUnmounted(() => {
 
           <!-- Wakilni Status -->
           <RouterLink
+            v-if="isAdmin"
             to="/wakilni-status"
             class="flex items-center px-2 py-2 mb-1 rounded-md transition-colors"
             :class="isActive('/wakilni-status') ? 'bg-red-600 text-white' : 'text-gray-700 hover:bg-gray-100'"

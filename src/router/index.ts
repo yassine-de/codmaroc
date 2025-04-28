@@ -88,6 +88,7 @@ const router = createRouter({
       component: WakilniStatus,
       meta: {
         requiresAuth: true,
+        adminOnly: true,
         title: 'Wakilni Status'
       }
     }

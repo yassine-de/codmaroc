@@ -1,19 +1,26 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { supabase } from '../lib/supabase'
 import { WakilniService, WAKILNI_STATUS_LABELS } from '../lib/wakilni'
 import type { Order } from '../stores/orders'
+import { useAuthStore } from '../stores/auth'
 
-// Wakilni Service initialisieren
-const wakilniService = new WakilniService({
-  key: "fgpdVPA7pU",
-  secret: "N1IpMmCUn4CIqckrvTqmDznbZPlSaf3lww1"
-})
+// Auth Store initialisieren
+const authStore = useAuthStore()
+
+// Admin-Rolle prüfen
+const isAdmin = computed(() => authStore.user?.role === 1)
 
 const orders = ref<Order[]>([])
 const loading = ref(false)
 const error = ref('')
 const selectedOrders = ref<number[]>([])
+
+// Wakilni Service initialisieren
+const wakilniService = new WakilniService({
+  key: import.meta.env.VITE_WAKILNI_API_KEY,
+  secret: import.meta.env.VITE_WAKILNI_API_SECRET
+})
 
 // Orders laden die confirmed sind aber noch keine wakilni_id haben
 const loadOrders = async () => {
@@ -88,11 +95,11 @@ const sendToWakilni = async () => {
           }],
           total_amount: order.total_amount,
           reference_id: order.id.toString(),
-          notes: order.notes || undefined
+          notes: order.info || undefined // Verwende info statt notes
         }
 
         // Order an Wakilni senden
-        const response = await wakilniService.createOrder(wakilniOrder)
+        const response = await wakilniService.createOrderFromData(wakilniOrder)
         
         if (!response.success || !response.data?.tracking_id) {
           throw new Error(response.message || 'Keine Tracking ID erhalten')
@@ -144,12 +151,14 @@ const getMessageClass = (message: string) => {
 }
 
 onMounted(() => {
-  loadOrders()
+  if (isAdmin.value) {
+    loadOrders()
+  }
 })
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-8">
+  <div v-if="isAdmin" class="container mx-auto px-4 py-8">
     <div class="mb-6 flex justify-between items-center">
       <h1 class="text-2xl font-bold">Wakilni Status</h1>
       <button
@@ -239,6 +248,12 @@ onMounted(() => {
           </tr>
         </tbody>
       </table>
+    </div>
+  </div>
+  <div v-else class="container mx-auto px-4 py-8">
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+      <strong class="font-bold">Zugriff verweigert!</strong>
+      <span class="block sm:inline"> Sie haben keine Berechtigung, diese Seite zu sehen.</span>
     </div>
   </div>
 </template>
