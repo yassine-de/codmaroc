@@ -120,8 +120,8 @@ const filteredOrders = computed(() => {
       // Wenn kein Status-Filter ausgewählt ist
       if (statusFilter.value === 'All') {
         // NEW Status zuerst
-        if (a.status === Number(ORDER_STATUS.NEW) && b.status !== Number(ORDER_STATUS.NEW)) return -1;
-        if (a.status !== Number(ORDER_STATUS.NEW) && b.status === Number(ORDER_STATUS.NEW)) return 1;
+      if (a.status === Number(ORDER_STATUS.NEW) && b.status !== Number(ORDER_STATUS.NEW)) return -1;
+      if (a.status !== Number(ORDER_STATUS.NEW) && b.status === Number(ORDER_STATUS.NEW)) return 1;
         
         // Wenn beide NEW sind, älteste zuerst
         if (a.status === Number(ORDER_STATUS.NEW) && b.status === Number(ORDER_STATUS.NEW)) {
@@ -129,7 +129,7 @@ const filteredOrders = computed(() => {
         }
         
         // Für alle anderen Status, neueste zuerst
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       } else {
         // Wenn ein Status-Filter ausgewählt ist, älteste zuerst
         return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
@@ -338,6 +338,7 @@ const handleAddOrder = async () => {
 }
 
 const openEditModal = (order: Order) => {
+  error.value = ''
   editingOrder.value = { ...order }
   // Extrahiere die Stadt aus der Adresse
   const addressParts = order.shipping_address.split(',')
@@ -353,6 +354,12 @@ const openEditModal = (order: Order) => {
 
 const handleEditOrder = async () => {
   if (!editingOrder.value) return
+
+  // Validiere, dass eine Stadt ausgewählt wurde
+  if (!selectedCity.value) {
+    error.value = 'Please select a city'
+    return
+  }
 
   try {
     // Füge Stadt zur Adresse hinzu, nur wenn eine Stadt ausgewählt wurde
@@ -413,14 +420,22 @@ const handleExportExcel = () => {
     // Finde das Produkt für die SKU
     const product = productStore.products.find(p => p.id === order.product_id)
     return {
-      'Phone': order.phone,
       'CUSTOMER': order.customer_name,
+      'Email': '',
+      'Phone': order.phone,
       'City': order.city || '',
+      'Floor': '',
+      'Building': '',
       'Adress': order.shipping_address || '',
       'Total Price': order.total_amount,
+      'Currency': 'usd',
+      'Alternative Currencies': 'lbp',
+      'Regular Box': 'Regular Box',
+      'Package Quantity': '1',
+      'Package Name': '',
       'SKU': product?.sku || '',
       'ORDER ID': order.id,
-      'Quantity': order.quantity,
+      'Qauntity + "pc " + Product Name + " " + SKU': `${order.quantity}pc ${order.product_name} ${product?.sku || ''}`,
       'Product Name': order.product_name,
       'Seller': order.seller_name || ''
     }
@@ -561,7 +576,6 @@ const handleCheckboxChange = (e: Event) => {
 <template>
   <div class="max-w-full mx-auto px-4 py-8">
     <!-- Success/Error Messages -->
-    <div v-if="error" class="mb-4 p-4 bg-red-50 text-red-700 rounded-md">{{ error }}</div>
     <div v-if="success" class="mb-4 p-4 bg-green-50 text-green-700 rounded-md whitespace-pre-line">{{ success }}</div>
 
     <!-- Stats Grid -->
@@ -961,11 +975,15 @@ const handleCheckboxChange = (e: Event) => {
           <h2 class="text-xl font-semibold">Edit Order #{{ editingOrder.id }}</h2>
           <button
             type="button"
-            @click="showEditModal = false"
+            @click="() => { showEditModal = false; error = '' }"
             class="text-gray-400 hover:text-gray-500"
           >
             <i class="fas fa-times"></i>
           </button>
+        </div>
+
+        <div v-if="error" class="mb-4 p-2 bg-red-50 text-red-700 rounded-md text-center">
+          {{ error }}
         </div>
 
         <form @submit.prevent="handleEditOrder" class="space-y-6">
@@ -1173,7 +1191,7 @@ const handleCheckboxChange = (e: Event) => {
             <div class="flex space-x-3">
               <button
                 type="button"
-                @click="showEditModal = false"
+                @click="() => { showEditModal = false; error = '' }"
                 class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
               >
                 {{ isStaffOrAdmin ? 'Cancel' : 'Close' }}
