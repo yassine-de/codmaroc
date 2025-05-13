@@ -152,7 +152,7 @@ const getMessageClass = (message: string) => {
 
 onMounted(() => {
   if (isAdmin.value) {
-    loadOrders()
+  loadOrders()
   }
 })
 </script>

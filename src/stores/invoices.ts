@@ -180,7 +180,9 @@ export const useInvoiceStore = defineStore('invoices', () => {
       error.value = ''
       success.value = ''
 
-      // Get delivered orders for the current user
+      // Get delivered orders for the current user, die älter als 10 Tage sind
+      const tenDaysAgo = new Date();
+      tenDaysAgo.setDate(tenDaysAgo.getDate() - 10);
       const { data: orders, error: ordersError } = await supabase
         .from('orders')
         .select(`
@@ -191,6 +193,7 @@ export const useInvoiceStore = defineStore('invoices', () => {
         .eq('status', 'Delivered')
         .eq('invoice_id', null)
         .eq('user_id', authStore.user?.id)
+        .lt('created_at', tenDaysAgo.toISOString());
 
       if (ordersError) throw ordersError
 
@@ -361,6 +364,38 @@ export const useInvoiceStore = defineStore('invoices', () => {
     }
   }
 
+  const deleteInvoice = async (invoiceId: string) => {
+    try {
+      loading.value = true
+      error.value = null
+
+      // First, update all orders to remove invoice_id
+      const { error: updateError } = await supabase
+        .from('orders')
+        .update({ invoice_id: null })
+        .eq('invoice_id', invoiceId)
+
+      if (updateError) throw updateError
+
+      // Then delete the invoice
+      const { error: deleteError } = await supabase
+        .from('invoices')
+        .delete()
+        .eq('id', invoiceId)
+
+      if (deleteError) throw deleteError
+
+      // Refresh the invoices list
+      await fetchInvoices()
+    } catch (err: any) {
+      error.value = err.message
+      console.error('Error deleting invoice:', err)
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     invoices,
     loading,
@@ -372,6 +407,7 @@ export const useInvoiceStore = defineStore('invoices', () => {
     createInvoice,
     updateInvoiceStatus,
     updateFactorisationFees,
-    uploadPaymentProof
+    uploadPaymentProof,
+    deleteInvoice
   }
 })

@@ -302,7 +302,7 @@ export const useIntegrationStore = defineStore('integration', () => {
               const orderDate = new Date(order.created_at)
               const currentDate = new Date()
               const daysDifference = Math.abs(currentDate.getTime() - orderDate.getTime()) / (1000 * 60 * 60 * 24)
-              return daysDifference <= 7
+              return daysDifference <= 3
             }
             return false
           })

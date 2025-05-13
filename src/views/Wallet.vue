@@ -136,115 +136,104 @@
 
     <!-- Invoices Table -->
     <div class="bg-white rounded-lg shadow overflow-hidden">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <input
-                type="checkbox"
-                :checked="selectedInvoices.length === paginatedInvoices.length && paginatedInvoices.length > 0"
-                :indeterminate="selectedInvoices.length > 0 && selectedInvoices.length < paginatedInvoices.length"
-                @change="e => {
-                  const checked = e.target.checked
-                  selectedInvoices = checked ? paginatedInvoices.map(i => i.id) : []
-                }"
-                class="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-              >
-            </th>
-            <th v-if="isAdmin" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Seller</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Orders</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="invoice in paginatedInvoices" :key="invoice.id">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <input
-                type="checkbox"
-                v-model="selectedInvoices"
-                :value="invoice.id"
-                class="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-              >
-            </td>
-            <td v-if="isAdmin" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ invoice.user?.name }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              {{ formatDate(invoice.created_at) }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ invoice.orders?.length || 0 }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              ${{ formatPrice(invoice.total_amount) }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span
-                :class="[
-                  'px-2 py-1 text-xs rounded-full',
-                  invoice.status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                ]"
-              >
-                {{ invoice.status }}
-              </span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-              <!-- PDF Download -->
-              <button
-                @click="downloadPDF(invoice)"
-                class="text-blue-600 hover:text-blue-800"
-                title="Export to PDF"
-              >
-                <i class="fas fa-file-pdf"></i>
-              </button>
-
-              <!-- Excel Download -->
-              <button
-                @click="downloadExcel(invoice)"
-                class="text-green-600 hover:text-green-800"
-                title="Export to Excel"
-              >
-                <i class="fas fa-file-excel"></i>
-              </button>
-
-              <!-- Additional Fees -->
-              <button
-                v-if="isAdmin"
-                @click="() => { editingInvoice = invoice; showAddFeeModal = true }"
-                class="text-blue-600 hover:text-blue-800"
-                title="Add Additional Fees"
-              >
-                <i class="fas fa-plus-circle"></i>
-              </button>
-
-              <!-- Toggle Status (Admin Only) -->
-              <button
-                v-if="isAdmin"
-                @click="toggleStatus(invoice)"
-                :class="[
-                  invoice.status === 'Paid' ? 'text-red-600 hover:text-red-800' : 'text-green-600 hover:text-green-800'
-                ]"
-                title="Toggle Payment Status"
-              >
-                <i class="fas fa-check"></i>
-              </button>
-
-              <!-- Delete -->
-              <button
-                v-if="isAdmin"
-                @click="() => handleDeleteInvoice(invoice.id)"
-                class="text-red-600 hover:text-red-800"
-                title="Delete Invoice"
-              >
-                <i class="fas fa-trash"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">INVOICE ID</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">DATE</th>
+              <th v-if="isAdmin" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SELLER</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ORDERS</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">AMOUNT</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">STATUS</th>
+              <th v-if="isAdmin" scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="invoice in paginatedInvoices" :key="invoice.id">
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <div class="flex items-center">
+                  {{ invoice.invoice_number }}
+                  <button
+                    @click="showInvoiceHtml(invoice)"
+                    class="ml-2 bg-yellow-50 text-yellow-700 rounded-lg p-2 hover:bg-yellow-100 flex items-center justify-center"
+                    title="Rechnung als HTML anzeigen"
+                  >
+                    <i class="fas fa-file-code"></i>
+                  </button>
+                  <button
+                    @click="downloadExcel(invoice)"
+                    class="ml-2 bg-green-50 text-green-700 rounded-lg p-2 hover:bg-green-100 flex items-center justify-center"
+                    title="Export to Excel"
+                  >
+                    <i class="fas fa-file-excel text-xl"></i>
+                  </button>
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {{ formatDate(invoice.created_at) }}
+              </td>
+              <td v-if="isAdmin" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ invoice.user?.name }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ invoice.orders?.length || 0 }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                ${{ formatPrice(invoice.total_amount) }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span
+                  :class="[
+                    'px-2 py-1 text-xs rounded-full',
+                    invoice.status === 'Paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                  ]"
+                >
+                  {{ invoice.status }}
+                </span>
+              </td>
+              <td v-if="isAdmin" class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                <div class="flex items-center space-x-2">
+                  <!-- Add Fees Button -->
+                  <button
+                    v-if="isAdmin"
+                    @click="() => { editingInvoice = invoice; showAddFeeModal = true }"
+                    class="text-blue-600 hover:text-blue-800"
+                    title="Add Additional Fees"
+                  >
+                    <i class="fas fa-plus-circle"></i>
+                  </button>
+                  <!-- Upload Image Button -->
+                  <button
+                    @click="() => showUploadProofModal(invoice)"
+                    class="text-green-600 hover:text-green-800"
+                    title="Upload Payment Proof"
+                  >
+                    <i class="fas fa-upload"></i>
+                  </button>
+                  <!-- Set Paid Icon -->
+                  <button
+                    v-if="invoice.status !== 'Paid'"
+                    @click="() => toggleStatus(invoice)"
+                    class="bg-green-50 text-green-700 rounded-lg p-2 hover:bg-green-100 flex items-center justify-center"
+                    title="Als bezahlt markieren"
+                  >
+                    <i class="fas fa-check-circle text-xl"></i>
+                  </button>
+                  <!-- Delete Button direkt daneben -->
+                  <button
+                    @click="() => handleDeleteInvoice(invoice.id)"
+                    class="bg-red-50 text-red-700 rounded-lg p-2 hover:bg-red-100 flex items-center justify-center"
+                    title="Delete"
+                  >
+                    <i class="fas fa-trash text-xl"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Pagination -->
       <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200">
@@ -402,6 +391,17 @@
         </div>
       </div>
     </div>
+
+    <!-- PDF Template -->
+    <div id="pdf-invoice-template" style="height:0; overflow:hidden;"></div>
+
+    <!-- Invoice HTML Modal -->
+    <div v-if="showInvoiceModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div class="bg-white rounded-lg shadow-lg max-w-4xl w-full max-h-[90vh] overflow-auto relative p-6">
+        <button @click="showInvoiceModal = false" class="absolute top-4 right-4 text-gray-500 hover:text-black text-2xl">&times;</button>
+        <div v-html="modalInvoiceHtml"></div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -410,9 +410,9 @@ import { ref, computed, onMounted } from 'vue'
 import { useInvoiceStore, type Invoice, type InvoiceFee } from '../stores/invoices'
 import { format } from 'date-fns'
 import { exportToExcel } from '../lib/export'
-import { jsPDF } from 'jspdf'
-import autoTable from 'jspdf-autotable'
 import { supabase } from '../lib/supabase'
+import html2pdf from 'html2pdf.js'
+import '../assets/Amiri-Regular-normal.js'
 
 const invoiceStore = useInvoiceStore()
 const isAdmin = computed(() => invoiceStore.isAdmin)
@@ -442,11 +442,18 @@ const newFee = ref({
   amount: 0
 })
 
+// Add new ref for more options dropdown
+const activeMoreOptions = ref<number | null>(null)
+
+// Im Script-Bereich:
+const showInvoiceModal = ref(false)
+const modalInvoiceHtml = ref('')
+
 // Computed
 const stats = computed(() => invoiceStore.stats)
 
-const formatPrice = (price: number) => {
-  return price.toFixed(2)
+const formatPrice = (price: number | undefined | null) => {
+  return typeof price === 'number' && !isNaN(price) ? price.toFixed(2) : '0.00'
 }
 
 // Computed Properties für Statistiken
@@ -665,177 +672,117 @@ const uploadProof = async () => {
   }
 }
 
-const downloadPDF = (invoice: Invoice) => {
-  const doc = new jsPDF()
+const generateInvoiceHtml = (invoice) => {
+  // Englisches Layout, schöner Stil, Hinweis für PDF-Export
+  const totalRevenue = invoice.orders?.reduce((sum, o) => sum + (o.total_amount || 0), 0) || 0
+  const totalShipping = (invoice.orders?.length || 0) * 9
+  const totalCOD = invoice.orders?.reduce((sum, o) => sum + ((o.total_amount || 0) * 0.05), 0) || 0
+  const totalFees = totalShipping + totalCOD
+  const netPayment = totalRevenue - totalFees
+  return `
+    <html>
+      <head>
+        <meta charset='UTF-8'>
+        <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+        <style>
+          body { font-family: 'Amiri', serif; font-size: 16px; margin: 40px; color: #222; }
+          .pdf-hint { background: #fffbe6; color: #b26a00; border: 1px solid #ffe58f; padding: 10px 18px; border-radius: 8px; margin-bottom: 24px; font-size: 15px; }
+          .header { font-size: 2.2rem; font-weight: bold; margin-bottom: 0.5rem; letter-spacing: 2px; }
+          .invoice-no { color: #ff8c00; font-size: 1.1rem; margin-bottom: 1.5rem; }
+          .seller-info { margin-bottom: 1.5rem; }
+          .seller-info b { color: #333; }
+          table { border-collapse: collapse; width: 100%; margin-bottom: 2rem; }
+          th, td { border: 1px solid #bbb; padding: 8px 10px; text-align: center; }
+          th { background: #f5f5f5; font-weight: bold; font-size: 1rem; }
+          .summary { float: right; border: 2.5px solid #bbb; padding: 18px 28px; min-width: 320px; font-size: 1.15rem; background: #fafafa; }
+          .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
+          .summary-row:last-child { font-weight: bold; font-size: 1.2rem; }
+        </style>
+      </head>
+      <body>
+        <div class="pdf-hint">To save as PDF: Press <b>Ctrl+P</b> or right-click → Print, then select <b>Save as PDF</b>.</div>
+        <div class="header">INVOICE</div>
+        <div class="invoice-no"># ${invoice.invoice_number || invoice.id}</div>
+        <div class="seller-info">
+          <b>Seller:</b> ${invoice.user?.name || ''}<br>
+          <b>Date:</b> ${formatDate(invoice.created_at)}<br>
+          <b>NB Orders:</b> ${invoice.orders?.length || 0}
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Order ID</th>
+              <th>Product Name</th>
+              <th>Quantity</th>
+              <th>CRBT</th>
+              <th>Shipping Fees</th>
+              <th>COD Fees</th>
+              <th>Payment</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${invoice.orders?.map((order, idx) => {
+              const crbt = order.total_amount || 0
+              const shipping = 9
+              const cod = +(crbt * 0.05).toFixed(2)
+              const payment = +(crbt - shipping - cod).toFixed(2)
+              return `<tr>
+                <td>${idx + 1}</td>
+                <td>${order.id}</td>
+                <td>${order.product?.name || ''}</td>
+                <td>${order.quantity || 1}</td>
+                <td>${formatPrice(crbt)}$</td>
+                <td>${formatPrice(shipping)}$</td>
+                <td>${formatPrice(cod)}$</td>
+                <td>${formatPrice(payment)}$</td>
+              </tr>`
+            }).join('')}
+          </tbody>
+        </table>
+        <div class="summary">
+          <div class="summary-row"><span>Total Revenue</span><span>${formatPrice(totalRevenue)}$</span></div>
+          <div class="summary-row"><span>Total Fees</span><span>${formatPrice(totalFees)}$</span></div>
+          <div class="summary-row"><span>Net Payment</span><span>${formatPrice(netPayment)}$</span></div>
+        </div>
+      </body>
+    </html>
+  `
+}
 
-  // Lade die arabische Schriftart
-  doc.addFont('https://fonts.gstatic.com/ea/notokufiarabic/v2/NotoKufiArabic-Regular.ttf', 'NotoKufiArabic', 'normal')
-  doc.addFont('https://fonts.gstatic.com/ea/notokufiarabic/v2/NotoKufiArabic-Bold.ttf', 'NotoKufiArabic', 'bold')
-  
-  autoTable(doc, {}) // Initialize autoTable
-
-  // Add company logo/name
-  doc.setFontSize(28)
-  doc.setTextColor(220, 38, 38) // Red color for logo
-  doc.text('CODService', 20, 25)
-  
-  // Add invoice number with better styling
-  doc.setFontSize(12)
-  doc.setTextColor(75, 85, 99) // Gray color for secondary text
-  doc.text(`# ${invoice.invoice_number}`, 20, 35)
-
-  // Add horizontal line
-  doc.setDrawColor(229, 231, 235) // Light gray for lines
-  doc.line(20, 40, 190, 40)
-
-  // Add invoice details section
-  doc.setFontSize(11)
-  doc.setTextColor(31, 41, 55) // Dark gray for main text
-  doc.text('Invoice To:', 20, 55)
-  
-  // Seller info box with subtle border and background
-  doc.setFillColor(249, 250, 251) // Very light gray background
-  doc.setDrawColor(229, 231, 235)
-  doc.roundedRect(20, 60, 85, 45, 3, 3, 'FD')
-  
-  doc.setFontSize(10)
-  const sellerInfo = [
-    `Seller Fullname: ${invoice.user?.name || ''}`,
-    `Country: ${invoice.user?.country || ''}`,
-    `Date Payment: [${formatDate(invoice.created_at)}]`,
-    `NB Orders: ${invoice.orders?.length || 0}`
-  ]
-  doc.text(sellerInfo, 25, 70)
-
-  // Add orders section title with background
-  doc.setFillColor(249, 250, 251)
-  doc.rect(20, 115, 170, 10, 'F')
-  doc.setFontSize(12)
-  doc.setTextColor(31, 41, 55)
-  doc.text('Orders', 105, 122, { align: 'center' }) // Centered Orders title
-
-  // Add orders table with improved styling and Arabic support
-  const headers = [['#', 'Order ID', 'Product Name', 'Quantity', 'CRBT', 'Shipping Fees', 'COD Fees', 'Payment']]
-  const data = invoice.orders?.map((order, index) => {
-    const crbt = order.total_amount || 0
-    const shippingFees = 9
-    const codFees = crbt * 0.05
-    const payment = crbt - shippingFees - codFees
-
-    return [
-      index + 1,
-    order.id,
-      { content: order.product?.name || '', styles: { font: 'NotoKufiArabic', halign: 'right' } },
-    order.quantity,
-      `${formatPrice(crbt)}$`,
-      `${formatPrice(shippingFees)}$`,
-      `${formatPrice(codFees)}$`,
-      `${formatPrice(payment)}$`
-    ]
-  }) || []
-
-  autoTable(doc, {
-    head: headers,
-    body: data,
-    startY: 130,
-    theme: 'grid',
-    styles: {
-      fontSize: 9,
-      cellPadding: 3,
-      lineColor: [229, 231, 235],
-      lineWidth: 0.1,
-      textColor: [31, 41, 55],
-      font: 'helvetica'
-    },
-    headStyles: {
-      fillColor: [249, 250, 251],
-      textColor: [31, 41, 55],
-      fontSize: 9,
-      fontStyle: 'bold',
-      halign: 'center'
-    },
-    columnStyles: {
-      0: { cellWidth: 10, halign: 'center' },
-      1: { cellWidth: 20, halign: 'center' },
-      2: { cellWidth: 40, font: 'NotoKufiArabic' }, // Arabische Schriftart für Produktnamen
-      3: { cellWidth: 20, halign: 'center' },
-      4: { cellWidth: 25, halign: 'right' },
-      5: { cellWidth: 25, halign: 'right' },
-      6: { cellWidth: 25, halign: 'right' },
-      7: { cellWidth: 25, halign: 'right' }
-    },
-    alternateRowStyles: {
-      fillColor: [252, 252, 253]
-    },
-    didDrawCell: (data) => {
-      // Für arabische Texte RTL-Ausrichtung aktivieren
-      if (data.column.index === 2 && data.cell.text) {
-        const text = data.cell.text[0]
-        if (/[\u0600-\u06FF]/.test(text)) { // Test auf arabische Zeichen
-          data.cell.styles.halign = 'right'
-        }
-      }
-    }
-  })
-
-  // Calculate totals
-  const totalCRBT = invoice.orders?.reduce((sum, order) => sum + (order.total_amount || 0), 0) || 0
-  const totalShippingFees = (invoice.orders?.length || 0) * 9
-  const totalCODFees = totalCRBT * 0.05
-  const netPayment = totalCRBT - totalShippingFees - totalCODFees
-
-  // Add totals section with improved styling
-  const finalY = doc.lastAutoTable.finalY + 15
-  const totalsX = 115
-  const totalsWidth = 75
-  const lineHeight = 8 // Definiere einen konstanten Zeilenabstand
-
-  // Draw totals box with subtle styling
-  doc.setFillColor(249, 250, 251)
-  doc.setDrawColor(229, 231, 235)
-  doc.roundedRect(totalsX, finalY - 5, totalsWidth, invoice.factorisation_fees?.length ? 45 : 35, 3, 3, 'FD')
-
-  // Add total lines with improved alignment and styling
-  doc.setFontSize(10)
-  doc.setTextColor(31, 41, 55)
-  
-  // Helper function for adding total lines with right alignment
-  const addTotalLine = (label: string, amount: number, y: number, isFinal = false) => {
-    const labelX = totalsX + 5 // Label links ausgerichtet
-    const amountX = totalsX + totalsWidth - 5 // Betrag rechts ausgerichtet
-
-    if (isFinal) {
-      doc.setFont('helvetica', 'bold')
-    } else {
-      doc.setFont('helvetica', 'normal')
-    }
-
-    // Label links ausgerichtet
-    doc.text(label, labelX, y)
-    // Betrag rechts ausgerichtet
-    doc.text(`${formatPrice(amount)}$`, amountX, y, { align: 'right' })
+const downloadPDF = async (invoice) => {
+  try {
+    loading.value = true
+    const html = generateInvoiceHtml(invoice)
+    console.log('HTML für PDF:', html)
+    const container = document.getElementById('pdf-invoice-template')
+    console.log('Container:', container)
+    container.innerHTML = html
+    // Sichtbar machen für html2pdf
+    container.style.position = 'absolute';
+    container.style.left = '0';
+    container.style.top = '0';
+    container.style.width = '100vw';
+    container.style.opacity = '0';
+    container.style.pointerEvents = 'none';
+    container.style.height = 'auto';
+    container.style.overflow = 'visible';
+    await html2pdf().set({
+      margin: 0.5,
+      filename: `invoice-${invoice.invoice_number || invoice.id}.pdf`,
+      html2canvas: { scale: 2, useCORS: true },
+      jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' }
+    }).from(container).save()
+    // Nach Export wieder verstecken und leeren
+    container.style = ''
+    container.innerHTML = ''
+    success.value = 'PDF wurde erfolgreich generiert'
+  } catch (error) {
+    console.error('Error generating PDF:', error)
+    error.value = 'Fehler beim Generieren der PDF'
+  } finally {
+    loading.value = false
   }
-
-  // Füge die Zeilen mit konstantem Abstand hinzu
-  addTotalLine('Total Revenue:', totalCRBT, finalY)
-  addTotalLine('Total Fees:', totalShippingFees + totalCODFees, finalY + lineHeight)
-  
-  if (invoice.factorisation_fees?.length) {
-    const affiliateFees = invoice.factorisation_fees.reduce((sum, fee) => sum + fee.amount, 0)
-    addTotalLine('Affiliate Product Fees:', affiliateFees, finalY + (lineHeight * 2))
-    addTotalLine('Net Payment:', netPayment - affiliateFees, finalY + (lineHeight * 3), true)
-  } else {
-    addTotalLine('Net Payment:', netPayment, finalY + (lineHeight * 2), true)
-  }
-
-  // Add footer
-  const pageHeight = doc.internal.pageSize.height
-  doc.setFontSize(8)
-  doc.setTextColor(156, 163, 175) // Light gray for footer
-  doc.text('Thank you for your business!', 105, pageHeight - 15, { align: 'center' })
-
-  // Save the PDF
-  doc.save(`invoice-${invoice.invoice_number}.pdf`)
 }
 
 const downloadExcel = (invoice: Invoice) => {
@@ -948,7 +895,33 @@ const handleAddFee = async (invoiceId: number) => {
   }
 }
 
+// Add toggle function for more options
+const toggleMoreOptions = (invoiceId: number) => {
+  activeMoreOptions.value = activeMoreOptions.value === invoiceId ? null : invoiceId
+}
+
+// Close more options when clicking outside
+onMounted(() => {
+  document.addEventListener('click', (e) => {
+    if (!(e.target as HTMLElement).closest('.more-options')) {
+      activeMoreOptions.value = null
+    }
+  })
+})
+
+const showInvoiceHtml = (invoice) => {
+  modalInvoiceHtml.value = generateInvoiceHtml(invoice)
+  showInvoiceModal.value = true
+}
+
 onMounted(async () => {
   await invoiceStore.fetchInvoices()
 })
 </script>
+
+<style>
+/* Add styles for dropdown menu */
+.more-options {
+  position: relative;
+}
+</style>

@@ -103,7 +103,7 @@
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="request in sourcingStore.requests" :key="request.id">
+          <tr v-for="request in paginatedRequests" :key="request.id">
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">#{{ request.sourcing_id }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
@@ -151,12 +151,12 @@
       <!-- Pagination -->
       <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200">
         <div class="text-sm text-gray-700">
-          Showing 1 to {{ Math.min(itemsPerPage, sourcingStore.requests.length) }} of {{ sourcingStore.requests.length }} entries
+          Showing {{ (currentPage - 1) * Number(itemsPerPage) + 1 }} to {{ Math.min(currentPage * Number(itemsPerPage), filteredRequests.value.length) }} of {{ filteredRequests.value.length }} entries
         </div>
         <div class="flex space-x-2">
-          <button class="btn-secondary px-3 py-1 text-sm">Previous</button>
-          <button class="bg-black text-white px-3 py-1 rounded text-sm">1</button>
-          <button class="btn-secondary px-3 py-1 text-sm">Next</button>
+          <button @click="currentPage--" :disabled="currentPage === 1" class="btn-secondary px-3 py-1 text-sm">Previous</button>
+          <button class="bg-black text-white px-3 py-1 rounded text-sm">{{ currentPage }}</button>
+          <button @click="currentPage++" :disabled="currentPage >= totalPages" class="btn-secondary px-3 py-1 text-sm">Next</button>
         </div>
       </div>
     </div>
@@ -346,12 +346,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useSourcingStore, type SourcingRequest } from '../stores/sourcing'
 
 const sourcingStore = useSourcingStore()
 const searchQuery = ref('')
 const itemsPerPage = ref(10)
+const currentPage = ref(1)
+const totalPages = computed(() => Math.ceil(filteredRequests.value.length / Number(itemsPerPage.value)))
 const showAddModal = ref(false)
 const showEditModal = ref(false)
 const editingRequest = ref<SourcingRequest | null>(null)
@@ -384,6 +386,24 @@ const newRequest = ref({
   quantity: 100,
   note: '',
   status: 'Pending' as SourcingRequest['status']
+})
+
+const filteredRequests = computed(() => {
+  let filtered = sourcingStore.requests
+  if (searchQuery.value) {
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(r =>
+      r.product_name.toLowerCase().includes(query) ||
+      r.product_code?.toLowerCase().includes(query) ||
+      r.note?.toLowerCase().includes(query)
+    )
+  }
+  return filtered
+})
+const paginatedRequests = computed(() => {
+  const start = (currentPage.value - 1) * Number(itemsPerPage.value)
+  const end = start + Number(itemsPerPage.value)
+  return filteredRequests.value.slice(start, end)
 })
 
 const getStatusColor = (status: string) => {
@@ -467,6 +487,10 @@ const openEditModal = (request: SourcingRequest) => {
   editingRequest.value = { ...request }
   showEditModal.value = true
 }
+
+watch([searchQuery, itemsPerPage], () => {
+  currentPage.value = 1
+})
 
 onMounted(async () => {
   await sourcingStore.fetchRequests()

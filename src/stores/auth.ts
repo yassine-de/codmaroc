@@ -24,13 +24,14 @@ export const useAuthStore = defineStore('auth', () => {
     if (session?.user) {
       const { data: userData } = await supabase
         .from('users')
-        .select('role')
+        .select('id, role')
         .eq('auth_id', session.user.id)
         .single()
 
       user.value = {
         ...session.user,
-        role: userData?.role
+        role: userData?.role,
+        user_id: userData?.id
       }
     }
   }
@@ -64,7 +65,8 @@ export const useAuthStore = defineStore('auth', () => {
       // Combine auth user with role from users table
       user.value = {
         ...authUser,
-        role: userData.role
+        role: userData.role,
+        user_id: userData.id
       }
 
       router.push('/dashboard')
@@ -105,7 +107,8 @@ export const useAuthStore = defineStore('auth', () => {
         // Set the user with role
         user.value = {
           ...authUser,
-          role: userData.role
+          role: userData.role,
+          user_id: userData.id
         }
       }
 
@@ -137,7 +140,7 @@ export const useAuthStore = defineStore('auth', () => {
         // Get user role from users table
         const { data: userData, error: userError } = await supabase
           .from('users')
-          .select('role')
+          .select('id, role')
           .eq('auth_id', authUser.id)
           .single()
 
@@ -146,7 +149,8 @@ export const useAuthStore = defineStore('auth', () => {
         // Set the user with role
         user.value = {
           ...authUser,
-          role: userData.role
+          role: userData.role,
+          user_id: userData.id
         }
       } else {
         user.value = null

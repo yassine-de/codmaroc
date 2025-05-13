@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useProductStore } from '../stores/products'
 import { useAuthStore } from '../stores/auth'
 import { supabase } from '../lib/supabase'
@@ -19,6 +19,7 @@ const success = ref('')
 const error = ref('')
 const sellers = ref([])
 const currentUserId = ref<number | null>(null)
+const currentPage = ref(1)
 
 const newProduct = ref({
   name: '',
@@ -85,6 +86,42 @@ const fetchSellers = async () => {
 const getSellerName = (userId: number) => {
   const seller = sellers.value.find(s => s.id === userId)
   return seller ? seller.name : 'Unknown'
+}
+
+// Hilfsfunktion zum Parsen von CSV
+function parseCSV(csv: string) {
+  const lines = csv.split('\n').filter(Boolean);
+  return lines.slice(1).map(line => {
+    const values = line.split(',').map(v => v.replace(/^"|"$/g, '').trim());
+    return {
+      sku: values[1],         // Spalte B (SKU)
+      remaining: values[5]    // Spalte F (REMAINING)
+    };
+  });
+}
+
+const sheetStockMap = ref<Record<string, string>>({})
+
+async function fetchSheetStock() {
+  try {
+    const res = await fetch('https://docs.google.com/spreadsheets/d/1hZUPZn6nbekGXRr8hfvhdVTIH21IY3NbjnXIw39LsKU/gviz/tq?tqx=out:csv&sheet=Sheet1');
+    const csv = await res.text();
+    const rows = parseCSV(csv);
+    // Debug: Zeige ein Beispiel
+    if (rows.length > 0) {
+      console.log('Erste Zeile (bereinigt):', rows[0]);
+    }
+    // Mapping: SKU -> REMAINING
+    const map: Record<string, string> = {};
+    rows.forEach(row => {
+      if (row.sku && row.remaining) {
+        map[row.sku] = row.remaining;
+      }
+    });
+    sheetStockMap.value = map;
+  } catch (e) {
+    console.error('Fehler beim Laden des Sheets:', e);
+  }
 }
 
 // Filter and sort products
@@ -159,10 +196,14 @@ const allFilteredProducts = computed(() => {
   return filtered
 })
 
-const filteredProducts = computed(() => {
-  const start = 0
-  const end = parseInt(itemsPerPage.value)
-  return allFilteredProducts.value.slice(start, end)
+const totalPages = computed(() => Math.ceil(allFilteredProducts.value.length / Number(itemsPerPage.value)))
+const paginatedProducts = computed(() => {
+  const start = (currentPage.value - 1) * Number(itemsPerPage.value)
+  const end = start + Number(itemsPerPage.value)
+  return allFilteredProducts.value.slice(start, end).map(product => ({
+    ...product,
+    currentStock: sheetStockMap.value[product.sku] ?? undefined
+  }))
 })
 
 // Computed properties for form fields
@@ -260,6 +301,7 @@ onMounted(async () => {
   await fetchCurrentUserId()
   await productStore.fetchProducts()
   await fetchSellers()
+  await fetchSheetStock()
 })
 
 const handleAddProduct = async () => {
@@ -317,8 +359,11 @@ const handleAddProduct = async () => {
 const handleUpdateProduct = async () => {
   if (!editingProduct.value) return
 
+  // currentStock entfernen, bevor das Objekt gespeichert wird
+  const { currentStock, ...productData } = editingProduct.value
+
   try {
-    await productStore.updateProduct(editingProduct.value.id, editingProduct.value)
+    await productStore.updateProduct(editingProduct.value.id, productData)
     editingProduct.value = null
   } catch (error) {
     console.error('Error updating product:', error)
@@ -367,6 +412,10 @@ const formatDate = (dateString: string) => {
     day: 'numeric'
   })
 }
+
+watch([searchQuery, statusFilter, sortBy, sortOrder, itemsPerPage], () => {
+  currentPage.value = 1
+})
 </script>
 
 <template>
@@ -455,100 +504,104 @@ const formatDate = (dateString: string) => {
 
     <!-- Products Table -->
     <div v-else class="bg-white rounded-lg shadow overflow-hidden">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
-          <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              <input
-                type="checkbox"
-                :checked="selectedProducts.length === filteredProducts.length && filteredProducts.length > 0"
-                :indeterminate="selectedProducts.length > 0 && selectedProducts.length < filteredProducts.length"
-                @change="e => {
-                  const checked = e.target.checked
-                  selectedProducts = checked ? filteredProducts.map(p => p.id) : []
-                }"
-                class="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-              >
-            </th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
-            <th v-if="authStore.user?.role === 1" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Seller</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Page</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Video</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivered</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-          </tr>
-        </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr v-for="product in filteredProducts" :key="product.id">
-            <td class="px-6 py-4 whitespace-nowrap">
-              <input
-                type="checkbox"
-                v-model="selectedProducts"
-                :value="product.id"
-                class="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
-              >
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ product.sku }}</td>
-            <td v-if="authStore.user?.role === 1" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-              {{ getSellerName(Number(product.user_id)) }}
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">{{ product.name }}</div>
-              <div class="text-sm text-gray-500">{{ product.description }}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatPrice(product.price) }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.stock }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <a 
-                v-if="product.product_link"
-                :href="product.product_link" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="text-blue-600 hover:text-blue-800"
-                title="Open Product Page"
-              >
-                <i class="fas fa-external-link-alt"></i>
-              </a>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-              <a 
-                v-if="product.video_link"
-                :href="product.video_link" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="text-blue-600 hover:text-blue-800"
-                title="Open Product Video"
-              >
-                <i class="fas fa-video"></i>
-              </a>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.delivered || 0 }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(product.created_at) }}</td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
-              <button @click="editingProduct = { ...product }" class="text-blue-600 hover:text-blue-800">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button @click="handleDeleteProduct(product.id)" class="text-red-600 hover:text-red-800">
-                <i class="fas fa-trash"></i>
-              </button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow-x-auto w-full">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <input
+                  type="checkbox"
+                  :checked="selectedProducts.length === paginatedProducts.length && paginatedProducts.length > 0"
+                  :indeterminate="selectedProducts.length > 0 && selectedProducts.length < paginatedProducts.length"
+                  @change="e => {
+                    const checked = e.target.checked
+                    selectedProducts = checked ? paginatedProducts.map(p => p.id) : []
+                  }"
+                  class="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                >
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SKU</th>
+              <th v-if="authStore.user?.role === 1" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Seller</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Name</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Stock</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Page</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product Video</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivered</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr v-for="product in paginatedProducts" :key="product.id">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <input
+                  type="checkbox"
+                  v-model="selectedProducts"
+                  :value="product.id"
+                  class="rounded border-gray-300 text-purple-600 focus:ring-purple-500"
+                >
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ product.sku }}</td>
+              <td v-if="authStore.user?.role === 1" class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {{ getSellerName(Number(product.user_id)) }}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">{{ product.name }}</div>
+                <div class="text-sm text-gray-500">{{ product.description }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ formatPrice(product.price) }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.stock }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.currentStock !== undefined ? product.currentStock : '-' }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <a 
+                  v-if="product.product_link"
+                  :href="product.product_link" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="text-blue-600 hover:text-blue-800"
+                  title="Open Product Page"
+                >
+                  <i class="fas fa-external-link-alt"></i>
+                </a>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                <a 
+                  v-if="product.video_link"
+                  :href="product.video_link" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  class="text-blue-600 hover:text-blue-800"
+                  title="Open Product Video"
+                >
+                  <i class="fas fa-video"></i>
+                </a>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.delivered || 0 }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(product.created_at) }}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2">
+                <button @click="editingProduct = { ...product }" class="text-blue-600 hover:text-blue-800">
+                  <i class="fas fa-edit"></i>
+                </button>
+                <button @click="handleDeleteProduct(product.id)" class="text-red-600 hover:text-red-800">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       <!-- Pagination -->
       <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
         <div class="text-sm text-gray-700">
-          Showing 1 to {{ Math.min(itemsPerPage, allFilteredProducts.length) }} of {{ allFilteredProducts.length }} entries
+          Showing {{ (currentPage - 1) * Number(itemsPerPage) + 1 }} to {{ Math.min(currentPage * Number(itemsPerPage), allFilteredProducts.length) }} of {{ allFilteredProducts.length }} entries
         </div>
         <div class="flex space-x-2">
-          <button class="btn-secondary px-3 py-1 text-sm">Previous</button>
-          <button class="bg-red-600 text-white px-3 py-1 rounded text-sm">1</button>
-          <button class="btn-secondary px-3 py-1 text-sm">Next</button>
+          <button @click="currentPage--" :disabled="currentPage === 1" class="btn-secondary px-3 py-1 text-sm">Previous</button>
+          <button class="bg-red-600 text-white px-3 py-1 rounded text-sm">{{ currentPage }}</button>
+          <button @click="currentPage++" :disabled="currentPage >= totalPages" class="btn-secondary px-3 py-1 text-sm">Next</button>
         </div>
       </div>
     </div>

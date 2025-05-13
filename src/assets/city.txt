@@ -1,1527 +1,1811 @@
-A'aba
-Aana ( West Bekaa )
-Aazki
-Abadieh
-Abbassiyeh
-Abboudiyeh
-Abdeh
-Abdelli
-Abdine
-Abey
-Ablah
-Abou Samra
-Abra
-Abu Dhabi
-Achach
-Achkout
-Achrafieh
-Adayseh
-Adchit
-Addoussiyeh
-Adlieh
-Adloun
-Adma
-Adonis
-Afka
-Afsdik
-Aghmid
-Aicha Bakkar
-Aidamoun
-Aiha
-Ain Aar
-Ain Akrine
-Ain Alak
-Ain Anoub
-Ain Arab
-Ain Ata (Baalbeck)
-Ain Ata (Rachaiya)
-Ain Baal (Tyre)
-Ain Baniyeh
-Ain Bourday
-Ain Boussouar
-Ain Dara
-Ain Ebel
-Ain el Kharroubeh
-Ain el Remmaneh (Aley)
-Ain el Remmaneh (Beirut)
-Ain El Saydeh
-Ain el Tineh
-Ain el tineh (West Bekaa)
-Ain el-Delb
-Ain el-Ghoaybeh
-Ain el-Mreisseh
-Ain el-Rihani
-Ain el-Safsaf
-Ain Enoub
-Ain Harcha
-Ain Jarfa
-Ain Jdideh
-Ain Joz
-Ain Kani
-Ain Kfarzabad
-Ain Ksour
-Ain Mouaffaq
-Ain Najem
-Ain Qana
-Ain Saadeh
-Ain Tanta
-Ain Toubine
-Ain Tourine
-Ain Trez
-Ain We Zein
-Ain Yaacoub
-Ain Zaite
-Ain Zebdeh
-Ain Zhalta
-Ainab
-Ainatha
-Ainbal
-Aintoura (Kesserwan)
-Aintoura (Metn)
-Airport Road
-Aita el-Fakhar
-Aita el-Zot
-Aitanit
-Aitaroun
-Aitat
-Aitha Chaab
-Aitou
-Aitroun
-Ajad Ebrine
-Ajaltoun
-Ajaltoun (Metn)
-Ajdabra
-Ajman
-Akaybeh
-Akbeh
-Akbieh (saida)
-Akkar
-Akkar el-Atika
-Akoura
-Akroum
-Aktanit
-Al Abdeh
-Al Ain
-Al Ali
-Al Azzounieh
-Al Hadid
-Al Hid
-Al Hiri
-Al Hmayra
-Al Houssein Ftou7 Keserwen
-Al Marfa'a
-Al Rawda West Bekaa
-Al Rihan
-Al Sahleh
-Al Saksakieh
-Al Sharkiyeh
-Al Wardaniyeh
-Aley
-Algeria
-Ali el-Nahri
-Allaq
-Alma
-Alma el-Chaab
-Alman Chouf
-Almat
-Amaret Chalhoub
-Amatour
-Amchit
-Amioun
-Ammar Bikat
-Ammik (Beqaa)
+A'aba - عابا
+Aaiyat - عيات
+Aamara - عماره
+Aana ( West Bekaa ) - عانا
+Aanan - عنان
+Aarida - العريضه
+Aayoun El Ghezlan - عيون الغزلان
+Aayoun El Siman - عيون السيمان
+Aazki - عزقي
+Abadieh - العبادية
+Abbassiyeh - عباسية
+Abboudiyeh - عبودية
+Abdeh - العبدة
+Abdelli - عبدللي
+Abdine - عبدين
+Abey - عبي
+Ablah - أبلح
+Abou Samra - ابو سمرا
+Abra - عبرا
+Abu Dhabi - أبو ظبي
+Achach - عشاش
+Achkout - عشقوت
+Achrafieh - أشرفية
+Adayseh - عديسة مرجعيون
+Adchit - عدشيت الشقيف
+Addoussiyeh - عدوسية
+Adlieh - عدلية
+Adloun - عدلون
+Adma - أدما
+Adonis - أدونيس
+Adra - عدرا
+Afka - أفقا
+Afsdik - عفصديق
+Aghmid - اغميد
+Aicha Bakkar - عائشة بكار
+Aidamoun - عيدمون
+Aiha - عيحا
+Ain Aar - عين عار
+Ain Aata - عين عطا
+Ain Abou Abdallah - عين أبو عبدالله
+Ain Akrine - عين عقرين
+Ain Al Marj - عين المرج
+Ain Alak - عين علق
+Ain Al-Dehab - عين الذهب
+Ain Anoub - عين عنوب
+Ain Arab - عين عرب
+Ain Ata (Rachaiya) - عين عطا (راشيا)
+Ain Baal (Tyre) - عين بعال (صور)
+Ain Ba'al (Tyre) - عين بعل (صور)
+Ain Baniyeh - عين البنيّة
+Ain Bourday - عين بورضاي
+Ain Boussouar - عين بوسوار
+Ain Dara - عين دارا
+Ain Drafil - عين درافيل
+Ain Ebel - عين إبل
+Ain el Haour - عين الحور
+Ain el Kharroubeh - عين الخروبة
+Ain El Mir - عين المير
+Ain el Remmaneh (Aley) - عين الرمانة (عاليه)
+Ain el Remmaneh (Baabda) - عين الرمانة (بعبدا)
+Ain El Saydeh - عين السيدة
+Ain El Sindiane - عين السنديان
+Ain el Tineh - عين التينة
+Ain el tineh (West Bekaa) - عين التينة (البقاع الغربي)
+Ain el-Delb - عين الدلب
+Ain el-Ghoaybeh - عين الغويبة
+Ain el-Mreisseh - عين المريسة
+Ain el-Rihani - عين الريحان
+Ain el-Safsaf - عين الصفصاف
+Ain Enoub - عين عنوب
+Ain Harcha - عين حرشا
+Ain Jarfa - عين جرفا
+Ain Jdideh - عين الجديدة
+Ain Joz - عين الجوزة
+Ain Kani - عين قني
+Ain Kfarzabad - عين كفر زبد
+Ain Ksour - عين كسور
+Ain Mouaffaq - عين موفق
+Ain Najem - عين نجم
+Ain Qana - عين قانا
+Ain Saadeh - عين سعادة
+Ain Saouda - عين سعدة
+Ain Tanta - عين طنطا
+Ain Toubine - عين طورين
+Ain Tourine - عين طورين
+Ain Trez - عين تريز
+Ain We Zein - عين وزين
+Ain Yaacoub - عين يعقوب
+Ain Zabad - عين كفر زبد
+Ain Zaite - عين الزيت
+Ain Zebdeh - عين زبدة
+Ain Zhalta - عين زحلتا
+Ainab - عيناب
+Ainata (Baalbeck) - عيناتا (بعلبك)
+Ainbal - عينبال
+Aintoura (Kesserwan) - عينطورة
+Aintoura (Metn) - عينطورة (المتن)
+Airport Road - طريق المطار
+Aita el-Fakhar - عيتا الفخار
+Aita el-Zot - عيتا الجبل الزط
+Aitanit - عيتنيت
+Aitanite - عيتنيت
+Aitaroun - عيترون
+Aitat - عيتات
+Aitha Chaab - عيتا الشعب
+Aitou - أيطو
+Aitouli - عيتولي
+Aitroun - عيترون
+Ajad Ebrine - عبرين
+Ajaltoun - عجلتون
+Ajaltoun (Metn) - عجلتون
+Ajdabra - اجدبرا
+Ajman - عجمان
+Akbeh - عقبة
+Akbieh (saida) - العاقبية (صيدا)
+Akidiyeh - عكيدية
+Akkar - عكار
+Akkar el-Atika - عكار العتيقة
+Akoura - عاقورة
+Akroum - عكروم
+Aktanit - عقتنيت
+Al Abdeh - العبدة
+Al Ain - العين
+Al Ali - علالي
+Al Azounie - العزونية
+Al Azzounieh - عزونية
+Al Haddadine - الحدادين
+Al Hadid - الحديد
+Al Haishe - الهيشة
+Al Hid - الحد
+Al Hiri - الهري
+Al Hmayra - الحميرة
+Al Houssein Ftou7 Keserwen - نهر الحسين
+Al Kaa - القاع
+Al Mahatra - المهاترة
+Al Marfa'a - المرفأ
+Al Maten - المتن
+Al Rawda West Bekaa - الروضة (البقاع الغربي)
+Al Rihan - الريحان
+Al Sahleh - السهلة
+Al Saksakieh - سكسكية
+Al Sharkiyeh - الشرقية
+Al Wardaniyeh - الوردانية
+Aley - عاليه
+Algeria - الجزائر
+Ali el-Nahri - علي النهري
+Allaq - علق
+Alma - علما
+Alma el-Chaab - علما الشعب
+Alman Chouf - علمان الشوف
+Almat - علمات
+Amaret Chalhoub - عمارة شلهوب
+Amatour - عماطور
+Amayer - العماير
+Amchit - عمشيت
+Amioun - أميون
+Ammar Bikat - عمارة البيكات
+Ammik (Beqaa) - عميق (البقاع الغربي)
+Ammik (Chouf) - عميق (الشوف)
 Amroussieh (Choueifat)
-An Nouri
-Ana
-Andket
-Anfeh
-Anjar
-Ankoun
-annaya
-Anout
-Ansar
-Ansar(baalback)
-Anssarieh
-Antelias
-Arab el-Jal
-Arab Salim
-Arabet Kozhaya
-Aramoun
-Aramoun (Kesserwen)
-Aramta
-Aray
-Araya
-Arbaniyeh
-Arbet Kozhaya
-Ardeh
+An Nouri - نوري
+Ana - عانا
+Andket - عندقت
+Andoula - عندولا
+Anfeh - انفة
+Anjar - عنجر
+Ankoun - عنقون
+annaya - عنايا
+Anout - عانوت
+Ansar - إنصار
+Ansar(baalback) - انصار (بعلبك)
+Anssarieh - أنصارية
+Antelias - انطلياس
+Arab el-Jal - عرب الجل
+Arab Salim - عرب صاليم
+Arabet Kozhaya - عربة قزحيا
+Aramoun - عرمون
+Aramoun (Kesserwen) - عرمون (كسروان)
+Aramta - عرمتا
+Aray - عاري
+Araya - عاريا
+Arbaniyeh - العربانية
+Arbet Kozhaya - عربة قزحيا
+Ardeh - أرده
 Argentina
-Arjess
-Armenia
-Arnaoun
-Arnoun
-Arsoun
-Artez
-Arzay
-Arzeh
-Arzi
-Arzoune
-Aslout
-Asnoun
-Assaouneh
-Assia
-Assoune
-Atchaneh
-Atrine
-Australia
-Austria
-Awkar
-Awra
-Aychieh
-Ayroune
-Aytanieh
-Aytate (Aley)
-Aytite (Tyre)
-Azerbaijan
-Azour
-Azra
-Azzeh
-Baabdat
-Baakline
-Baalchmay - Mont Lebanon
-Baaloul
-Baasir
-Baatharan
-Baawerta
-Bab Idriss
-babliye
-Bachoura
-Badaro
-Baddawi
-Badghan
-Baflay
-Bahrain
-Bahsas
-Baissour (Aley)
-Baissour (Jezzine)
-bakhoun
-Bakifa ( Rachaya - West Bekaa )
-Ballouneh
-Bani Hayann
-Baraachit
-Barbir
-Barbour
-Barelias
-Barhelyoun
-Barich
-Barja
-Barouk
-Barty
-Baskinta
-Bassatine
-Basta Fawka
-Basta Tahta
-Bater
-Batha
-Batloun
-Batoulay
-Batrakiyi
-Batroun
-Bayssarieh
-Bazbina
-Bazoon
-bazouriyeh
-Bchaaleh
-Bchamoun
-Bcharre
-bchelleli
-Bchetfine
-Bdadoun
-Bechara El Khoury
-Bednayel (Bekaa)
-Bednayel (Koura)
-Beirut Central District
-Beirut Digital District
-Beit Chabeb
-Beit Chama
-Beit el Chaar
-Beit El Faks
-Beit el Kiko
-Beit Lif
-Beit Mery
-Beit Misk
-Beit Mounzer
-Beiteddine
-bejdarfel
-Bekaata Chouf
-Bekaatet Achkout
-Belgium
-Bemkine
-Bennieh
-Benweteh
-Beqaa Kafra
-Berbara
-Berkayel
-betchay
-Bezhel
-Bhamdoun
-Bhamdoun El Mhatta
-Bhanness
-Bhersaf
-Biakout
-Bidyas
-Bikfaya
-bint jbeil
-Bir Al Abed
-Bir Hasan
-Bireh (Akkar)
-Bireh (Chouf)
-Bisri
-Biyada
-Bkarzella ( Akkar )
-Bkassine
-Bkeftine
-Bkennaya
-Bkerkacha
-Bkesmaya
-Bkhechtey
-Blat
-Blawza
-Bleibel
-Blida
-Bmahray
-Bnaafoul
-Bnachii
-Bodai
-Bolla
-Bolonia
-Borghlieh
-Borj Chemali
-Borj Rahal
-borjen
-Bosnia & Herzegovina
-Botme
-Bouar
-Bouchrieh
-Bourj Abi Haidar
-Bourj Al Barajneh
-Bourj El Brajneh
-Bourj El Moulouk
-Bourj Hammoud
-Bourj Kalaway
-Bouslaiya
-Bqaatouta
-Braissat
-Brazil
-Brih
-Britel
-Broumana
-Bsaba (Baabda)
-Bsaba El Chouf
-Bsalim
-Bsarma ( Koura )
-Bserrine
-Bsouss
-Btalloun
-Btater
-Bteddine El Lekech
-Btedhi ( Deir el-Ahmar )
-Bteghrine
-Btormaz
-Btouratig - Koura
-Bulgaria
-Bwar
-Bwerij (Chtaura)
-Byblos
-Bzebdine ( Maten )
-Bzemar
-Cairo
-California
-Cameroun
-Canada
-Chaat
-Chabriha
-Chacra
-Chadra
-Chaet
-Chahtoul
-Chakdouf
-Chamat
-Chamout
-Chanay
-Chane
-chaqra
-Charbila
-Charbin
-Charoun
-Charqiyeh
-Chartoun
-Chatine
-Chawaghir
-Chawiya
-Cheaytieh
-Chebaa
-Chebanieh
-Chebaniyeh
-Chehabiyeh
-Chehim
-Cheikh Ayash
-Cheikh Mohamad
-Cheikh Taba
-Cheikh Znad
-Chekka
-Chemlan
-Chhour
-Chibtine
-Chikhlar
-Chile
-China
-Chiyah
-Chlifa
-Chmayseh
-Chmestar
-Chnaniir
-Choualik
-Choueifat
-Choueir
-Chouit
-Chouite
-Choukine
-Chrawneh
-Chrine
-Chtaheh
-Chtaura
-Clemenceau
-cola
-Colombia
-cornet el hamra
-cornich el mazeraa
-Cornish el Naher
-Croatia
-Cyprus
-Czechia
-Dabra
-Daghla
-Daher
-Daher Al Mghara
-Dahr Abou-Yaghi
-dahr el bashik
-Dahr el-Ahmar
-Dahr el-Ain
-Dahr el-Hassin
-Dahr el-Souan
-Dahr Lisseineh
-Dail
-Dakkouh
-Dalhoun
-Dam w Farez
-Damour
-Danniyeh
-Daoudieh
-Daousseh
-Daphneh
-Dar Aya
-Dar Baachtar
-Dar Chmezzine
-Dar El Wasaah
-Daraoun
-Daraya (Chouf)
-Daraya (Kesserwan)
-Darbessim
-Darine
-Dawra
-Daychounieh
-Dbayeh
-Debaal
-Debabieh
-Debbieh
-Debbine
-Debel
-Deddeh
-Deir Achayer
-Deir Ames
-Deir Ammar
-Deir Antar
-Deir Baba
-Deir Bella
-Deir Chamra
-Deir Chwah
-Deir Dghaya
-Deir Dourit
-deir el haref
-Deir el-'Achaer
-Deir el-Ahmar
-Deir el-Ghazal
-Deir el-Harf
-Deir el-Kamar
-Deir el-Moukhales
-Deir el-Zahrani
-Deir Janine
-Deir Kanoun
-Deir Kantar
-Deir Kifa
-Deir Koubel
-Deir Koucheh
-Deir Mimas
-Deir Nbouh
-Deir Syriane
-Dekouaneh
-Delhamiyeh
-Denmark
-Derb el-Simme
-Derdghaya
-Deria
-Deychounieh
-Dfoun
-dhour chweir
-Dibiil
-Dik El Mehdi
-Dimane
-Dlaibeh
-Dlebta
-Dmayt
-Dmeet
-Dmit
-Dohat aramoun
-dohet el hoss
+Arjess - عرجس
+Armenia - أرمينيا
+Arnaoun - قرنعون
+Arnoun - ارنون
+Arqa - عرقا
+Arsoun - ارصون
+Artez - عرطز
+Arzay - أرزاي
+Arzeh - عزة
+Arzi - عزة
+Arzoune - أرزون
+Aslout - أصلوت
+Asnoun - اصنون
+Assaouneh - الصوانة
+Assia - عاصيا
+Assoune - عاصون
+Atchaneh - عطشانة
+Atrine - عطرين
+Australia - أستراليا
+Austria - النمسا
+Autostrad Hadi Nasrallah - اوتوستراد هادي نصرالله
+Awadah - العوادة
+Awkar - عوكر
+Awra - عرورا
+Aychieh - عيشية
+Ayroune - عيرون
+Aytate (Aley) - عيتات (عاليه)
+Aytite (Tyre) - عيتيت (صور)
+Azerbaijan - أذربيجان
+Azour - عازور
+Azra - العذرا
+Azzeh - عزة
+Baabda
+Baabdat - بعبدات
+Baakline - بعقلين
+Baalchmay - Mont Lebanon - بعلشمي
+Baaloul - بعلول
+Baasir - بعاصير
+Baatharan - بعدران
+Baawerta - بعورتا
+Bab ElRamel - باب الرمل
+Bab Idriss - باب ادريس
+Bab Maraa - باب مرعا
+babliye - بابلية
+Bachoura - الباشورة
+Badaro - بدارو
+Baddawi - البداوي
+Badghan - بدغان
+Baflay - بافليه
+Baghdadi - بغدادي
+Bahrain - البحرين
+Bahsas - بحصاص
+Baissour (Aley) - بيصور (عاليه)
+Baissour (Jezzine) - بيصور (جزين)
+bakhoun - بخعون
+Bakifa ( Rachaya - West Bekaa ) - بكيفا
+Bakka - بكا
+Balamand - البلمند
+Ballouneh - بلونة
+Bane - بان
+Bani Hayann - بني حيان
+Bani Sakhr - بني صخر
+Baraachit - برعشيت
+Barbir - بربير
+Barbour - بربور
+Barelias - بر الياس
+Barhelyoun - برحليون
+Barich - باريش
+Barja - برجا
+Barouk - باروك
+Barqa - برقا
+Barsa - برسا
+Barty - برتي
+Baskinta - بسكنتا
+Basloukit - بسلوقيط
+Bassatine - البساتين
+Basta Fawka - بسطة الفوقى
+Basta Tahta - بسطة التحتا
+Bater - باتر
+Batha - بطحا
+Batloun - بتلون
+Batoulay - باتوليه
+Batrakiyi - بطركية
+Batroumine - بترومين
+Batroun - بترون
+Bayssarieh - بيسارية
+Bazbina - بزبينا
+Bazoon - بزعون
+bazouriyeh - البازورية
+Bchaaleh - بشعلة
+Bchamoun - بشامون
+Bchannine - بشنين
+Bcharre - بشري
+bchelleli - بشللي
+Bchernata - بشرناطا
+Bchetfine - بشتفين
+Bdadoun - بدادون
+Bdebba - بدبا
+Beba - بيبا
+Bebnine - ببنين
+Bechara El Khoury - بشارة الخوري
+Bechmizzine - بشمزين
+Bechouat - بشوات
+Bechtelida - بشتليدا
+Bednayel (Bekaa) - بدنايل (بعلبك)
+Bednayel (Koura) - بدنايل (الكورة)
+Behouaita - بحويتا
+Beino - بينو
+Beirut Central District - وسط بيروت
+Beirut Digital District - مركز بيروت الرقمي
+Beit Aaoukar - بيت عوكر
+Beit al Haj - بيت الحاج
+Beit Ayoub - بيت أيوب
+Beit Chabeb - بيت شباب
+Beit Chama - بيت شاما
+Beit Chlala - بيت شلالا
+Beit el Chaar - بيت الشعار
+Beit El Faks - بيت الفقس
+Beit el Kiko - بيت الكوكو
+Beit Ghattas - بيت غطاس
+Beit Haouch - بيت الحوش
+Beit Kassab - بيت كسّاب
+Beit Lahia - بيت لاهيا
+Beit Lif - بيت ليف
+Beit Mellat - بيت ملات
+Beit Mery - بيت مري
+Beit Misk - بيت مسك
+Beit Mounzer - بيت منزر
+Beit Yahoun - بيت ياحون
+Beit Younes - بيت يونس
+Beiteddine - بيت الدين
+bejdarfel - بجدرفيل
+Bejjeh - بجه
+Bekaa
+Bekaata Chouf - بقعاتا
+Bekaatet Achkout - بقعاتة عشقوت
+Belgium - بلجيكا
+Bemkine - بمكين
+Bend the Trend
+Bennieh - بني
+Benweteh - بنواتي
+Beqaa Kafra - بقاع كفرا
+Beqaatet Kanaan - بقعاتة كنعان
+Berbara - بربارة
+Berbara - برباره
+Berkayel - برقايل
+betchay - بطشاي
+Bezhel - بزعل
+Bhamdoun - بحمدون
+Bhamdoun El Mhatta - بحمدون المحطة
+Bhanness - بحنس
+Bhannine - بحنين
+Bhersaf - بحرصاف
+Biakout - بياقوت
+Bidyas - بدياس
+Bikfaya - بكفيا
+bint jbeil - بنت جبيل
+Bir Al Abed - بئر العبد
+Bir Hasan - بئر حسن
+Bireh (Akkar) - تل البيرة (عكار)
+Bireh (Chouf) - بيرة (الشوف)
+Bisri - بسري
+Biyad - بياض
+Biyada - البياضة
+Bkarzella ( Akkar ) - بكرزالا
+Bkassine - بكاسين
+Bkeftine - بكفتين
+Bkennaya - بقنايا 
+Bkerkacha - بقرقاش
+Bkesmaya - بقصميا
+Bkhechtey - بخشتاي
+Blat - بلاط
+Blawza - بلوزا
+Bleibel - بليبل
+Blida - بليدا
+Bmahray - بمهري
+Bnaafoul - بنعفول
+Bnachii - بنشعي
+Bodai - بوداي
+Bolla - بللا
+Bolonia - بولونيا
+Boqsmaiyya - بقسميا
+Borghlieh - البرغلية
+Borj - برج العرب
+Borj (Akkar) - البرج (عكار)
+Borj Chemali - برج الشمالي
+Borj El Yahoudiyeh - برج اليهودية
+Borj Rahal - برج رحال
+borjen - برجين
+Bosnia & Herzegovina - البوسنة والهرسك
+Botme - بطمة
+Bouaidah - البويضة
+Bouar - بوار
+Bouchrieh - بوشرية
+Bourj Abi Haidar - برج ابي حيدر
+Bourj Al Barajneh - برج البراجنة
+Bourj El Brajneh - برج البراجنة
+Bourj El Moulouk - برج الملوك
+Bourj Hammoud - برج حمود
+Bourj Kalaway - برج قلويه
+Bouslaiya - بصلايا
+Boustane - البستان
+Boustane - بستان
+Bqaa Safrin - بقاع صفرين
+Bqaatouta - بقعتوتة
+Bqaiaa - البقيعة
+Bqosta - بقسطا
+Bqosta - بقسطا
+Braikeh - بريقع
+Braissat - بريسات
+Bramiyeh - برامية
+Brazil - البرازيل
+Brih - بريح
+Brissa - بريصا
+Britel - بريتال
+Broumana - برمانا
+Bsaba (Baabda) - بسابا (بعبدا)
+Bsaba El Chouf - بسابا (الشوف)
+Bsalim - بصاليم
+Bsarma ( Koura ) - بصرما
+Bsatine - البساتين
+Bsennay - بسناي
+Bserrine - بسرين
+Bsouss - بسوس
+Btalloun - بتلون
+Btater - بتاتر
+Bteddine El Lekech - بتدين اللقش
+Btedhi ( Deir el-Ahmar ) - بتدعي
+Bteghrine - بتغرين
+Btekhnay - بتخني
+Btormaz - بطرماز
+Btorram - بطرام
+Btouratig - Koura - بتوراتيج (الكورة)
+Bulgaria - بلغاريا
+Bwar - بوار
+Bwerij (Chtaura) - البوراج (زحلة)
+Byblos - جبيل
+Bzal - بزال
+Bzebdine ( Maten ) - بزبدين (بعبدا)
+Bzemar - بزمار
+Bzina - بزينا
+Bziza - بزيزا
+Cairo - القاهرة
+California - كاليفورنيا
+Cameroun - كاميرون
+Canada - كندا
+Chaat - شعط
+Chabriha - شبريحا
+Chacra - شقرا
+Chadra - شدرا
+Chaet - شعط
+Chahtoul - شحتول
+Chakdouf - شقدوف
+Chama - شاما
+Chamat - شامات
+Chamout - شموت
+Chanay - شاناي
+Chane - شانة
+chaqra - شقرا
+Charbila - شربيلا
+Charbin - شربين
+Charoun - شارون
+Charqiyeh - الشرقية
+Chartoun - شرتون
+Chatine - شاطين
+Chatiyeh - شاتية
+Chawaghir - شواغير
+Chawiya - شويا
+Cheaytieh - شعيتية
+Chebaa - شبعا
+Chebanieh - شبانية
+Chebaniyeh - شبانية
+Chehabiyat Al Faour - شهابية الفاعور
+Chehabiyeh - الشهابية
+Chehabiyeh - شهابية
+Chehim - شحيم
+Cheikh Ayash - الشيخ عياش
+Cheikh Mohamad - الشيخ محمد
+Cheikh Taba - الشيخ طابا
+Cheikh Znad - الشيخ زناد
+Chekka - شكا
+Chemlan - شملان
+Chhour - شحور
+Chibtine - شبطين
+Chihine - شيحين
+Chikhlar - شيخلار
+Chile - شيلي
+China - الصين
+Chiyah - الشياح
+Chlifa - شليفا
+Chmaisssa - شميصا
+Chmayseh - شميسة
+Chmestar - شمسطار
+Chnaniir - شننعير
+Chouaifet El Aamroussieh - شويفات العمروسية
+Choualik - شواليق
+Choueifat - الشويفات
+Choueir - شوير
+Chouf
+Chouit - شويت
+Chouite - شويت
+Choukine - شوكين
+Chrawneh - شراونة
+Chrine - شرين
+Chtaheh - شطاحة
+Chtaura - شتورة
+Clemenceau - كليمنصو
+Clothing Brand
+cola - الكولا
+Colombia - كولومبيا
+cornet el hamra - قرنة الحمرا
+cornich el mazeraa - كورنيش المزرعة
+Cornish el Naher - كورنيش النهر
+Cotton Lane Clothing
+Croatia - كرواتيا
+Cyprus - قبرص
+Czechia - التشيك
+Dabra - اجدبرا
+Daghla - دغلة
+Daher - ضاهر
+Daher Al Mghara - ضهر المغارة
+Dahieh
+Dahr Abou-Yaghi - ضهر ابي ياغي
+dahr el bashik - ضهر الباشق
+Dahr El Qanbar - ضهر القنبر
+Dahr el-Ahmar - ضهر الأحمر
+Dahr el-Ain - ضهر العين
+Dahr el-Hassin - ضهر الحصين
+Dahr el-Souan - ضهر الصوان
+Dahr Lisseineh - ضهر ليسينه
+Dail - دعيل
+Dakkouh - دكوة
+Dalhoun - دلهون
+Dam w Farez - ضم و فرز
+Damour - الدامور
+Danniyeh - الضنية
+Danniyeh - الضنية
+Daoudieh - داودية
+Daoura (Akkar) - الدوره (عكار)
+Daousseh - الدوسه
+Daphneh - الدفنه
+Daqqoun - دقون
+Dar Aya - داريا
+Dar Baachtar - دار بعشتار
+Dar Chmezzine - دار شمزين
+Dar El Wasaah - دار الواسعة
+Daraoun - درعون
+Daraya (Chouf) - داريا (الشوف)
+Daraya (Kesserwan) - داريا (كسروان)
+darbaachar - درب الشعار
+Darbessim - درب السيم
+Darine - دارين
+Dawra - الدورة
+Dawra - دورة
+Daychounieh - ديشونية
+Dbayeh - ضبية
+Debaal - دبعال
+Debabieh - دبابية
+Debbieh - دبية
+Debbine - دبين
+Debel - دبل
+Deddeh - دده
+Deir Achayer - دير العشاير
+Deir Ames - دير عامس
+Deir Ammar - دير عمار
+Deir Antar - دير نطار
+Deir Baba - دير بابا
+Deir Bella - ديربلا
+Deir Chamra - دير شمرا
+Deir Chwah - دير شواه
+Deir Dalloum - دير دلوم
+Deir Dghaya - دير دغيا
+Deir Dourit - دير دوريت
+deir el haref - دير الحرف
+Deir el-'Achaer - دير العشائر
+Deir el-Ahmar - دير الأحمر
+Deir el-Ghazal - دير الغزال
+Deir el-Harf - دير الحرف
+Deir el-Kamar - دير القمر
+Deir el-Moukhales - دير المخلص
+Deir el-Zahrani - دير الزهراني
+Deir Janine - دير جنين
+Deir Kanoun - دير قانون
+Deir Kantar - دير القنطار
+Deir Kifa - دير كيفا
+Deir Koubel - ديرقوبل
+Deir Koucheh - دير كوشة
+Deir Mimas - دير ميماس
+Deir Nbouh - دير نبوح
+Deir Qanoun En Nahr - دير قانون النهر
+Deir Syriane - دير سريان
+Dekouaneh - دكوانة
+Delhamiyeh - دلهمية
+Denmark - الدنمارك
+Derb el-Simme - درب السيم
+Derdghaya - دردغيا
+Deria - دريا
+Deychounieh - ديشونية
+Dfoun - دفون
+Dhayra - ضهيرة
+dhour chweir - ضهور شوير
+Dhour El Aabadiyeh - ضهور العبادية
+Dibiil - دبل
+Dik El Mehdi - ديك المحدي
+Dimane - ديمان
+Dlaibeh - الدليبة
+Dlebta - دلبتا
+Dmayt - دميت
+Dmeet - دميت
+Dmit - دميت
+Dohat aramoun - دوحة عرمون
+dohet el hoss - دوحة
 Dominican Republic
-Douar
-Doueir
-Doueir Adouieh
-Douma
-Douriss
-Down Town
-Dubai
-Ebba
-Ebel El Saky
-Edbel
-Eddeh
-Egypt
-Ehden
-Ehmej
-Ein Zeitouneh
-Ejbeh
-eklim el kharoub
-El Mouhamara
-El Qraiaa
-el-Ain
-Elhat
-elissar
-el-Kaakour
-el-Khalleh
-el-Qalaa
-Erkay
-Ersal
-Estonia
-Fadous
-Fakiha
-Falaoui
-Falougha
-Fanar
-Faqra
-Faraya
-Fardiss ( Hasbaya - Nabatiyeh )
-Fatqa
-Fatreh
-Fayadieh
-Feghal
-Ferzol
-Fesdick
-Feytroun
-Fidar
-Fieh
-Finland
-Fissane
-Fneidek
-Fouara
-France
-Freidess (Akkar)
-Freidis (Chouf)
-Freikeh
-Froun
-Ftahat
-Furn el-Chebbak
-Galerie Semaan
-Geba'a
-Gebrayel
-Geitawi
-Gemmayzeh
-Georgia
-Germany
-Ghaboun
-Ghadir
-Ghalboun
-Ghandouriyeh
-Gharifeh
-Ghassaniyeh
-Ghazir
-Ghaziyeh
-Ghazzeh
-Ghebaleh
-Ghedrass
-Gherfine
-Ghineh
-Ghobeiry
-Ghosta
-Ghouma
-Ghreibeh
-Ghzaileh
-Greece
-Habbouche
-Habchit
-Habil
-Hadath (Baabda)
-Hadath (Dahieh)
-Hadath E Jebbeh
-Hadchit
-Haddatha
-Hadeth Baalbeck
-Hadtoune
-Hageh
-Haissa
-Haizouk
-Hajjeh
-Hakl el-Azimi
-Hakour
-Hakr Cheikh Taba
-Hakr Dahiri
-Halate
-Halba
-Halloussiyeh
-Hamat
-Hame
-Hammana
-Hamra
-Hanaway
-Haniyeh
-Harbata
-Harbouna
-Hardine
-haret el naameh
-Haret el-Fouar
-Haret el-Khalssa
-Haret Hamzeh
-Haret Hreik
-Haret Jandal
-Haret Maasser
-Haret Saida
-Haret Sakhr
-Harf Ardeh
-Harf Miziara
-Harf Siyad
-Haris
-Hariss
-Harissa
-Harouf
-Hasbaya
-Hasbaya (metn Aley)
-Hasroun
-Hasrout
-Hay el-Sellom
-hay madi
-Hay Osseyra
-Haylan
-Haysseh
-Haytoura
-Hazerta
-Hazin
-Hazmieh
-Hbous
-Hebbariyeh
-Hed
-Hellaniyeh
-Helta
-Hermel
-Hery
-Himlaya
-Hitla
-Hiyata
-Hjoula
-Hlaliyeh
-Hmaiss
-Hmayreh (Akkar)
-Hmayreh (Hermel)
-Hmayreh (Koura)
-Hneider
-Hoch
-Hoch el-Harimeh
-Hoch el-Oumara
-Hoch Ghanam
-Hoch Hala
-Hoch Nabi
-Hoch Rafika
-Hoch Sayed
-Hoch Sneid
-Hoch Tal Safiyeh
-Hoch Zahab
-Hoch Zarahneh
-Hocheb
-Homsiyeh
-Hong Kong
-Hor Tehla
-Horch Hala
-Horch Tabet
-Hosniyeh
-Hosrayel
-Houla
-Houmal
-Houmine
-Houwara
-Howeiche
-Hrajel
-Hrar
-Hrebta
-Hsanieh
-Hsein
-Hsoun
-Hungary
-Ia'al
-Ia'at
-Ibdine
-Ibrine
-Ighmid
-India
-Insariyeh
-Iraq
-Ireland
-Istanbul
-Italy
-Izal
-Jaba'a
+Douar - دوار
+Doubiyeh - دوبية
+Doueir - دوير
+Doueir Adouieh - دوير عدوية
+Doueir el-Remmane - دوير الرمان
+Douma - دوما
+Douriss - دوريس
+Down Town - وسط بيروت
+Dubai - دبي
+Ebba - عبا
+Ebel El Saky - إبل السقي
+Edbel - عدبل
+Eddeh - إده
+Eddeh - إده
+Egypt - مصر
+Ehden - اهدن
+Ehmej - اهمج
+Ein Zeitouneh - عين الزيتونة
+Ejbeh - إجبع
+eklim el kharoub - اقليم الخروب
+El Mouhamara - المحمرة
+el-Ain - العين
+Elhat - قلحات
+elissar - اليسار
+el-Kaakour - قعقور
+el-Khalleh - خلة
+el-Qalaa - قلعة
+Er Rihaniye - الريحانيه
+Erkay - اركي
+Ersal - عرسال
+Estonia - إستونيا
+Fadous - فدعوس
+Fakiha - فاكهة
+Falaoui - فلوية
+Falougha - فالوغا
+Fanar - فنار
+Faqra - فقرا
+Faraya - فاريا
+Fard - الفرض
+Fardiss ( Hasbaya - Nabatiyeh ) - فرديس (حاصبيا)
+Fatqa - فتقا
+Fatreh - فتري
+Fayadieh - الفياضية
+Feghal - فغال
+Ferzol - فرزل
+Fesdick - عفصديق
+Feytroun - فيترون
+Fidar - فيدار
+Fieh - فيع
+Finland - فنلندا
+Fissane - فيسان
+Fneidek - فنيدق
+Fouara - فوارة
+Fouaret Jaafar - فوارة جعفر
+France - فرنسا
+Freidess (Akkar) - فريديس (عكار)
+Freidis (Chouf) - فريديس (الشوف)
+Freikeh - فريكة
+Froun - فرون
+Fsiqine - فسيقين
+Ftahat - فتحات
+Furn el-Chebbak - فرن الشباك
+Galerie Semaan - غاليري سمعان
+Garabache - جاراباشي
+Geba'a - جبعا
+Gebrayel - جبرايل
+Geitawi - جعيتاوي
+Gemmayzeh - جميزة
+Georgia - جورجيا
+Germany - ألمانيا
+Ghabeh - غابة
+Ghaboun - الغبون
+Ghadir - غدير
+Ghafra - غفرة
+Ghalboun - غلبون
+Ghandouriyeh - غندورية
+Gharayeb - غرايب
+Gharifeh - غريفة
+Ghassaniyeh - الغسانية
+Ghazir - غزير
+Ghaziyeh - غازية
+Ghazzeh - غزة
+Ghebaleh - غبالة
+Ghedrass - غدراس
+Gherfine - غرفين
+Ghineh - غينة
+Ghobeiry - غبيري
+Ghosta - غوسطا
+Ghouma - غوما
+Ghowaya - غواية
+Ghreibeh - خريبة
+Ghzaileh - غزيلة
+Greece - اليونان
+Habbouche - حبوش
+Habchit - حبشيت
+Habil - هابيل
+Habrmoun - حبرمون
+Hadath
+Hadath (Baabda) - حدث (بعبدا)
+Hadath (Dahieh) - حدث (ضاحية)
+Hadath E Jebbeh - حدث الجبة
+Hadchit - حدشيت
+Haddatha - حداتا
+Hadeth Baalbeck - حدث (بعلبك)
+Hadtoune - حدطون
+Hageh - حجة
+Haidab - حيداب
+Haissa - حيصا
+Haizouk - حيزوق
+Hajjeh - حجة
+Hakl el-Azimi - حقل العزيمة
+Hakr Cheikh Taba - حكر الشيخ طابا
+Hakr Dahiri - حكر الضهري
+Halate - حالات
+Halba - حلبا
+Halloussiyeh - حلوسية
+Hamat - حامات
+Hame - هام
+Hammana - حمانا
+Hamra - حمرا
+Hanaway - حناويه
+Hanine - حنين
+Haniyeh - حنية
+Haouch Barada - حوش بردى
+Haouch El Qenaabeh - حوش القنعبة
+Haqel - حاقل
+Har - حار
+Harbata - حربتا
+Harbouna - هربونة
+Hardine - حردين
+haret el naameh - ناعمة
+Haret El Sett - حارة الست
+Haret el-Fouar - حارة الفوار
+Haret el-Khalssa - حارة الخالصة
+Haret Hamzeh - حارة حمزة
+Haret Hreik - حارة حريك
+Haret Jandal - حارة جندل
+Haret Maasser - حارة المعاصر
+Haret Saida - حارة صيدا
+Haret Sakhr - حارة صخر
+Harf Ardeh - حرف ارده
+Harf Miziara - حرف مزيارة
+Harf Siyad - حرف السياد
+Harharira - هرهريرة
+Harika - حريقة
+Hariqah - الحريقه
+Haris - حاريص
+Hariss - حاريص
+Harissa - حريصا
+Harouf - حاروف
+Hasbaya - حاصبيا
+Hasbaya (metn Aley) - حاصبيا المتن
+Hasroun - حصرون
+Hasrout - حصروت
+Hay el-Fikati - حي الفيكاني
+Hay el-Sellom - حي السلم
+hay madi - حي ماضي
+Hay Osseyra - حي العسيرة
+Haylan - حيلان
+Haysseh - حيصا
+Haytoura - حيطورة
+Hazerta - حزرتا
+Hazin - حزين
+Hazmieh - الحازمية
+Hboub - حبوب
+Hbous - حبوس
+Hebbariyeh - هبارية
+Hed - حد
+Hellaniyeh - الحلانية
+Heloueh - حلوة
+Helta - حلتا
+Her Closet
+Herhraya - حرحريرا
+Hermel - هرمل
+Hery - الهري
+Himlaya - حملايا
+Hitla - حيتلا
+Hiyata - حاياتا
+Hjoula - حجولا
+Hlaliyeh (Baabda) - هلالية (بعبدا)
+Hlaliyeh (Saida) - هلالية (صيدا)
+Hmaiss - حميص
+Hmayreh (Akkar) - حميرة (عكار)
+Hmayreh (Hermel) - حميرة (الهرمل)
+Hmayreh (Koura) - حميرة (الكورة)
+Hneider - حنيدر
+Hoch - حوش
+Hoch el-Harimeh - حوش الحريمه
+Hoch el-Oumara - حوش الأمراء
+Hoch Ghanam - حوش الغنم
+Hoch Hala - حوش حالا
+Hoch Nabi - حوش النبي
+Hoch Rafika - حوش الرافقة
+Hoch Sayed Ali - حوش السيد علي
+Hoch Sneid - حوش سنيد
+Hoch Tal Safiyeh - حوش تل صافي
+Hoch Zahab - حوش الذهب
+Hoch Zarahneh - حوش الزرعني
+Hocheb - حوشب
+Homsiyeh - حمصية
+Hong Kong - هونج كونج
+Hor Tehla - حورتعلا
+Horch Hala - حوش حالا
+Horch Tabet - حرش تابت
+Hosniyeh - الحصنية
+Hosrayel - حصرايل
+Houla - حولا
+Houmal - حومال
+Houmine - حومين
+Houwara - حوارة
+Howeiche - حويش
+Hrajel - حراجل
+Hrar - حرار
+Hrebta - حربتا
+Hsanieh - الحسينية
+Hsarat - حصارات
+Hsein - حصين
+Hsoun - الحسون
+Hungary - هنغاريا
+Ia'al - ايعال
+Ia'at - إيعات
+Ibdine - عبدين
+Ibrine - عبرين
+Ighmid - إغمد
+Ijdabrine - اجدبرين
+Ilat - ايلات
+India - الهند
+Insariyeh - انصارية
+Iraq - العراق
+Ireland - أيرلندا
+Istanbul - اسطنبول
+Italy - إيطاليا
+Izal - ازال
+Jaba'a - جبعا
+Jabal Mansoura - جبل المنصورة
+Jabal Mohsen - جبل محسن
 Jabboule
-Jadayel
-Jadra
-Jahlieh
-Jaj
-Jal el-Dib
-Jalala
-Jalisseh
-Jamaica
-Jamhour
-Janneh
-Japan
-Jarjouh
-Jarmak
-Jawar Hachich
-Jbaa (Chouf)
-Jbaa (Nabatiyeh)
-Jbal Boutoum
-Jbaniyeh
-Jbeil
-Jdabra
-Jdeideh
-JdeidehJoumeh
-JdeidehKatih
-Jdeidet el-Chouf
-Jdeidet Ghazir
-Jdeidet Marjeyoun
-Jdita
-Jeb Chite
-Jeb Jenine
-Jeb La
-Jeita
-Jenejleya
-Jensnaya
-Jenta
-Jernaya
-Jezzine
-jibchit
-Jidra
-Jisr el Bacha
-Jisr El Wati
-Jisrain
-Jiyeh
-Jmaijmeh
-Jnah
-Jordan
-Jouar
-Jouar el-Haouz
-Joun
-Jounieh
-Jouret Bedrane
-Jouret el-Ballout
-Jouret el-Tourmos
-Jouwaya
-Jrabta
-Jrane
-Ka'a
-Ka'a el-Rim
-Ka'a kayet Snoubar
-Ka'a Kour
-Kab Elias
-Kab Rikha
-Kabrechmoun
-Kachlak
-Kaddam
-Kadriyeh
-kafaat (Dahieh)
-kafaat (fanar)
-Kafra
-Kaftoun
-Kahaleh
-Kahf el-Malloul
-Kahlounieh
-kaki3iyet l sanawbar
-Kala'a (Baabda)
-Kala'a (Baalback)
-Kalhat
-Kamed el-Loz
-Kamel
-Kammamine
-Kannarit
-Kantara
-kantari
-Kantra
-Karak
-Karakas
-Karakol Druze
-Karantina
-Karaoun
-karem saddah
-Karha (Akkar)
-Karha (Baalback)
-Kariyeh
-Karkha
-Karm Asfour
-Karm el-Mehr
-Karm Saddeh
-Karsita
-Karsouna
-Kartaba
-Kaskas
-Kaslik
-Kasr-Fissane
-Kasser
-Katelbeh
-katrane
-Kattara
-Kattine (Danniyeh)
-Kattine (Jezzine)
-Kawkaba
-kawsariyet rez
-Kawssariet Sayad
-Kayfoun
-Kazakhstan
-Kboula (Akkar)
-Kboula (Kusba)
-Kefraya
-Kefraya (Kusba)
-Kefraya (Saida)
-Kesya
-Ketermaya
-Keyfoun
-Kfa Rabida
-Kfar Aamey
-Kfar Abida
-Kfar Akka
-Kfar Amay
-Kfar Aqab
-Kfar Aya
-Kfar Bibnine
-Kfar Bit
-Kfar Chakhna
-Kfar Chelal
-Kfar Chellam
-Kfar Chellan
-Kfar Chliman
-Kfar Dabach
-Kfar Dan
-Kfar Dlakous
-Kfar Dnisse (West Bekaa)
-Kfar Doubine
-Kfar El Jouz
-Kfar Fakoud
-Kfar Fila
-Kfar Fou
-Kfar Habou
-Kfar Halda
-Kfar Harra
-Kfar Hata (Koura)
-Kfar Hatna
-Kfar hatta
-Kfar Hatta (Nabatieh)
-Kfar Hatta (Zgharta)
-Kfar Hay
-Kfar Hazir
-Kfar Houne
-Kfar Houra
-Kfar Jarra
-Kfar Kahel
-Kfar Katra
-Kfar Keddeh
-Kfar Kouk
-Kfar Mashoun
-Kfar Matta
-Kfar Mechki
-Kfar Melki (Akkar)
-Kfar Melki (Nabatieh)
-Kfar Nabrakh
-Kfar Nis
-Kfar Noun
-Kfar Remmane
-Kfar Saroun
-Kfar Seghab
-Kfar Selouan
-Kfar Sir
-Kfar Tebnit
-Kfar Tibnit
-Kfar Toun
-Kfar Yachit
-Kfar Yassine
-Kfar Zabad
-Kfar Zebian
-Kfar Zina
-Kfarchima
-Kfarchuba
-Kfardebian
-Kfarfalous
-Kfarhbab
-Kfarhim
-Kfarhouna
-Kfarkila
-Kfeir
-Kfifane
-Kfoun
-Kfour (kesserwan)
-kfour (nabatiyeh)
-Kfour el-Arabi
-Khalde
-Khalouate
-Khandaa Al Ghamii
-Kharayeb
-Kharnoub
-Khartoum
-Khazize
-Kherbet Char
-Kherbet Kanafar
-Kherbet Rouha
-Kherbet Selem
-Khiam
-Khodr
-Khonchara
-Khorbet Daoud
-Khorbet Jrad
-Khorbet Jundi
-Khraybeh
-Khrayeb
-Khreybeh (Baalbeck)
-Khreybeh (Chouf)
-Khreybeh (Metn)
-Kiniya
-Klaouiyeh
-Klayaa
-Klayaat (Akkar)
-Klayaat (Kesserwan)
-Klayleh
-Kloud Bakieh
-Kmatiye
-Knafez
-Knaytra (Metn)
-Knaytra (South)
-Kneisseh (Akkar)
-Kneisseh (Baabda)
-Kneisseh (Baalback)
-Kneisseh (Chouf)
-Kobayat
-Kobbeh (Aley)
-Kobbeh (Tripoli)
-Kobbet Chamra
-Koraytem
-Korhaya
-Korkef
-Kornayel
-Korneh
-Kornet Chehwane
-Kortada
-Koubba
-Koucha
-Kounine
-Kour
-Koura
-Kousba
-Koussaya
-Kouwakh
-Krayat
-Krayyeh
-Krin
-Kroum Arab
-Ksara
-Ksarnaba
-Ksaybeh
-Kuwait
-Kwachra
-Laboueh
-Laklouk
-Lala
+Jabboule - جبولة
+Jadayel - جدايل
+Jadra - جدرا
+Jahlieh - جاهلية
+Jaj - جاج
+Jal el-Dib - جل الديب
+Jalala - جلالا
+Jalisseh - جليسة
+Jamaica - جامايكا
+Jamhour - جمهور
+Jamous (Baabda) - جاموس (بعبدا)
+Janneh - جنة
+Japan - اليابان
+Jarjouh - جرجوع
+Jarmak - جرمق
+Jawar Hachich - جوار الحشيش
+Jbaa (Chouf) - جباع (الشوف)
+Jbaa (Nabatiyeh) - جباع (النبطية)
+Jbal Boutoum - جبال البطم
+Jbaniyeh - الجبانية
+Jbeil - جبيل
+Jdabra - اجدبرا
+Jdeideh - جديدة
+JdeidehJoumeh - جديدة الجومة
+JdeidehKatih - جديدة القيطة
+Jdeidet el-Chouf - جديدة (الشوف)
+Jdeidet Ghazir - جديدة غزير
+Jdeidet Marjeyoun - جديدة مرجعيون
+Jdita - جديتا
+Jeb Chite - جبشيت
+Jeb Jenine - جب جنين
+Jeb La - جبلا
+Jeita - جعيتا
+Jenejleya - جنجلايا
+Jensnaya - جنسنايا
+Jenta - جنطة
+Jermanya - جرمنايا
+Jernaya - جرنايا
+Jezzine - جزين
+Jibbayn - جبين
+jibchit - جبشيت
+Jidra - جدرا
+Jisr el Bacha - جسر الباشا
+Jisr El Wati - جسر الواطي
+Jisrain - جسرين
+Jiyeh - جية
+Jmaijmeh - جميجمة
+Jnah - جناح
+Jnoub
+Jordan - الأردن
+Jouar - جوار
+Jouar el-Haouz - جوار الحوز
+Joun - جون
+Jounieh - جونيه
+Jouret Bedrane - جورة بدران
+Jouret el-Ballout - جورة البلوط
+Jouret el-Tourmos - جورة الترمس
+Jouwaya - جويا
+Jrabta - جرابتا
+Jrane - جرانة
+Ka'a el-Rim - قاع الريم
+Ka'a kayet Snoubar - قعقعية صنوبر
+Ka'a Kour - قعقور
+Kab Elias - قب الياس
+Kab Ousseh - كاب عوسة
+Kab Rikha - قبريخة
+Kabrechmoun - قبر شمون
+Kachlak - قشلق
+Kaddam - القدام
+Kadriyeh - قادرية
+kafaat (Dahieh) - كفاءات (ضاحية)
+kafaat (fanar) - كفاءات
+Kafra - كفرا
+Kaftoun - كفتون
+KAH
+Kahaleh - كحالة
+Kahf el-Malloul - كهف الملولة
+Kahlounieh - كحلونية
+kaki3iyet l sanawbar - قعقعية صنوبر
+Kala'a (Baabda) - قلعة (بعبدا)
+Kala'a (Baalback) - القلعة (بعلبك)
+Kalhat - قلحات
+Kalya - قليعة
+Kamed el-Loz - كامد اللوز
+Kamel - كامل
+Kammamine - قمامين
+Kanabat - قنابة برمانا
+Kannarit - قناريت
+Kantara - قنطرة
+kantari - القنطاري
+Kantra - قنطرة
+Karahbache - قره باش
+Karak - كرك نوح
+Karakas - كركاس
+Karakol Druze - كراكول الدروز
+Karantina - الكرنتينا
+Karaoun - قرعون
+karem saddah - كرم سادة
+Karha (Akkar) - قرحا (عكار)
+Karha (Baalback) - قرحا (بعلبك)
+Kariyeh - قرية
+Karkha - كرخا
+Karm Asfour - كرم عصفور
+Karm el-Mehr - كرم المهر
+Karm Saddeh - كرم سادة
+Karm Zibdine - كرم زبدين
+Karsita - قرصيتا
+Karsouna - بقرصونا
+Kartaba - قرطبا
+Kaser Debba - قصر دبا
+Kaskas - قصقص
+Kaslik - كسليك
+Kasr-Fissane - فيسان
+Kasser - القصر
+Katelbeh - قطلبة
+katrane - قطراني
+Kattara - القطارة
+Kattine (Danniyeh) - قطين (منية الضنية)
+Kattine (Kesserwan) - قطين (كسروان)
+Kawkaba - كوكبا
+kawsariyet rez - مزرعة كوثرية الرز
+Kawssariet Sayad - كوثرية السياد
+Kayfoun - كيفون
+Kazakhstan - كازاخستان
+Kboula (Akkar) - قبولا (عكار)
+Kboula (Kusba) - كبولة (كوسبا)
+Kefraya - كفريا (البقاع الغربي)
+Kefraya (Kusba) - كفريا (الكورة)
+Kefraya (Saida) - كفريا صيدا
+Kesserwen
+Kesya - كيسيا
+Ketermaya - كترمايا
+Keyfoun - كيفون
+Kfa Rabida - كفر عبيدا
+Kfar Aamey - كفار عمي
+Kfar Abida - كفر عبيدا
+Kfar Akka - كفر عقا
+Kfar Amay - كفار عمي
+Kfar Aqab - كفر عقاب
+Kfar Aya - كفريا (البقاع الغربي)
+Kfar Baal - كفر بعال
+Kfar Bachit - كفر بخيت
+Kfar Bibnine - كفرببنين
+Kfar Bit - كفر بيت
+Kfar Chakhna - كفار شخنا
+Kfar Chelal - كفار شلال
+Kfar Chellal - كفر شلال
+Kfar Chellam - كفر شلان
+Kfar Chellan - كفر شلان
+Kfar Chliman - كفار شليمان
+Kfar Dabach - كفردبش
+Kfar Dan - كفر دان
+Kfar Diche - كفار ديشي
+Kfar Dlakous - كفر دلاقوس
+Kfar Dnisse (West Bekaa) - كفر دنيس (راشيا)
+Kfar Doubine - كفردونين
+Kfar el Ftouh - كفر الفتوح
+Kfar El Jouz - مزرعة كفر جوز
+Kfar Fakoud - كفر فاقود
+Kfar Fila - كفر فيلا
+Kfar Fou - كفر فو
+Kfar Habou - كفار حبو
+Kfar Halda - كفر حلدا
+Kfar Harra - كفر حرا
+Kfar Hatna - كفرحتنا
+Kfar hatta - كفرحتا
+Kfar Hatta (Koura) - كفرحتا (الكورة)
+Kfar Hatta (Nabatieh) - كفرحتا
+Kfar Hatta (Zgharta) - كفرحتا (زغرتا)
+Kfar Hay - كفر حي
+Kfar Hazir - كفر حزير
+Kfar Houne - كفرحونة
+Kfar Houra - كفر حورا
+Kfar Jarra - كفر جرة
+Kfar Jrif - كفر جريف
+Kfar Kahel - كفر قاحل
+Kfar Katra - كفر قطرا
+Kfar Keddeh - كفر قدا
+Kfar Kouk - كفر قوق
+Kfar Mashoun - كفر ماشون
+Kfar Matta - كفر متا
+Kfar Mechki - كفر مشكي
+Kfar Melki (Akkar) - كفرملكي (عكار)
+Kfar Melki (Nabatieh) - كفر ملكي
+Kfar Nabrakh - كفرنبرخ
+Kfar Nis - كفر نيس
+Kfar Noun - كفر نون
+Kfar Remmane - كفر رمان
+Kfar Saroun - كفار صارون
+Kfar Seghab - كفر صغاب
+Kfar Selouan - كفار سلوان
+Kfar Sir - كفر صير
+Kfar Tebnit - كفر تبنيت
+Kfar Tey - كفر تيه
+Kfar Tibnit - كفر تبنيت
+Kfar Toun - كفر تون
+Kfar Yachit - كفر ياشيت
+Kfar Yassine - كفر ياسين
+Kfar Zabad - كفر زبد
+Kfar Zebian - كفرذبيان
+Kfar Zina - كفر زينة
+Kfarchima - كفرشيما
+Kfarchuba - كفرشوبا
+Kfardebian - كفردبيان
+Kfarfalous - كفر فالوس
+Kfarhamam - كفر حمام
+Kfarhbab - كفرحباب
+Kfarhim - كفرحيم
+Kfarhouna - كفر حونة
+Kfarkila - كفركلا
+Kfartayeh - كفرتيه
+Kfeir - كفير
+Kfifane - كفيفان
+Kfoun - كفون
+Kfour (kesserwan) - كفور (كسروان)
+kfour (nabatiyeh) - كفور (النبطية)
+Kfour el-Arabi - كفور العربي
+Khaizaran - خيزران
+Khalde - خلدة
+Khalouate - خلوات
+Khandaa Al Ghamii - خندق الغميق
+Kharayeb (Hermel) - الخرايب (الهرمل)
+Kharayeb (Saida) - خرايب (صيدا)
+Kharnoub - خرنوب
+Khartoum - خرطوم
+Khazize - خزيز
+Kherbeh - خربة
+Kherbet Char - خربة شار
+Kherbet Kanafar - خربة قنفار
+Kherbet Rouha - خربة روحا
+Kherbet Selem - خربة سلم
+Khiam - الخيام
+Khiara - خيارة
+Khodr - خضر
+Khodr Bey - خضر
+Khonchara - خنشارة
+Khorbet Daoud - خربة داوود
+Khorbet Jrad - خربة جرد
+Khorbet Jundi - خريبة الجندي
+Khrab el Hayyat - خراب الحيات
+Khraybeh - الخريبة
+Khrayeb - خرايب (كسروان)
+Khreybeh (Baalbeck) - خريبة (بعلبك)
+Khreybeh (Chouf) - الخريبة (الشوف)
+Khreybeh (Metn) - الخريبة
+Kiniya - قنية
+Klaouiyeh - قلويه
+Klayaa - قليعة
+Klayaat (Akkar) - قليعات (عكار)
+Klayaat (Kesserwan) - القليعات (كسروان)
+Klayleh - القليلة
+Kloud Bakieh - قلود الباكرية
+Kmatiye - قماطية
+Knafez - قنافز
+Knaytra (Metn) - قنيطرة
+Knaytra (South) - قنيطرة (صيدا)
+Kneisseh (Akkar) - كنيسة (عكار)
+Kneisseh (Baabda) - كنيسة (بعبدا)
+Kneisseh (Baalback) - كنيسة (بعلبك)
+Kneisseh (Chouf) - كنيسة (الشوف)
+Kobayat - القبيات
+Kobbeh (Aley) - القبة (عاليه)
+Kobbeh (Tripoli) - قبة (طرابلس)
+Kobbet Chamra - قبة شمرا
+Koraytem - قريطم
+Korkef - القرقف
+Kornayel - قرناييل
+Korneh - قرنة عكّار
+Kornet Chehwane - قرنة شهوان
+Kortada - قرطادا
+Kouaikhat - الكويخات
+Koubba - كوبّا
+Koubbayeh - قبّيع
+Koucha - كوشا
+Kounine - كونين
+Kour - كور
+Koura - كورة
+Kousba - كوسبا
+Koussaya - قوسايا
+Kouwakh - كواخ
+Krayat - قريات
+Krayyeh - قرية
+Krin - قرين
+Kroum Arab - كروم عرب
+Ksara - كسارا
+Ksarnaba - قصرنبا
+Ksaybeh - قصيبة
+Kuwait - الكويت
+Kwachra - كواشرة
+Laboueh - لبوة
+Laklouk - لقلوق
+Lala - لالا
 Laos
-Lassa
-Latvia
-Lebaa
-Lebbaya
-Leilaky
-Limar
-Lithuania
-Louaizeh (Baabda)
-Louaizeh (Jezzine)
-Loubiyeh
-Luxembourg
-Maalaka
-Maamariyeh
-Maameltein
-Maamoura
-Maarab
-Maaraboun
-Maarakeh
-Maaroub
-Maasriti
-Maasser
-Maasser Beit Eddine
-Maasser El Chouf
-Maayssra
-Machghara
-Machmouche
-Machta Hammoud
-Machta Hassan
-Madine Riyadiye
-Maghdoucheh
-Mahmra
-Mahrouni
-Majd Ala
-Majd El (Akkar)
-Majd El (Jbeil)
-Majd el Baana
-Majd el Behna
-Majd el-Anjar
-Majd el-Meouch
-Majd el-Sel
-Majd el-Tarchich
-Majd el-Zoun
-Majd Laya (Aley)
-Majd Laya (Zgharta)
-Majdaloun
-Majdel Balhis
-Majdel Selem
-Majdelyoun
-Majzoub
-Makneh
-Makni
-Maknounieh
-Malaysia
-Maldives
-Malla
-Malta
-Manara (Beirut)
-Manara (West Bekaa)
-Mansoura
-Mansouri
-Mansourieh
-Mar Antonios
-Mar Elias
-Mar Mema
-Mar Mikhael
-Mar Moussa
-Mar Roukoz
-Mar Sarkis
-Mar Takla
-Mar Touma
-Marj
-Marj (Batroun)
-Marj Barja
-Marj el-Zouhour
-Marjaba
-Marjayoun
-Markaba
-Markabta
-Mart Moura
-Marwaniyeh
-Masnah el dahr
-Massa
-Massoudieh
-mastita
-Matariyet Choumar
-Mathaf
-Mayassa
-Mayfaidoun
-Mayfouk
-Mayrouba
-Mays el Jabal
-M'aysra
-Mazboud
-Mazraat Abou Slaybi
-Mazraat Baldeh
-Mazraat Beit Matar
-Mazraat Beit Slaybi
-Mazraat Beit Tacham
-Mazraat Dalil
-Mazraat El Chouf
-Mazraat el-Fraydiss
-Mazraat el-Nahr
-Mazraat el-Soueidan
-Mazra'at el-Syad
-Mazraat Fakih
-Mazraat Houka
-Mazraat Hreikess
-Mazraat Kfardebiane
-Mazraat Mechref
-Mazraat Sayed
-Mazraat Soueidan
-Mazraat Touffah
-Mazraat Yachouh
-Mazraet Artousa
-Mazraet el-Dahr
-Mchan
-Mcharafiyeh
-Mchikha
-Mdoukha
-Mecherfeh
-Mechha
-Mechmech (Akkar)
-Mechmech (Jbeil)
-Mechref
-Medawar
-Mehmarche
-Meiteen Street
-Mejdlaya ( Zgharta )
-Mekse
-Mekseh
-Memneh
-Metrit
-Mexico
-Mezher
-Meziara
-Mghayri
-Mghayrie
-Midane (Jezzine)
-Midane (Zgharta)
-Mimes
-Mina
-Minet el-Hosn
-Minieh
-Minyara
-Mirna Chalouhi
-Miryata
-MiyehWe Miyeh
-Mjadel (Tyre)
-Mjeidel (Jezzine)
-Mkaibleh
-Mkaiteh
-Mkalles
-Mlikh
-Moheidse (Maten)
-Moheidseh (Rachaiya)
-Moldova
-Monaco
-Mongolia
-Monteverde
-Morocco
-Mouawad
-Moughairieh
-Mouhaidseh
-Moukhtara
-moula
-Mounjez
-Mounsef
-Mousaitbeh
-Mousseitbeh
-Mrah As-Sraje
-Mrah Az-Zeyat
-Mrah Chdid
-Mrah el-Ain
-Mrah el-Hajj
-Mrah el-Hibas
-Mrah el-Khokh
-Mrah Sfaira
-Mrah Sraje
+Lassa - لاسا
+Latvia - لاتفيا
+Lebaa (Jezzine) - (لبعا (جزين - لبعا
+Lebbaya - لبايا
+Lehfed - لحفد
+Leilaky - ليلكي
+Limar - ليمار
+Lithuania - ليتوانيا
+Little Darlings Store
+Louaizeh (Baabda) - لويزة (بعبدا)
+Louaizeh (Jezzine) - لويزة (جزين)
+Loubiyeh - لوبية
+Luxembourg - لوكسمبورغ
+Maalaka - معلقة
+Maamariyeh - معمارية
+Maameltein - معاملتين
+Maamoura - المعمورة
+Maarab - معراب
+Maaraboun - معربون
+Maarakeh - معركة
+Maaroub - معروب
+Maarouf - معروف
+Maasriti - معصريتي
+Maasser - معاصر الشوف
+Maasser Beit Eddine - معاصر بيت الدين
+Maasser El Chouf - معاصر الشوف
+Maaysra (Hermel) - المعيصرة
+Maaysra (Kesserwan) - معيصرة
+Machghara - مشغرة
+Machmouche - مشموشة
+Machta Hammoud - مشتى حمود
+Machta Hassan - مشتى حسن
+Madfoun - مدفون
+Madine Riyadiye - مدينة رياضية
+Maghdoucheh - مغدوشة
+Maghroubella - مغربية
+Mahmra - محمرة
+Mahrouni - محرونة
+Majd Ala - مجدلا
+Majd El (Akkar) - مجدلا
+Majd El (Jbeil) - مجدل (جبيل)
+Majd el Baana - مجدل بعنا
+Majd el Behna - مجدل بعنا
+Majd el-Anjar - مجدل عنجر
+Majd el-Meouch - مجد المعوش
+Majd el-Sel - مجد السيل
+Majd el-Tarchich - مجدل ترشيش
+Majd el-Zoun - مجدل زون
+Majd Laya (Aley) - مجدلايا (عاليه)
+Majd Laya (Zgharta) - مجدليا (زغرتا)
+Majdal - المجدل
+Majdaloun - مجدلون
+Majdel Balhis - مجدل بلحيص
+Majdel Selem - مجدل سلم
+Majdelyoun - مجدليون
+Majzoub - مجذوب
+Makneh - مكنة
+Makni - مكنة
+Maknounieh - مكنونية
+Malaysia - ماليزيا
+Maldives - جزر المالديف
+Malekyeh - مالكية
+Malkiyet El Sahel - مالكية السهل
+Malla - الملا
+Malta - مالطا
+Manara (Beirut) - منارة (بيروت)
+Manara (West Bekaa) - المنارة (البقاع الغربي)
+Mansoura - المنصورة
+Mansouri - منصوري
+Mansourieh - منصورية
+Mansouriyet Bhamdoun - منصورية بحمدون
+Mar Antonios - مار انطونيوس
+Mar Elias - مار الياس
+Mar Mema - مار ميما
+Mar Mikhael - مار مخايل
+Mar Moussa - مار موسى
+Mar Roukoz - مار روكز
+Mar Sarkis - مار سركيس
+Mar Shaaya - مار شعيا
+Mar Takla - مار تقلا
+Mar Touma - مار توما
+Marj - المرج (البقاع الغربي)
+Marj (Batroun) - المرج (البترون)
+Marj Barja - مرج برجا
+Marj el-Zouhour - مرج الزهور
+Marjaba - مرجبا
+Marjayoun - مرجعيون
+Marjiyat - مرجيات
+Markaba - مركبا
+Markabta - مركبتا
+Maroun El Ras - مارون الرأس
+Mart Moura - مارت مورا
+Marwahin - مروحين
+Marwaniyeh - مروانية
+Maska - مسقا
+Masnaa - المصنع
+Masnah el dahr - مصنع الظهر
+Massa - ماسا
+Massoudieh - المسعودية
+mastita - مستيتا
+Matariyet Choumar - مطرية الشومار
+Mathaf - المتحف
+Mayassa - مياسة
+Mayfaidoun - ميفدون
+Mayfouk - ميفوق
+Mayrouba - ميروبا
+Mays el Jabal - ميس الجبل
+Mazboud - مزبود
+Mazraat Abou Slaybi - مزرعة ابو صليبي
+Mazraat Baldeh - مزرعة بلده
+Mazraat Beit Matar - مزرعة بيت مطر
+Mazraat Beit Slaybi - مزرعة بيت صليبي
+Mazraat Beit Tacham - مزرعة بيت الطشم
+Mazraat Dalil - مزرعة الدليل
+Mazraat El Barghoutiyeh - مزرعة البرغوتية
+Mazraat El Chouf - مزرعة الشوف
+Mazraat El Hdaira - مزرعة الحضيرة
+Mazraat el-Fraydiss - فريديس (زغرتا)
+Mazraat el-Nahr - مزرعة النهر
+Mazraat el-Soueidan - مزرعة السويدان
+Mazra'at el-Syad - مزرعة السياد
+Mazraat Fakih - مزرعة الفقيه
+Mazraat Houka - حوقا
+Mazraat Hreikess - مزرعة حريقص
+Mazraat Kfardebiane - مزرعة كفرذبيان
+Mazraat Mechref - مزرعة مشرف
+Mazraat Saged - مزرعة حكيم
+Mazraat Sayed - مزرعة السيد
+Mazraat Soueidan - مزرعة سويدان
+Mazraat Touffah - مزرعة التفاح
+Mazraat Tout - مزرعة توت
+Mazraat Yachouh - مزرعة يشوع
+Mazraet Artousa - مزرعة عرطوسي
+Mazraet el-Dahr - مزرعة الظهر
+Mchailha Hakour  - مشيلحة حاكوره
+Mchan - مشان
+Mcharafiyeh - المشرفية
+Mchikha - مشيخا
+Mdoukha - مدوخة
+Mecherfeh - مشرفة
+Mechha - مشحا
+Mechmech (Akkar) - مشمش (عكار)
+Mechmech (Jbeil) - مشمش (جبيل)
+Mechref - مشرف
+Medawar - مدور
+Mehmarche - مهمرش
+Meidoun - ميدون
+Meiteen Street - شارع متين
+Mejdlaya ( Zgharta ) - مجدليا
+Mekhtlef - مختلف
+Mekrak - مكراك
+Mekse - مكسه
+Mekseh - مكسه
+Memneh - ممنع
+Merdacheh - مرداشة
+Metn
+Metrit - متريت
+Mexico - المكسيك
+Mezher - مزهر
+Meziara - مزيارة
+Mghayri - مغاير
+Mghayrie - مغيرة
+Mharabiyeh - محاربية
+Midane (Jezzine) - ميدان (جزين)
+Midane (Zgharta) - ميدان (زغرتا)
+Mimes - ميمس
+Mina - مينا
+Minet el-Hosn - ميناء الحصن
+Minieh - المنية
+Minyara - منيارة
+Mirna Chalouhi - ميرنا الشالوحي
+Miryata - مرياطا
+MiyehWe Miyeh - مية ومية
+Mjadel (Tyre) - مجادل (صور)
+Mjeidel (Jezzine) - مجادل (جزين)
+Mkaibleh - مقيبله
+Mkaiteh - المقيطع
+Mkalles - مكلس
+Mlikh - مليخ
+Moheidse (Maten) - محيدسة (المتن)
+Moheidseh (Rachaiya) - محيدثة (راشيا)
+Moldova - مولدوفا
+Monaco - موناكو
+Mongolia - منغوليا
+Monteverde - مونتيفردي
+Morocco - المغرب
+Mouanse - المونسة
+Mouawad - معوض
+Moughairieh - مغيرية (الشوف)
+Mouhaidseh - محيدثة
+Moukhtara - مختارة
+moula - مولا
+Mounjez - منجز
+Mounsa - مونسا
+Mounsef - منصف
+Mount Lebanon
+Mousaitbeh - المصيطبة
+Mousseitbeh - مصيطبة
+Mrah As-Sraje - مراح السراج
+Mrah Az-Zeyat - مراح الزيات
+Mrah Chdid - مراح شديد
+Mrah el-Ain - مراح العين
+Mrah el-Hajj - مراح الحج
+Mrah el-Hibas - مراح الحباس
+Mrah el-Khokh - مراح الخوخ
+Mrah Sfaira - مراح الصفيرة
+Mrah Sraje - مراح السراج
 Mreijat (Bekaa)
-Mreijat (Chtaura)
-Mreijeh
-Mresty
-Mreyjat (Chouf)
-Mrouj
-Msayleh
-Mtaileb
-Mtein
-Mtolleh
-Muscat
-Myasseh
-Nabatiyeh
-Nabay
-Nabha Harfouche
-Nabi Aylla
-Nabi Chiit
-Nabi Osman
-Nabi Rachad
+Mreijat (Chtaura) - مريجات (زحلة)
+Mreijeh - مريجة
+Mresty - مرستي
+Mresty - مرستي
+Mreyjat (Chouf) - المريجات ​​(الشوف)
+Mrouj - مروج
+Mryatah - مرياطا
+Msayleh - مصيلح
+Mtaileb - مطيلب
+Mtein - متين
+Mtolleh - مطلة
+Muscat - مسقط
+Myasseh - مياسة
+Mzaki - مزكة
+Mzayreb - مزيرب
+Nabaa El Safa - نبع الصفا
+Nabaah (Jezzine) - (جزّين) نبعة
+Nabaah (Metn) - النبعة (المتن)
+Nabatiyeh - النبطية
+Nabay - نابيه
+Nabha Damdoum - نبحا دمدوم
+Nabha Harfouche - نبحا حرفوش
+Nabha Kleili - نبحا القليلة
+Nabha Mahfara - نبها محفارة
+Nabi Aylla - نبي ايلا
+Nabi Chiit - نبي شيت
+Nabi Inaam - نبي أنعام
+Nabi Osman - نبي عثمان
+Nabi Rachad - نبي رشاد
 Nabi Rashad
-Nabi Sbat
-Nabi Youchah
-Naccache
-Naher el Kaleb
-Nahleh
-Nahr El Kalb
-Nahr El Mot
-Nahr Ibrahim
-Nahriyeh
-Nakhleh
-Nammoura
-Namrine
-naqoura
-Nassiriyeh
-Nehme
-Nejjariyeh
-Nemayreh
-Netherlands
-New Jdeideh
-New Rawda
-New Zealand
-Nfeisseh
+Nabi Sbat - نبي صبات
+Nabi Youchah - النبي يوشع
+Naccache - النقاش
+Nafakhiyeh - نفاخية
+Naher el Kaleb - نهر الكلب
+Nahleh - نحلة
+Nahr El Kalb - نهر الكلب
+Nahr El Mot - نهر الموت
+Nahr Ibrahim - نهر ابراهيم
+Nahriyeh - النهرية
+Nakhleh - النخلة
+Nakra - نقرة
+Nammoura - نمورة
+Namrine - نمرين
+naqoura - الناقورة
+Nasra - ناصرة
+Nassiriyeh - الناصرية
+Nayra - وادي النيرة
+Nehme - ناعمة
+Nejjariyeh - نجارية
+Nemayreh - النميرية
+Netherlands - هولندا
+Netherlands - هولندا
+New Jdeideh - نيو  جديدة
+New Rawda - نيو روضة
+New Zealand - نيوزيلندا
+Nfeisseh - نفيسة
 Nigeria
-Niha (Chouf)
-Niha (Zahle)
-Nimrine
-Nmeiriyeh
-North Macedonia
-Norway
-noueiry
-Noumairieh
-Noura
-Obeidat
-okaiby
-Old Saida Road
-Oman
-Oueinate
-Ouyoun
-Ouzai
-Panama
-Philippines
-Poland
-Port of Beirut
-Portugal
+Niha (Chouf) - نيحا (الشوف)
+Niha (Zahle) - نيحا (زحلة)
+Nimrine - نمرين
+Nmeiriyeh - النميرية
+NORTH
+North Macedonia - مقدونيا الشمالية
+Norway - النرويج
+noueiry - نويري
+Noumairieh - نميرية
+Noura - نورة
+Nye Rachadeh - ناي رشادة
+Obeidat - عبيدات
+Okaibeh (Kesserwan) - عقيبة (كسروان)
+okaiby - العاقبية
+Old Saida Road - طريق صيدا القديمة
+Oman - سلطنة عمان
+Oueinate - العوينات
+Ouyoun - عيون
+Ouzai - الأوزاعي
+Panama - بنما
+Petrol Line - خط البترول
+Philippines - فيلبين
+Poland - بولندا
+Port of Beirut - مرفأ بيروت
+Portugal - البرتغال
 Puerto Rico
-Qaaqayiet el-Jisr
-Qalamoun
-Qana
-Qartaboun
-Qasmieh
-Qatar
-Qattin
-Qennarit
-Qnat
-Qnaywer
-Qsaibeh
-Qsaybeh (Baabda)
-Qsaybeh (Nabatieh)
-Quorayeh
-Raachine
-Rab Thalathine
-Rabieh
-Rabwe
-Racha
-Rachana
-Rachaya
-Rachaya el-Foukhar
-Rachdebbine
-Rachiine
-Rachkananey
-Rachkida
-Rafid
-Rahbeh
-Ram
-Ramle El Baida
-Ramout
-Raouche
-Ras Al Nabeh
-Ras Baalbeck
-Ras Beirut
-Ras el-Ain ( Baalbak )
-Ras el-Harf
-Ras el-Metn
-Ras Nhache
-Ras Osta
-Ras Senhache
-Ras-Beyrouth
-Raskifa
-Ras-Meska
-Rassiyeh
-Rawda
-Rayak
-Rechmaya
-Remhala
-Reunion Island
-Reyfoun
-Riha
-Rihanieh (Baabda)
-Rihanieh (Koura)
-Riit
-Rimat - Chkadif
-Rmadiyeh
-Rmah
-Rmeich
-Rmeil
-Rmeileh
-Romania
-Rouayset el-Ballout
-Roueisset el-Nehman
-Roum
-Roumieh
-Roumine
-Russia
-Rweiss
-Rweissat
-Saadine
-Saadiyat
-Saadnayel
-Sabbah
-Sabbouba
-Sabra
-Sabtieh
-Sad el-Baouchrieh
-Sadikine
-Safad el-Batikh
-Safinet el Dreib
-Safra
-Saghbine
-Sahel Alma
-Sahlat Ma'a
-Saida
-Saifi
-Saki Rechmaya
-Sakiet El Janzir
-Sakiet el-Misk
-Saksakiyeh
-Salaa
-Salhiyeh
-Salib
-Salim Slem
-Salima
-Saloume
-Sami El Solh
-Sammaayieh
-Sanayeh
-Sarafand
-Sarahmoul
-Sarba (Kesserwan)
-Sarba (Nabatiyeh)
-Sarhine
-Sassine
-Saudi Arabia
-Sawaneh
-Sawfar
-Saydoun
-Sayssouq
-Sebaal
-Sebhel
-Sebnay
-Sefri
-Sehayleh
-Sehayleh
-Seissouk
-Selaata
-Semakiyeh
-Semkaniyeh
-Semmaeyeh
-Senegal
-Serbia
-Serhel
+Qaabrine - قعبرين
+Qaaqayiet el-Jisr - قعقعية الجسر
+Qabaait - قبعيت
+Qalamoun - قلمون
+Qana - قانا
+Qantara - القنطره
+Qarha - قرحا
+Qartaboun - قرطبون
+Qasmieh - القاسمية
+Qatar - قطر
+Qattin - قطين (كسروان)
+Qennabet Broummana - قنابة برمانا
+Qennarit - قناريت
+Qnat - قنات
+Qnaywer - قنيور
+Qoubaiyat - القبيات
+Qoubbei - قبيع
+Qoubbei - قبّيع - قبّيع
+Qouzah - قوزح
+Qraiyeh (Baabda) - قرية (بعبدا)
+Qraiyeh (Saida) - قرية (صيدا)
+Qrayn - القرينة
+Qsaibeh - قصيبة (بعبدا)
+Qsaybeh (Baabda) - قصيبة (بعبدا)
+Qsaybeh (Nabatieh) - قصيبة
+Quello Chocolate
+Raachine - رعشين
+Rab Thalathine - رب الثلاثين
+Rabieh - الرابية
+Rabwe - الربوة
+Racha - راشا
+Rachaf - رشاف
+Rachana - راشانا
+Rachaya - راشيا
+Rachaya el-Foukhar - راشيا الفخار
+Rachdebbine - رشدبين
+Rachidiyeh - رشيدية
+Rachiine - رشعين
+Rachkananey - رشكنانيه
+Rachkida - رشكيدا
+Racyay - راسياي
+Rafid - رافد
+Rahbeh - رحبة
+Rahit - راهيت
+Rajm Issa - رجم عيسى
+Ram - رام 
+Rama - الرامة
+Ramassa - راماسا
+Ramle El Baida - رملة البيضاء
+Ramliyeh - رملية
+Ramout - راموت
+Ramyeh - رامية
+Raouche - الروشة
+Ras Al Nabeh - رأس النبع
+Ras Baalbeck - رأس بعلبك
+Ras Beirut - رأس بيروت
+Ras el-Ain ( Baalbak ) - رأس العين (بعلبك)
+Ras el-Harf - رأس الحرف
+Ras el-Metn - رأس المتن
+Ras Nhache - رأس نحاش
+Ras Osta - رأس أسطا
+Ras Senhache - رأس سنحاش
+Ras-Beyrouth - رأس بيروت
+Raskifa - راس كيفا
+Ras-Meska - رأس مسقا
+Rassiyeh - راسية
+Rawda - روضة
+Rayak - رياق
+Rechmaya - رشميا
+Rejmeh - رجمة
+Remhala - رمحالا
+Reunion Island - جزيرة ريونيون
+Reyfoun - ريفون
+Rich - ريش
+Riha - ريحا
+Rihanieh (Baabda) - الريحانية
+Rihanieh (Koura) - الريحانية
+Riit - رعيت
+Rimat - Chkadif - ريمات
+Rmadiyeh - رمادية
+Rmah - رماح
+Rmeich - رميش
+Rmeil - الرميل
+Rmeileh - رميلة
+Rmoul - رمول
+Romania - رومانيا
+RoseBullet
+Rouayset el-Ballout - رويسة البلوط
+Roueisset el-Nehman - رويسة النعمان
+Roum - روم
+Roumieh - رومية
+Roumine - رومين
+Roummaneh - رمانة
+Rush & Reez
+Russia - روسيا
+Rweiss - الرويس
+Rweissat Jdeideh - رويسات الجديدة
+Rweissat Saoufar - رويسات صوفر
+Saadine - سعدين
+Saadiyat - سعديات
+Saadnayel - سعدنايل
+Saaideh - السعيدة
+Sabbah - صباح
+Sabbouba - سبوبا
+Sabra - صبرا
+Sabtieh - سبتية
+Sad el-Baouchrieh - سد البوشرية
+Sadikine - صديقين
+Sadiyeh - سعدية
+Safad el-Batikh - صفد البطيخ
+Safinet el Dreib - سفينة الدريب
+Safra - صفرا
+Saghbine - صغبين
+Sahel Alma - ساحل علما
+Saida - صيدا
+Saifi - الصيفي
+Sakhra - صخرة
+Saki Rechmaya - سقي رشميا
+Sakiet El Janzir - ساقية الجنزير
+Sakiet el-Misk - ساقية المسك
+Saksakiyeh - سكسكية
+Salaa - سلعا
+Salhat El Ma - صلحة الما
+Salhiyeh - صالحية
+Salib - صليب
+Salim Slem - سليم سلام
+Salima - صاليما
+Saloume - صالومي
+Sami El Solh - سامي الصلح
+Sammaayieh - السماعية
+Sammouniyeh - السمونيه
+Sanayeh - صنائع
+Sarafand - صرفند
+Sarahmoul - سرحمول
+Sarba (Kesserwan) - صربا (كسروان)
+Sarba (Nabatiyeh) - صربا (النبطية)
+Sarhine - سرعين
+Sassine - ساسين
+Saudi Arabia - المملكة العربية السعودية
+Sawaneh - صوانة
+Sawfar - صوفر
+Sayaniyeh - سيانية
+Saydeh
+Saydoun - صيدون
+Sayssouq - سيسوق
+Sebaal - سبعل
+Sebhel - سبعل
+Sefri - سفري
+Sehayleh - سهيل
+Sehayleh - سهيلة
+Sehleh - سهله
+Seissouk - سيسوق
+Selaata - سلعاتا
+Semakiyeh - سماقية
+Semkaniyeh - سمقانية
+Semmaeyeh - سماعية
+Senegal - السنغال
+Serbia - صربيا
+Serhel - سرعل
 Seychelles
-Sfaira
-Sfaray
-Sfayleh
-Sfaylet Baabdat
-Sfeinet Katih
-Sfeir
-Sghar
-Sharjah
-Sibline
-Sin el-Fil
-Sinay
-Sindiyaneh
-Singapore
-Sioufi
-Sir Denniyeh
-Sir el-Gharibeh
-Sirijbeil
-Slovakia
-Slovenia
-Smar Jbeil
-Snaya
-Snoubra
-Sodeco
-Sofar
-Sohmor
-Sojod
-Souairi
-Soueisseh
-Souk el-Gharb
-Sour
-Souret
-South Africa
-South Korea
-Souwaika
-Souwaneh
-Spain
-Srar
-Srifa
-Sriri
-Sultan Yaacoub
-Sultanieh
-Sweden
-Switzerland
-Ta'aboura
-Taalabaya
-Taanayel
-Tabarja
-Tabbaneh
-Tabbaya
-Tacheh
-Tahweitat
-Taiwan
-Tal Abbas
-Tal Bibeh
-Tal el-Akhdar
-Tal Hemayra
-Tal Mehyan
-Tal Mohammad
-Tal Zanoub
-Talleh
-Tallet El Khayyat
-Tallousseh
-Talya
-Tamich
-Tamnine El Tahta
-Tanbourite
-Tannoura
-Tannourine
-Tarane
-Taraya
-Tarchich
-Tarek Saida El Ademe
-Tarik Jdideh
-Tartej
-Taybeh
-Tayouneh
-Tayr Debba
-Tayr Felsay
-Tebnine
-Teffahta
-Teid
-Tekrit
-Tel Meyane
-Telal Ain Saadeh
-Temnin
-Temnine
-Terbol (Danniyeh)
-Terbol (Zahle)
-Tfail
-Thailand
-Thoum
-Tibeh
-Tiri
-Tleil
-Tohwitet Al Ghadeer
-Torzaya
-Toufikiyeh
-Toul
-Toula
-Toula Jebbeh
-Touline
-Toura
-Tourza
-Touweiti
-Tripoli
-Turkey
-Tyre
-UAE
-Ukraine
-Unesco
-United Kingdom
-USA
-Uzbekistan
-Verdun
-Wadi Arayech
-Wadi Baankoudine
-Wadi Bnehley
-Wadi Chahrour
-Wadi el-Delm
-Wadi el-Hour
-Wadi el-Laymoun
-Wadi el-Set
-Wadi el-Zineh (Chouf)
-Wadi Fa'ara
-Wadi Jamous
-Wadi Jezzine
-Wadi Karm
-Wadi Nahleh
-Wadi Turkman
-Wadi Zein (Baalback)
-Wadih Khaled
-Wakilni Dekwaneh Office (Self Pickup)
-Wakilni Sarafand  Office (Self Pickup)
-Wakilni Tripoli Office (Self Pickup)
-Warhaniyeh
-Wata Al Mousaitbe
-Wata el Jawz
-Wata el-Mrouj
-Wata Fares
-Wata Houb
-Watieh
-Wazzany
-Wetwat
-Yahchouche
-Yahfoufa
-Yammouni
-Yanta
-Yaroun
-Yarzeh
-Yater
-Yellow Store - Beirut
-Ynouh
-Yohmor (Nabatieh)
-Yohmor (West Bekaa)
-Younine
-Zaarour
-Zaarourieh
-Zaaytra
-Zabkine
-Zaboud
-Zabougha
-Zaghr Tighrine
-Zaghrin
-Zahle
-Zahrani
-Zahrieh
-Zaita
-Zaitoun
-Zakrouk
-Zakroun
-Zakzouk
-Zalka
-Zandouka
-Zane
-Zaoutar
-Zarazir
-Zarif
-Zaroun
-Zawarib
-Zaydenieh
-Zebdine
-Zefta
-Zeghdraya
-Zeghrine
-Zeitoun
-Zekrit
-Zeytoun'
-zgharta
-Zhalta
-Zitta
-Zlaya
-Zokak el-Blat
-Zouk (Akkar)
-Zouk el-Hossayni
-Zouk el-Kharab
-Zouk Hadareh
-Zouk Hassineh
-Zouk Hbalseh
-Zouk Kharab
-Zouk Mekacharine
-Zouk Mikail
-Zouk Mosbeh
-Zrariyeh
+Sfaira - السفيرة
+Sfaray - صفاري
+Sfayleh - سفيلة
+Sfaylet Baabdat - سفيلة بعبدات
+Sfeinet Katih - سفينة القيطع
+Sfeir - صفير
+Sghar - صغار
+Sharjah - الشارقة
+Sibline - سبلين
+Sin el-Fil - سن الفيل
+Sinay - سيناي
+Sindianet Zeidane - سنديانة زيدان
+Singapore - سنغافورة
+Sioufi - سيوفي
+Sir Denniyeh - سير الضنية
+Sir el-Gharibeh - صير الغربية
+Sirijbeil - سيرجبال
+Slovakia - سلوفاكيا
+Slovenia - سلوفينيا
+Smar Jbeil - سمار جبيل
+Snaya - سنية
+Snoubra - صنوبرة
+Sodeco - سوديكو
+Sofar - صوفر
+Sohmor - سحمر
+Sojod - سجد
+Soleh - صلح
+Souairi - الصويري
+Souaiseh - السويسة
+Soueisseh - سويسة
+Souk el-Gharb - سوق الغرب
+Sour - صور
+Souret - صورات
+South
+South Africa - جنوب أفريقيا
+South Korea - كوريا الجنوبية
+Souwaika - سويقة
+Souwaneh - صوانة
+Spain - إسبانيا
+Sports Lab
+Srar - سرار
+Srebbine - صربين
+Srifa - صريفا
+Sriri - سريري
+Sultan Yaacoub - سلطان يعقوب
+Sultanieh - سلطانية
+Sweden - السويد
+Switzerland - سويسرا
+Switzerland - سويسرا
+Ta'aboura - بتعبورة
+Taalabaya - تعلبايا
+Taanayel - تعنايل
+Taazaniyeh - تعزانية
+Tabaris - تباريس
+Tabarja - طبرجا
+Tabbaneh - تبانة
+Tabbaya - طبايا
+Tacheh - تاشع
+Tahweitat - تحويطة الغدير
+Taiwan - تايوان
+Tal Abbas - تل عباس
+Tal el-Akhdar - تل الأخضر
+Tal Hemayra - تل حميرة
+Tal Mehyan - تلمعيان
+Tal Mohammad - التل
+Tal Zanoub - تل زنوب
+Talbibeh - تلبيبة
+Tallet El Khayyat - تلة الخياط
+Tallousseh - طلوسة
+Talya - طليا
+Tamich - دير طاميش
+Tamnine El Tahta - تمنين التحتا
+Tanbourite - طنبوريت
+Tannoura - تنورة
+Tannourine - تنورين
+Tarane - طاران
+Taraya - طاريا
+Tarchich - ترشيش
+Tarek Saida El Ademe - طريق صيدا القديمة
+Tarik Jdideh - طريق الجديدة
+Tartej - ترتيج
+Taybeh - طيبة
+Tayouneh - الطيونة
+Tayr Debba - طير دبا
+Tayr Felsay - طير فلساي
+Tayr Harfa - طير حرفا
+Tebnine - تبنين
+Teffahta - تفاحتا
+Teid - تعيد
+Tekrit - تكريت
+Tel Meyane - تلمعيان
+Telal Ain Saadeh - تلال عين سعادة
+Temnin - تمنين
+Temnine - تمنين
+Terbol (Danniyeh) - تربل (منية الضنية)
+Terbol (Zahle) - تربل (زحلة)
+Tfail - طفيل
+Thailand - تايلاند
+The Pavement Warehouse - مستودع الرصيف
+Thoum - ثوم
+Tibeh - طيبة
+Tiri - طيري
+Tlaile - تليلة
+Tleil - تليلة
+Tohwitet Al Ghadeer - تحويطة الغدير
+Torzaya - طورزيا
+Toufikiyeh - توفيقية
+Toul - تول
+Toula - تولا
+Toula Jebbeh - تولا
+Touline - تولين
+Toura - طورا
+Tourza - طورظا
+Touweiti - تويتي
+Tripoli - طرابلس
+Turkey - تركيا
+Tyre - صور
+UAE - الإمارات العربية المتحدة
+Ukraine - أوكرانيا
+Unesco - الاونيسكو
+United Kingdom - المملكة المتحدة
+Ur Style
+USA - الولايات المتحدة الأمريكية
+Uzbekistan - أوزبكستان
+Verdun - فردان
+Wadi Arayech - وادي العرايش
+Wadi Asse - وادي عيسي
+Wadi Baankoudine - وادي بعنقودين
+Wadi Bnehley - وادي بنهلة
+Wadi Bneit - وادي بنيته
+Wadi Chahrour - وادي شحرور
+Wadi El Oss - وادي العص
+Wadi el-Delm - وادي الدوم
+Wadi el-Hour - وادي الحور
+Wadi el-Laymoun - وادي الايمون
+Wadi el-Set - وادي الست
+Wadi el-Zineh (Chouf) - وادي الزينة (الشوف)
+Wadi Fa'ara - وادي فعرا
+Wadi Jamous - وادي جاموس
+Wadi Jezzine - وادي جزين
+Wadi Karm - وادي الكرم
+Wadi Mechmechi - وادي المشمشى
+Wadi Nahleh - نحلة (البترون)
+Wadi Rattal - وادي رطال
+Wadi Safa Charki - وادي الصفا شرقي
+Wadi Turkman - وادي تركمان
+Wadi Zein (Baalback) - وادي الزين (بعلبك)
+Wadih Khaled - وادي  خالد
+Wakilni Beirut Office (Self Pickup) - مكتب وكيلني بيروت (الاستلام الذاتي)
+Wakilni Dekwaneh Office (Self Pickup) - مكتب وكيلني دكوانة (الاستلام الذاتي)
+Wakilni Sarafand  Office (Self Pickup) - مكتب وكيلني الصرفند (الاستلام الذاتي)
+Wakilni Tripoli Office (Self Pickup) - مكتب وكيلني طرابلس (الاستلام الذاتي)
+Warhaniyeh - ورهانية
+Warhaniyeh - ورهانية
+Wata Al Mousaitbe - وطى المصيطبة
+Wata el Jawz - وطى الجوز
+Wata el-Mrouj - وطى المروج
+Wata Fares - وطى فارس
+Wata Houb - وطى حب
+Watieh - واطية
+Wazzany - الوزاني
+West Bekaa
+Wetwat - الوتوات
+Yahchouche - يحشوش
+Yahfoufa - يحفوفا
+Yammouni - يمونة
+Yanouh (Jbeil) - يانوح (جبيل)
+Yanouh (Sour) - يانوح (صور)
+Yanta - ينطا
+Yarine - يارين
+Yaroun - يارون
+Yarzeh - اليرزة
+Yater - ياطر
+Yellow Store - Beirut - متاجر وكّلني الصفراء - بيروت
+Yohmor (Nabatieh) - يحمر (النبطية)
+Yohmor (West Bekaa) - يحمر (البقاع الغربي)
+Youghon Oloke - يوغون أولوك
+Younine - يونين
+Younissiyeh - يونسيّة
+Zaarour - زعرور
+Zaarourieh - زعرورية
+Zaaytra - زعيترة
+Zabkine - زبقين
+Zaboud - زبود
+Zabougha - زبوغة
+Zaghr Tighrine - زغرتغرين
+Zaghrin - زغرين
+Zahle - زحلة
+Zahrani - الزهراني
+Zahrieh - زاهرية
+Zaita - زيتا
+Zaitoun - زيتون
+Zakrouk - زقزوق
+Zakroun - زكرون
+Zakzouk - زقزوق
+Zalka - زلقا
+Zalloutiyeh - الزلوطية
+Zandouka - زندوقة
+Zane - زانة
+Zaoutar - زوطر
+Zarazir - زرازير
+Zarif - ظريف
+Zaroun - زرعون
+Zawarib - زواريب
+Zaydenieh - الزيدانية
+Zebdine - زبدين
+Zefta - زفتا
+Zeghdraya - زغدريا
+Zeghrine - زغرين
+Zeitoun - زيتون
+Zekrit - زكريت
+Zeytoun' - زيتون
+zgharta - زغرتا
+Zhalta - زحلتا
+Zitta - زيتا
+Zlaya - زلايا
+Zokak el-Blat - زقاق البلاط
+Zouaitini - الزويتيني
+Zoueitini
+Zouk (Akkar) - ذوق (عكار)
+Zouk el-Hossayni - زوق الحصينه
+Zouk el-Kharab - زوق الخراب
+Zouk Hadareh - ذوق حدارة
+Zouk Hassineh - زوق الحصينه
+Zouk Hbalseh - ذوق الحبالصة
+Zouk Kharab - زوق الخراب
+Zouk Mekacharine - زوق المقشرين
+Zouk Mikail - ذوق مكايل
+Zouk Mosbeh - ذوق مصبح
+Zrariyeh - زرارية
+Other

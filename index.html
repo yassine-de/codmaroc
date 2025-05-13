@@ -6,9 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>COD Service</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
+    <style>
+      .pdf-arabic { font-family: 'Amiri', serif; direction: rtl; font-size: 16px; }
+      .pdf-arabic table { border-collapse: collapse; width: 100%; }
+      .pdf-arabic th, .pdf-arabic td { border: 1px solid #888; padding: 8px; text-align: center; }
+      .pdf-arabic th { background: #eee; }
+      .pdf-arabic .header { font-size: 2rem; font-weight: bold; margin-bottom: 1rem; }
+      .pdf-arabic .summary { margin-top: 2rem; float: left; text-align: left; border: 3px solid #bbb; padding: 16px; min-width: 320px; font-size: 20px; }
+    </style>
   </head>
   <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>window.jsPDF = window.jspdf.jsPDF;</script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+    <script src="/src/assets/Amiri-Regular-normal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   </body>
 </html>
